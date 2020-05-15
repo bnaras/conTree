@@ -1,0 +1,418 @@
+
+                             CONTRAST TREES & BOOSTING
+                               
+                                 Jerome H.Friedman
+                           
+                                    (12/17/19)
+ 
+-----------------------------------------------------------------------------
+                               
+                                build  contrast tree 
+                                                       
+tree=contrast(x,y,z,w=rep(1,nrow(x)),cat.vars=NULL,not.used=NULL,qint=10,
+   xmiss=9.0e35,tree.size=10,min.node=500,mode='onesamp',type='dist',pwr=2,
+   quant=0.5,nclass=NULL,costs=NULL,cdfsamp=500,verbose=FALSE,
+   tree.store=1000000,cat.store=100000,nbump=1,fnodes=1, fsamp=1,doprint=FALSE)
+
+
+Required arguments:
+
+   x = training input predictor data matrix or data frame. Rows are
+      observations and columns are variables. Must be a numeric matrix
+      or a data frame.
+   y = vector, or matrix containing training data input outcome
+      values or censoring intervals for each observation.
+      y = vector => y = uncensored outcome values or other contrasting quantity 
+      y = matrix => y = censoring intervals for each observation. Rows are
+         observations. First/second column = lower/upper boundary of censoring
+         interval (Can be same value for uncensored observations)
+      y[,1] = -xmiss => outcome less than or equal to y[,2]
+               (censored from above)
+      y[,2] = xmiss => outcome greater than or equal to y[,1]
+      (Note: censoring  only allowed for type='dist' - see below.)
+   z = vector containing values of a second contrasting quantity for each
+      observation
+
+Optional arguments:
+
+  w = training observation weights.
+  cat.vars = vector of column labels (numbers or names) indicating categorical
+      variables (factors). All variables not so indicated are assumed to be
+      orderable numeric. If x is a data frame and cat.vars is missing, then
+      components of type factor are treated as categorical variables. Ordered
+      factors should be input as type numeric with appropriate numerical scores.
+      If cat.vars is present it will over ride the data frame typing.
+   not.used = vector of column labels (numbers or names) indicating predictor
+      variables not to be used in the model.
+   qint = maximum number of split evaluation points on each predictor variable
+   xmiss = missing value flag. Must be numeric and larger than any non missing
+      predictor/abs(response) variable value.  Predictor variable values
+      greater than or equal to xmiss are regarded as missing. Predictor variable
+      data values of NA are internally set to the value of xmiss and thereby
+      regarded as missing.
+   tree.size = maximum number of terminal nodes in generated trees.
+   min.node = minimum number of training observations in each tree terminal node
+   mode 'onesamp' => one-sample contrast. one x-vector for each x,z pair
+   mode='twosamp' => two-sample contrast
+      x = predictor variables for both samples
+      y = outcomes for both samples
+      z = sample identity flag:
+         z < 0 => first sample observations
+         z > 0 => second sample observations
+   type = type of contrast:
+      mode ='onesamp':
+         type= 'dist' => contrast distribution of y with that of z
+         (y may be censored - see above)
+         type = 'diff' => contrast joint paired values of y and z
+         type = 'class' => classification: contrast class labels
+            y[i] and z[i] are two class labels (in 1:nclass) for each observation. 
+         type = 'prob' => contrast predicted with empirical probabilities.
+            y[i] = 0/1. z[i] = predicted probability P(y=1) for ith observation
+         type = 'quant' => contrast predicted with empirical quantiles
+            y[i] = outcome value for ith observation.
+            z[i] = predicted pth quantile value (see below) for ith observation
+                  (0 < p <1)
+         type = 'diffmean' => maximize absolute mean difference between y and z
+         type = 'maxmean' => maximize signed mean difference between y and z
+      mode ='twosamp':
+         type= 'dist' => contrast y distributions of both samples
+         type = 'diffmean' => maximize absolute difference between means of two samples
+         type = 'maxmean' => maximize signed difference between means of two samples
+   pwr = center split bias parameter. Larger values produce less center split bias.
+   quant = specified quantile p (type='quant' only)
+   nclass = number of classes (type ='class' only) default=2
+   costs = nclass by nclass misclassification cost matrix (type='class' only)
+      default = equal valued diagonal (error rate)
+   cdfsamp = maximum subsample size used to compute censored CDF.
+      (censoring only)
+   verbose = TRUE/FALSE => do/don't print censored CDF computation progress.
+   tree.store = size of internal tree storage. Decrease value in response to
+      memory allocation error. Increase value for very large values of max.trees
+      and/or tree.size, or in response to diagnostic message or erratic program
+      behavior.
+   cat.store =  size of internal categorical value storage. Decrease value in
+      response to memory allocation error. Increase value for very large values
+      of max.trees and/or tree.size in the presence of many categorical
+      variables (factors) with many levels, or in response to diagnostic message
+      or erratic program behavior.
+   nbump = number of trial trees used in the bumping strategy
+   fnodes = top fraction of node criteria used to evaluate trial bumped trees
+   fsamp = fraction of observations used in each bootstrap sample for bumped
+      trees.
+   doprint = TRUE/FALSE => do/don't print bootstrapped tree quality during
+      execution. 
+      
+Output:
+
+   tree = contrast model object use as input to interpretation procedures
+        
+------------------------------------------------------------------------------
+
+                                  Prune tree
+   
+pruned.tree=prune(tree,thr=0.1)
+
+Required argument:
+
+   tree = tree model object output from contrast
+   
+Optional argument:
+
+   thr = split improvement threshold
+   
+Output:
+
+   pruned.tree = bottom-up pruned tree with splits corresponding to improvement 
+      less than thr removed
+
+------------------------------------------------------------------------------
+
+                         Show all possible pruned subtrees
+
+prune.seq(tree,eps=0.01,plot.it=TRUE)
+
+Required argument:
+
+   tree = tree model object output from contrast
+   
+Optional arguments:
+
+   eps = small increment defining grid of threshold values
+   plot.it = TRUE/FALSE => do/don't show plot of number of nodes versus 
+      threshold value for all pruned subtrees
+      
+Output:
+     
+   list:
+      thr = set of threshold values that sequentially reduce tree size
+      nodes = corresponding tree sizes (number of terminal nodes)
+   
+-------------------------------------------------------------------------------
+
+                           Terminal node summaries:
+
+nodesum(x,y,z,tree,w=rep(1,nrow(x)),doplot=FALSE)
+
+Required arguments:
+
+   x = training input predictor data matrix or data frame in same format
+      as in contrast
+   y = vector, or matrix containing training data input outcome
+      values or censoring intervals for each observation in same format
+      as in contrast.
+   z = vector containing values of a second contrasting quantity for each
+      observation in samw = observatione format as in contrast
+   tree = tree model object output from contrast or prune
+   
+Optional arguements:
+
+    w = observation weights.
+    doplots = TRUE/FALSE => do/don't display plots of output quantities
+    
+Output:
+
+   list:
+      nodes = tree terminal node identifiers
+      cri = terminal node criterion values (depends on contrast type
+          - see above)
+      wt = sum of weights in each terminal node
+      avecri = weighted criterion average over all terminal nodes
+      
+-------------------------------------------------------------------------------
+
+                          Graphical terminal node summaries
+                        
+nodeplots=function(x,y,z,tree,w=rep(1,nrow(x)),nodes=NULL,
+   xlim=NULL,ylim=NULL,pts='FALSE',span=0.15)
+   
+Required arguments:
+
+   x,y,z,tree = same as in nodesum above
+   
+Optional arguments:
+
+   w = observation weights.
+   nodes = selected tree terminal node identifiers. Default = all terminal nodes
+   xlim,ylim = plot graphical parameters
+   pts =TRUE/FALSE => show y-values as circles/points (type = 'pp' only)
+   span = running median smoother span (type = 'diff' only)
+   
+Output:
+
+   graphical representations of terminal node contrasts depending on tree type
+   
+   type = 'dist' => CDFs of y and z in each terminal node. 
+      (Only top nine nodes are shown). Note that y can be censored (see above)
+   type = 'diff' => plot y versus z in each terminal node.
+      (Only top nine nodes are shown).
+   type = 'class' => barplot of misclassification risk (upper) amd total
+      weight (lower) in each terminal node
+   type = 'prob' => upper barplot contrasting empirical (blue) and predicted
+      (red) Prob(y=1) in each terminal node. Lower barplot showing total weight
+      in each terminal node.
+   type = 'quant' => upper barplot of fraction of y-values greater than or equal
+      to corresponding z-values (quantile prediction) in each terminal node.
+      Horizontal line reflects specified target quantile. Lower barplot showing
+      total  weight in each terminal node.
+   type = 'diffmean' or 'maxmean' => upper barplot contrasting y-mean (blue) and z-mean
+      (red) in each terminal node. Lower barplot showing total weight
+      in each terminal node.
+   
+   
+-------------------------------------------------------------------------------   
+
+                          Terminal node x-region boundaries
+                        
+treesum=function(tree,n=0)
+
+Required argument:
+
+   tree = tree model object output from contrast or prune
+   
+Optional argument:
+
+   n = number of nodes displayed in order of criterion value (n=0 => display all
+      terminal nodes)
+      
+Output:
+ 
+   printed predictor variable x-boundaries defining each terminal node.
+
+   numeric variables: variable | sign | value
+      sign + => value=lower boundary on variable
+      sign - => value upper boundary on variable
+      
+   categorical variables:  cat variable | sign | set of values
+      sign + => values in node
+      sign - => values not in node (compliment values in node)
+
+-----------------------------------------------------------------------------
+
+                         Terminal node observation assignments
+                         
+nx=getnodes(x,tree)
+
+Required arguments:
+
+   x = input predictor data matrix or data frame with same variables
+      as input to contrast. Rows are observations and columns are variables.
+      Must be a numeric matrix or a data frame.
+   tree = tree model object output from contrast or prune
+      
+Output:
+
+   nx = vector of tree terminal node identifiers (numbers) corresponding to
+      each observation (row of x)
+      
+           
+------------------------------------------------------------------------------      
+      
+                        Compute lack-of-fit contrast curve
+                                                                     
+ out=lofcurve(x,y,z,tree,w=rep(1,length(y)),doplot=TRUE,ylim=NULL)
+ 
+ Required arguments:
+
+   x,y,z = same as input to contrast (above)
+   tree = outout from contrast
+   
+ Optional arguments:
+   w = observation weights.
+   doplot = TRUE/FALSE => do/don't produce graphical plot
+   ylim = graphical pqrameter (doplot = TRUE, only)
+   
+ Output:
+ 
+   out$x = plot abscissa points
+   out$y = plot vertical points
+                       
+      
+------------------------------------------------------------------------------
+
+                       Build boosted contrast tree model
+                            
+
+model=modtrast(x,y,z,w=rep(1,nrow(x)),cat.vars=NULL,not.used=NULL,qint=10,
+   xmiss=9.0e35,tree.size=10,min.node=500,learn.rate=0.1,type='dist',pwr=2,
+   quant=0.5,cdfsamp=500,verbose=FALSE,
+   tree.store=1000000,cat.store=100000,nbump=1,fnodes=1,fsamp=1,
+   doprint=FALSE,niter=100,doplot=TRUE,span=0,plot.span=0.15,print.itr=10)
+   
+Required arguments:
+
+   x,y,z = same as contrast (above)
+
+Optional arguments:
+
+   w,cat.vars,not.used,qint,xmiss,tree.size,min.node=,type,pwr,quant,
+   cdfsamp,verbose,tree.store,cat.store,nbump,fnodes,fsamp,doprint
+      = same as contrast (above)
+   learn.rate = learning rate parameter ( in (0,1])
+   niter = number of trees
+   doplot = TRUE/FALSE => do/don't ineration discrepancies
+   span = span for qq-plot transformation smoother
+   plot.span = running median smoother span for discrepancy plot (doplot = TRUE, only)
+   print.iter = tree discrepancy printing iteration interval
+      
+Output:
+
+   model = contrast model object used with predtrast (below)
+   
+------------------------------------------------------------------------------
+
+                      Predict y-values from boosted contrast model 
+                                             
+ ypred=predtrast=function(x,z,model,num=model$niter)
+ 
+ Required arguments:
+ 
+   x = x-values for new data
+   z = z-values for new data
+   model = model object output from modtrast
+   num = number of trees used to compute model values
+   
+Output:
+
+   ypred = predicted y-values for new data from model
+   
+------------------------------------------------------------------------------
+
+                         Generate sample from estimated p(y | x)
+                                  (type = 'dist', only)
+                         
+ yhat=ydist(x,z,model,num=model$niter)
+
+ Required arguments:
+ 
+    x = vector of predictor variable values for a (single) observation
+    z = sample of z - values drawn from p(z | x)
+    model = model object output from modtrast
+
+Optional arguement:
+
+    num = number of trees used to compute model values
+ 
+
+Output:
+
+   yhat = vector of length(z) containing transformed values representing p(y | x)
+     
+------------------------------------------------------------------------------
+
+            Cross-validate boosted contrast tree boosted with new data
+                          
+ out=xval(x,y,z,model,num=length(mdl$tree),del=10,span=0.15,
+   ylab='Average  Discrepancy',doplot=TRUE,doprint=TRUE) 
+   
+ Required arguments:
+ 
+    x = new data predictor variables is same format as input to modtrast
+    y = new data y values is same format as input to modtrast
+    z = new data z values is same format as input to modtrast
+    model = model output from modtrast
+    
+ Optional arguements:
+
+    num = number of trees used to compute model values
+    del = plot discrepancy value computed every del-th iteration (tree)
+    span = running median smoother span (doplot=TRUE, only)
+    ylab = graphical parameter (doplot=TRUE, only)
+    doplot = TRUE/FALSE => do/don't show plot   
+    doprint = TRUE/FALSE => do/don't print progress while executing
+    
+Output:
+
+   out$ntree = iteration numbers
+   out$error = corresponding discrepancy values 
+   
+------------------------------------------------------------------------------ 
+
+                          Bootstrap contrast trees
+                          
+ bootcri= function(x,y,z,w=rep(1,nrow(x)),cat.vars=NULL,not.used=NULL,qint=10,
+   xmiss=9.0e35,tree.size=10,min.node=500,mode='onesamp',type='dist',pwr=2,
+   quant=0.5,nclass=NULL,costs=NULL,cdfsamp=500,verbose=FALSE,
+   tree.store=1000000,cat.store=100000,nbump=100,fnodes=1,fsamp=1,
+   doprint=FALSE)
+   
+    
+ Required arguments:
+
+   x,y,z = same as contrast (above)
+
+ Optional arguments:
+
+   w,cat.vars,not.used,qint,xmiss,tree.size,min.node,mode,type,pwr,quant,
+   cdfsamp,verbose,tree.store,cat.store,nbump,fnodes,fsamp,doprint,
+   tree.store.cat.store,nbump,fnodes,fsamp,doprint
+      = same as contrast (above)
+   nbump = number of boostrap replications
+   doprint = TRUE/FALSE => do/don't plot iteration progress
+   span = span for qq-plot transformation smoother
+   
+ Output:
+ 
+   out$bcri = bootstraped discrepancy values
+  
+ 
+------------------------------------------------------------------------------

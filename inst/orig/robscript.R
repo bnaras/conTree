@@ -1,0 +1,141 @@
+# contrast demo R script
+#
+# demo utilities
+#
+source("datgen.r")
+source("lmpred.r")
+#
+# load contrast
+#
+source("contrast.r")
+dyn.load("contrast.so")
+#
+# generate training and test data sets
+# n=25000, p=10, heteroskedastic logistic error
+#
+d <- datgen()
+e <- datgen(xseed = 17, yseed = 31)
+#
+# fit random forest (RF) model on training data
+#
+library("randomForest")
+rf <- randomForest(d$x, d$y)
+#
+# RF predicted values on test data
+#
+erf <- predict(rf, e$x)
+#
+# RF average absolute error from truth (e$f) on test data
+#
+mean(abs(e$f - erf))
+#
+# fit linear model (LM) on training data
+#
+lmm <- lm(d$y ~ d$x)
+#
+# evaluate LM on test data
+#
+elm <- lmpred(e$x, lmm)
+#
+# LM average absolute error from truth (e$f) on test data
+#
+mean(abs(e$f - elm))
+#
+# contrast y with RF predictions on test data
+#
+treerf <- contrast(e$x, e$y, erf, type = "diffmean")
+#
+# summarize terminal nodes
+#
+nodesum(e$x, e$y, erf, treerf)
+#
+# graphical summary
+#
+nodeplots(e$x, e$y, erf, treerf)
+#
+# x-region definitions for top three nodes
+#
+treesum(treerf, 3)
+#
+# contrast y with LM predictions on test data
+#
+treelm <- contrast(e$x, e$y, elm, type = "diffmean")
+nodesum(e$x, e$y, elm, treelm)
+nodeplots(e$x, e$y, elm, treelm)
+#
+# contrast y with true f(x) on test data
+#
+treef <- contrast(e$x, e$y, e$f, type = "diffmean")
+nodesum(e$x, e$y, e$f, treef)
+nodeplots(e$x, e$y, e$f, treef)
+#
+# build contrast boosting (CB) model on training data
+#
+z0 <- rep(0, length(d$y))
+mdl <- modtrast(d$x, d$y, z0, type = "diffmean", niter = 200)
+#
+# test set error vs iterations
+#
+xval(e$x, e$y, z0, mdl)
+#
+# CB model predictions on test data
+#
+ecb <- predtrast(e$x, z0, mdl)
+#
+# CB average absolute error from truth (e$f) on test data
+#
+mean(abs(e$f - ecb))
+#
+# compare model lack-of-fit curves
+# LM=black, RF=red, CB=blue, truth=green
+#
+treelm <- contrast(e$x, e$y, elm, type = "diffmean", tree.size = 50)
+treerf <- contrast(e$x, e$y, erf, type = "diffmean", tree.size = 50)
+treeecb <- contrast(e$x, e$y, ecb, type = "diffmean", tree.size = 50)
+treef <- contrast(e$x, e$y, e$f, type = "diffmean", tree.size = 50)
+lofcurve(e$x, e$y, elm, treelm)
+u <- lofcurve(e$x, e$y, erf, treerf, doplot = F)
+lines(u$x, u$y, col = "red")
+u <- lofcurve(e$x, e$y, ecb, treeecb, doplot = F)
+lines(u$x, u$y, col = "blue")
+u <- lofcurve(e$x, e$y, e$f, treef, doplot = F)
+lines(u$x, u$y, col = "green")
+#
+# contrast p(y | x) with p(z | x) = N(0,1) on test data
+#
+z <- rnorm(length(e$y))
+tree <- contrast(d$x, d$y, z)
+nodesum(e$x, e$y, z, tree)
+nodeplots(e$x, e$y, z, tree)
+#
+# distribution boosting
+# estimate full p(y | x) starting with p(z | x) = N(0,1)
+#
+mdld <- modtrast(d$x, d$y, z, niter = 200)
+#
+# test set discrepancies vs iterations
+#
+xval(e$x, e$y, z, mdld)
+#
+# transform z-values to estimated y-values
+#
+tg <- predtrast(e$x, z, mdld)
+#
+# contrast transformed p(g(z)|x) with p(y|x) on test data
+#
+tree <- contrast(e$x, e$y, tg)
+nodesum(e$x, e$y, tg, tree)
+nodeplots(e$x, e$y, tg, tree)
+#
+# compute predicted p(g(z)|x)(black)and compare with
+# true p(y|x)(red)for first nine test set observations
+#
+p <- ((1:100) - .5) / 100
+q <- qnorm(p)
+kk <- 1
+par(mfrow = c(3, 3))
+for (k in kk:(kk + 8)) {
+  t <- ydist(e$x[k, ], q, mdld)
+  plot(t, p, type = "l", xlim = c(-5, 5))
+  lines(t, 1 / (1 + exp((e$f[k] - t) / e$s[k])), col = "red")
+}
