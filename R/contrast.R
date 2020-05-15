@@ -1,4 +1,4 @@
-#' Find eqn{x}-regions in predictor space so that \eqn{p(y | x) != p(z | x)}
+#' Build contrast tree
 #'
 #' @param x training input predictor data matrix or data frame. Rows
 #'     are observations and columns are variables. Must be a numeric
@@ -467,7 +467,7 @@ crinode <- function(tree) {
 }
 
 
-#' Show all possible pruned subtrees
+#' Summarize contrast tree
 #'
 #' @param x training input predictor data matrix or data frame in same format as in contrast()
 #' @param y vector, or matrix containing training data input outcome values or censoring intervals for each observation in same format as in contrast()
@@ -560,7 +560,7 @@ getlims <- function(node, tree) {
 #' Print terminal node x-region boundaries
 #'
 #' @param tree model object output from contrast() or prune()
-#' @param n the number of nodes displayed in order of criterion value (n=0 displays all terminal nodes)
+#' @param nodes vector of terminal node identifiers for the tree specifying the desired regions. The default is all terminal nodes.
 #' @details
 #' The predictor variable x-boundaries defining each terminal node are printed.
 #'
@@ -572,52 +572,39 @@ getlims <- function(node, tree) {
 #' - sign + => values in node
 #' - sign - => values not in node (compliment values in node) graphical representations of terminal node contrasts depend on the tree type
 #' @export
-treesum <- function(tree, n = 0) {
-  q <- tree$tree
-  v <- crinode(tree)
-  if (n == 0) n <- length(v$nodes)
-  for (k in 1:n) {
-    cat(paste("node", format(v$nodes[k], digits = 0)))
-    u <- getlims(v$nodes[k], tree)
-    cat(paste("  var     dir    split"), "\n")
-    for (j in 1:u$nvar) {
-      if (u$jvar[2, j] == 0) {
-        if (sign(u$jvar[1, j]) < 0) {
-          cat(paste(
-            "         ", format(abs(u$jvar[1, j]), digits = 0),
-            "     -     ", format(u$vlims[j], digits = 2)
-          ), "\n")
-        }
-        else {
-          cat(paste(
-            "         ", format(abs(u$jvar[1, j]), digits = 0),
-            "     +     ", format(u$vlims[j], digits = 2)
-          ), "\n")
-        }
+treesum=function(tree,nodes=NULL){
+   q=tree$tree; v=crinode(tree);
+   if(is.null(nodes)) { nodes=v$nodes}   
+   for (k in 1:length(nodes)) {
+      cat(paste('node',format(nodes[k],digits=0)))
+      u=getlims(nodes[k],tree)      
+      cat(paste('  var     dir    split'),'\n')      
+      for (j in 1:u$nvar) {
+         if (u$jvar[2,j] == 0) {
+            if(sign(u$jvar[1,j])<0) {
+               cat(paste('         ',format(abs(u$jvar[1,j]),digits=0),
+               '     -     ',format(u$vlims[j],digits=2)),'\n')
+            }
+            else {
+              cat(paste('         ',format(abs(u$jvar[1,j]),digits=0),
+               '     +     ',format(u$vlims[j],digits=2)),'\n')
+            }
+         }
+         else {
+            kp=u$jvar[2,j]; kc=abs(q$cat[kp])
+            z=sort(q$cat[(kp+1):(kp+kc)])
+            if(u$vlims[j]>0) {
+               cat(paste('      cat',format(u$jvar[1,j],digits=0),
+                  '     -     ')); cat(z,'\n')
+            }
+            else {
+               cat(paste('      cat',format(u$jvar[1,j],digits=0),
+                  '     +     ')); cat(z,'\n')
+            }
+         }
       }
-      else {
-        kp <- u$jvar[2, j]
-        kc <- abs(q$cat[kp])
-        z <- sort(q$cat[(kp + 1):(kp + kc)])
-        if (u$vlims[j] > 0) {
-          cat(paste(
-            "      cat", format(u$jvar[1, j], digits = 0),
-            "     -     "
-          ))
-          cat(z, "\n")
-        }
-        else {
-          cat(paste(
-            "      cat", format(u$jvar[1, j], digits = 0),
-            "     +     "
-          ))
-          cat(z, "\n")
-        }
-      }
-    }
-  }
+   }  
 }
-
 #' @export
 getcri <- function(y, z, tree, w = rep(1, n), cdfsamp = 500) {
   ## if (!is.loaded("andarm")) {
@@ -699,84 +686,48 @@ plotnodes <- function(x, y, z, tree, w = rep(1, nrow(x)), nodes = NULL,
   ## if (!is.loaded("fintcdf1")) {
   ##   stop("dyn.load('contrast.so')   linux\n  dyn.load('contrast.dll') windows")
   ## }
-  x <- xcheck(x)
-  mode <- tree$parms$mode
-  if (is.null(nodes)) {
-    v <- crinode(tree)
-    nodes <- v$nodes[1:min(length(v$nodes), 9)]
-  }
-  nplts <- length(nodes)
-  nd <- getnodes(x, tree)
-  if (nplts > 2) {
-    nr <- trunc(sqrt(nplts))
-    if (nr * nr == nplts) {
-      nc <- nr
-    }
-    else {
-      nr <- nr + 1
-      nc <- trunc(nplts / nr)
-      if (nc * nr < nplts) nc <- nc + 1
-    }
-  }
-  if (nplts == 2) {
-    nr <- 2
-    nc <- 1
-  }
-  if (nplts >= 2) {
-    opar <- par(mfrow = c(nr, nc))
-    on.exit(par(opar))
-  }
-  for (k in 1:nplts) {
-    if (is.vector(y)) {
-      zn <- z[nd == nodes[k]]
-      yn <- y[nd == nodes[k]]
-      if (mode == "onesamp") {
-        p1 <- zn
-        p2 <- yn
+  x=xcheck(x); mode=tree$parms$mode
+   if(is.null(nodes)) { v=crinode(tree);
+      nodes=v$nodes[1:min(length(v$nodes),9)]
+   }
+   nplts=length(nodes)
+   nd=getnodes(x,tree)
+   if (nplts > 2) { 
+      nr=trunc(sqrt(nplts))
+      if(nr*nr==nplts) { nc=nr}
+      else { nr=nr+1; 
+         nc=trunc(nplts/nr); if(nc*nr<nplts) nc=nc+1
+      }
+   }
+   if (nplts==2) { nr=2; nc=1}
+   if(nplts>=2) { opar=par(mfrow=c(nr,nc)); on.exit(par(opar))}
+   for (k in 1:nplts) {
+      if(is.vector(y)) {
+         zn=z[nd==nodes[k]]; yn=y[nd==nodes[k]]
+         if(mode=='onesamp') { p1=zn; p2=yn}
+         else {p1=yn[zn<0]; p2=yn[zn>0]}
+         if(is.null(xlim)) { xl=c(min(p1),max(p1))} else { xl=xlim}
+         if(is.null(ylim)) { yl=c(min(p2),max(p2))} else { yl=ylim}
+         qqplot(p1,p2,xlim=xl,ylim=yl,xlab='z',ylab='y',pch='.')
+         title(paste('Node',as.character(nodes[k]),':',
+            as.character(format(sum(w[nd==nodes[k]]),digits=2))))
+         lines(c(-1.0e9,1.0e9),c(-1.0e9,1.0e9),col='red')
       }
       else {
-        p1 <- yn[zn < 0]
-        p2 <- yn[zn > 0]
+         u=y[nd==nodes[k],]; cdfsamp1=1000000
+         if(length(unique(c(u[,1],u[,2])))>tree$parms$cdfsamp+2)
+            cdfsamp1=tree$parms$cdfsamp
+         vrb=0; if(tree$parms$verbose) vrb=1
+         cy=cencdf(u,nsamp=cdfsamp1,vrb=vrb)
+         u=z[nd==nodes[k]]; cdfsamp1=1000000
+         cz=cencdf(cbind(u,u),nsamp=cdfsamp1,vrb=0)
+         v=diffcdf(cy$x,cy$y,cz$x,cz$y,xlim=xlim,pts=pts)
+         title(paste('Node',as.character(nodes[k]),':',
+         as.character(format(v,digits=2))))
       }
-      if (is.null(xlim)) {
-        xl <- c(min(p1), max(p1))
-      } else {
-        xl <- xlim
-      }
-      if (is.null(ylim)) {
-        yl <- c(min(p2), max(p2))
-      } else {
-        yl <- ylim
-      }
-      qqplot(p1, p2, xlim = xl, ylim = yl, xlab = "z", ylab = "y", pch = ".")
-      title(paste(
-        "Node", as.character(nodes[k]), ":",
-        as.character(sum(w[nd == nodes[k]]))
-      ))
-      lines(c(-1.0e9, 1.0e9), c(-1.0e9, 1.0e9), col = "red")
-    }
-    else {
-      u <- y[nd == nodes[k], ]
-      cdfsamp1 <- 1000000
-      if (length(unique(c(u[, 1], u[, 2]))) > tree$parms$cdfsamp + 2) {
-        cdfsamp1 <- tree$parms$cdfsamp
-      }
-      vrb <- 0
-      if (tree$parms$verbose) vrb <- 1
-      cy <- cencdf(u, nsamp = cdfsamp1, vrb = vrb)
-      u <- z[nd == nodes[k]]
-      cdfsamp1 <- 1000000
-      cz <- cencdf(cbind(u, u), nsamp = cdfsamp1, vrb = 0)
-      v <- diffcdf(cy$x, cy$y, cz$x, cz$y, xlim = xlim, pts = pts)
-      title(paste(
-        "Node", as.character(nodes[k]), ":",
-        as.character(format(v, digits = 2))
-      ))
-    }
-  }
-  invisible()
+   }
+   invisible()
 }
-
 #' @importFrom graphics par title
 #' @export
 plotnodes2 <- function(x, y, z, tree, w = rep(1, nrow(x)), nodes = NULL,
@@ -1222,55 +1173,39 @@ nodeplots <- function(x, y, z, tree, w = rep(1, nrow(x)), nodes = NULL,
 #' @param print.itr tree discrepancy printing iteration interval
 #' @return a contrast model object to be used with predtrast()
 #' @export
-modtrast <- function(x, y, z, w = rep(1, nrow(x)), cat.vars = NULL, not.used = NULL, qint = 10,
-                     xmiss = 9.0e35, tree.size = 10, min.node = 500, learn.rate = 0.1, type = "dist", pwr = 2,
-                     quant = 0.5, cdfsamp = 500, verbose = FALSE,
-                     tree.store = 1000000, cat.store = 100000, nbump = 1, fnodes = 0.25, fsamp = 1,
-                     doprint = FALSE, niter = 100, doplot = TRUE, span = 0, plot.span = 0.15, print.itr = 10) {
-  if (type == "dist") {
-    return(modtrans(x, y, z,
-      w = rep(1, nrow(x)), cat.vars, not.used, qint,
-      xmiss, tree.size, min.node, learn.rate, pwr, cdfsamp, verbose, tree.store,
-      cat.store, nbump, fnodes, fsamp, doprint, niter, doplot,
-      print.itr, span
-    ))
-  }
-  nodes <- list()
-  dels <- list()
-  trees <- list()
-  r <- z
-  acri <- rep(0, niter)
-  mode <- "onesamp"
-  for (k in 1:niter) {
-    trees[[k]] <- contrast(x, y, r, w, cat.vars, not.used, qint, xmiss, tree.size,
-      min.node, mode, type, pwr, quant,
-      nclass = NULL, costs = NULL, cdfsamp, verbose, tree.store,
-      cat.store, nbump, fnodes, fsamp, doprint
-    )
-    acri[k] <- nodesum(x, y, r, trees[[k]], w)$avecri
-    u <- adjnodes(x, y, r, trees[[k]], w, learn.rate)
-    r <- u$az
-    dels[[k]] <- u$del
-    nodes[[k]] <- u$nodes
-    if (k <= 10 | k %% print.itr == 0) {
-      cat(paste("Iteration", format(k, digits = 3)), " ", format(acri[k], digits = 3), "\n")
-    }
-  }
-  if (doplot) {
-    if (niter > 20 & plot.span > 0) {
-      medplot(1:k, acri,
-        xlab = "Iteration", ylab = "Criterion",
-        ylim = c(0, max(acri)), span = plot.span
-      )
-    }
-    else {
-      plot(1:k, acri,
-        xlab = "Iteration", ylab = "Criterion",
-        ylim = c(0, max(acri))
-      )
-    }
-  }
-  invisible(list(trees = trees, dels = dels, nodes = nodes, niter = niter))
+modtrast <- function(x,y,z,w=rep(1,nrow(x)),cat.vars=NULL,not.used=NULL,qint=10,
+   xmiss=9.0e35,tree.size=10,min.node=500,learn.rate=0.1,type='dist',pwr=2,
+   quant=0.5,cdfsamp=500,verbose=FALSE,
+   tree.store=1000000,cat.store=100000,nbump=1,fnodes=0.25,fsamp=1,
+   doprint=FALSE,niter=100,doplot=FALSE,span=0,plot.span=0.15,print.itr=10) {
+   if (type=='dist') {
+      return(modtrans(x,y,z,w=rep(1,nrow(x)),cat.vars,not.used,qint,
+         xmiss,tree.size,min.node,learn.rate,pwr,cdfsamp,verbose,tree.store,
+         cat.store,nbump,fnodes,fsamp,doprint,niter,doplot,
+         print.itr,span))
+   }
+   nodes=list(); dels=list(); trees=list(); r=z; acri=rep(0,niter); mode='onesamp'
+   for (k in 1:niter) {
+      trees[[k]]=contrast(x,y,r,w,cat.vars,not.used,qint,xmiss,tree.size,
+         min.node,mode,type,pwr,quant,nclass=NULL,costs=NULL,cdfsamp,verbose,tree.store,
+         cat.store,nbump,fnodes,fsamp,doprint)
+      acri[k]=nodesum(x,y,r,trees[[k]],w)$avecri
+      u=adjnodes(x,y,r,trees[[k]],w,learn.rate)
+      r=u$az; dels[[k]]=u$del; nodes[[k]]=u$nodes
+      if(k<=10 | k%%print.itr==0) cat('.')
+   }
+   cat('\n')
+   if(doplot) {
+      if(niter>20 & plot.span>0) {
+         medplot(1:k,acri,xlab='Iteration',ylab='Criterion',
+            ylim=c(0,max(acri)),span=plot.span)
+      }
+      else {
+         plot(1:k,acri,xlab='Iteration',ylab='Criterion',
+            ylim=c(0,max(acri)))
+       }
+   }
+   invisible(list(trees=trees,dels=dels,nodes=nodes,niter=niter))
 }
 
 #' Predict y-values from boosted contrast model
@@ -1499,44 +1434,47 @@ predtrast1 <- function(x, z, model, num = model$niter) {
   invisible(zout)
 }
 
-#' Cross-validate boosted contrast tree boosted with new data
+#' Cross-validate boosted contrast tree boosted with (new) data
 #'
-#' @param x new data predictor variables is same format as input to modtrast
-#' @param y new data y values is same format as input to modtrast
-#' @param z new data z values is same format as input to modtrast
+#' @param x data predictor variables is same format as input to modtrast
+#' @param y data y values is same format as input to modtrast
+#' @param z data z values is same format as input to modtrast
 #' @param mdl model output from modtrast()
 #' @param num number of trees used to compute model values
 #' @param del plot discrepancy value computed every del-th iteration (tree)
 #' @param span running median smoother span (`doplot=TRUE`, only)
-#' @param ylab graphical parameter (`doplot=TRUE`, only)
-#' @param doplot logical flag `TRUE/FALSE` implies do/don't show plot
+#' @param ylab graphical parameter (`doplot="first", only)
+#' @param doplot logical flag. doplot="first" implies start new display. doplot="next" implies super impose plot on existing display. doplot="none" implies no plot displayed.
 #' @param doprint logical flag `TRUE/FALSE` implies do/don't print progress while executing
+#' @param col color of plotted curve
 #' @return a named list of two items: `ntree` the iteration numbers, and `error` the corresponding discrepancy values
+
 #' @export
-xval <-
-  function(x, y, z, mdl, num = length(mdl$tree), del = 10, span = 0.15,
-           ylab = "Average  Discrepancy", doplot = TRUE, doprint = TRUE) {
-    parms <- mdl$tree[[1]]$parms
-    error <- rep(0, num)
-    ntree <- rep(0, num)
-    k <- 0
-    for (j in 1:num) {
-      if (j == 1 | j %% del == 0) {
-        k <- k + 1
-        yp <- predtrast(x, z, mdl, num = j)
-        tree <- contrast(x, y, yp, type = parms$type, quant = parms$quant)
-        error[k] <- crinode(tree)$avecri
-        ntree[k] <- j
-        if (doprint) print(c(ntree[k], error[k]))
+xval=function(x,y,z,mdl,num=length(mdl$tree),del=10,span=0.15,
+   ylab='Average  Discrepancy',doplot='first',doprint=TRUE,col='red') {
+   parms=mdl$tree[[1]]$parms;
+   error=rep(0,num); ntree=rep(0,num); k=0
+   for(j in 1:num) {
+      if (j==1 | j%%del==0) { k=k+1
+         yp=predtrast(x,z,mdl,num=j)
+         tree=contrast(x,y,yp,type=parms$type,quant=parms$quant)
+         error[k]=crinode(tree)$avecri
+         ntree[k]=j
+         if(doprint) cat('.')
       }
-    }
-    if (doplot) {
-      plot(ntree[1:k], error[1:k], xlab = "Trees", ylab = ylab, ylim = c(0, max(error[1:k])))
-      u <- medplot(ntree[1:k], error[1:k], span = span, doplot = F)
-      lines(u$x, u$sy, col = "red")
-    }
-    invisible(list(ntree = ntree[1:k], error = error[1:k]))
-  }
+   }
+   if(doprint) cat('\n')
+   if(doplot!='none') {
+      if (doplot=='first') 
+         plot(ntree[1:k],error[1:k],xlab='Trees',ylab=ylab,ylim=c(0,max(error[1:k])),col=col)
+      if (doplot=='next')
+         points(ntree[1:k],error[1:k],col=col)
+      u=medplot(ntree[1:k],error[1:k],span=span,doplot=F)
+      u$sy[1]=error[1]
+      lines(u$x,u$sy,col=col)
+   }
+   invisible(list(x=ntree[1:k],y=error[1:k]))
+}
 
 #' @export
 trans <- function(y, z, wy = rep(1, ny), wz = rep(1, nz), n = min(ny, nz)) {
@@ -1572,7 +1510,7 @@ modtrans <-
   function(x, y, z, w = rep(1, nrow(x)), cat.vars = NULL, not.used = NULL, qint = 10,
            xmiss = 9.0e35, tree.size = 10, min.node = 500, learn.rate = 0.1, pwr = 2, cdfsamp = 500, verbose = FALSE,
            tree.store = 1000000, cat.store = 100000, nbump = 1, fnodes = 0.25, fsamp = 1,
-           doprint = FALSE, niter = 100, doplot = TRUE, print.itr = 10, span = 0, plot.span = 0.15) {
+           doprint = FALSE, niter = 100, doplot = FALSE, print.itr = 10, span = 0, plot.span = 0.15) {
     nodes <- list()
     trans <- list()
     trees <- list()
@@ -1609,24 +1547,21 @@ modtrans <-
         trans[[l]] <- cbind(u$x, u$y)
         r[h] <- xfm(r[h], u$x, u$y)
       }
-      if (k < 10 | k %% print.itr == 0) {
-        cat(paste("Iteration", format(k, digits = 3)), " ", format(acri[k], digits = 3), "\n")
-      }
+      if(k<10 | k%%print.itr==0) cat('.')
     }
+    cat('\n')
     if (doplot) {
       if (plot.span > 0 & niter > 20) {
         plot(1:k, acri,
           xlab = "Iteration", ylab = "Criterion",
-          ylim = c(0, max(acri))
-        )
+          ylim=c(0,max(acri)),pch='.')
         u <- medplot(1:k, acri, span = plot.span, doplot = F)
         lines(u$x, u$sy, col = "red")
       }
       else {
         plot(1:k, acri,
           xlab = "Iteration", ylab = "Criterion",
-          ylim = c(0, max(acri))
-        )
+          ylim=c(0,max(acri)),pch=".")
       }
     }
     invisible(list(trees = trees, trans = trans, nodes = nodes, ty = r, niter = niter, cri = acri[1:k]))
@@ -1654,15 +1589,16 @@ predmod <- function(x, z, model, num = model$niter) {
   invisible(r)
 }
 
-#' Generate sample from estimated \eqn{p(y | x)} for type = 'dist' only
+#' Transform z-values t(z) such that the distribution of \eqn{p(t(z) | x)} approximates \eqn{p(t(y | x)} for type = 'dist' only
 #'
 #' @param x vector of predictor variable values for a (single) observation
 #' @param z  sample of z-values drawn from \eqn{p(z | x)}
 #' @param model model object output from modtrast()
 #' @param num number of trees used to compute model values
-#' @return vector of `length(z)` containing transformed values representing \eqn{p(y | x)}
+#' @return vector of `length(z)` containing transformed values t(z) approximating \eqn{p(y | x)}
 #' @export
 ydist <- function(x, z, model, num = model$niter) {
+  x=xcheck(x)
   xr <- matrix(nrow = length(z), ncol = length(x))
   for (i in 1:nrow(xr)) xr[i, ] <- x
   h <- predmod(xr, z, model, num)
@@ -1834,7 +1770,7 @@ bootcri <-
     invisible(list(stds = stds, bcri = bcri))
   }
 
-#' Show graphical terminal node summaries
+#' Produce lack-of-fit curve for a contrast tree
 #'
 #' @param x training input predictor data matrix or data frame in same format as in contrast()
 #' @param y vector, or matrix containing training data input outcome values or censoring intervals for each observation in same format as in contrast()
