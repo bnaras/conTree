@@ -1,20 +1,4 @@
----
-title: "Contrast and Boosted Trees"
-author: "Jerome Friedman"
-date: '`r Sys.Date()`'
-output:
-  html_document:
-  fig_caption: yes
-  theme: cerulean
-  toc: yes
-  toc_depth: 2
-vignette: >
-  %\VignetteIndexEntry{contree}
-  %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
----
-
-```{r echo=FALSE}
+## ----echo=FALSE---------------------------------------------------------------
 knitr::opts_chunk$set(
     message = FALSE,
     warning = FALSE,
@@ -92,12 +76,8 @@ lmpred <- function(x, lmm) {
 
 library("randomForest")
 
-```
 
-## Contrast demo
-
-
-```{r}
+## -----------------------------------------------------------------------------
 library(contree)
 
 ## generate training and test data sets
@@ -144,9 +124,9 @@ nodesum(e$x, e$y, erf, treerf)
 nodeplots(e$x, e$y, erf, treerf)
 
 ##
-# x-region definitions for all terminal nodes
+# x-region definitions for top three nodes
 #
-treesum(treerf)
+treesum(treerf, 3)
 #
 # contrast y with LM predictions on test data
 #
@@ -176,9 +156,8 @@ ecb <- predtrast(e$x, z0, mdl)
 # CB average absolute error from truth (e$f) on test data
 #
 mean(abs(e$f - ecb))
-```
 
-```{r}
+## -----------------------------------------------------------------------------
 #
 # compare model lack-of-fit curves
 # LM=black, RF=red, CB=blue, truth=green
@@ -205,11 +184,8 @@ nodeplots(e$x, e$y, z, tree)
 # distribution boosting
 # estimate full p(y | x) starting with p(z | x) = N(0,1)
 #
-```
 
-## Now things work, if I use your fortran flags
-
-```{r}
+## -----------------------------------------------------------------------------
 
 mdld <- modtrast(d$x, d$y, z, niter = 200)
 #
@@ -226,13 +202,11 @@ tg <- predtrast(e$x, z, mdld)
 tree <- contrast(e$x, e$y, tg)
 
 nodesum(e$x, e$y, tg, tree)
-```
 
-```{r}
+## -----------------------------------------------------------------------------
 nodeplots(e$x, e$y, tg, tree)
-```
 
-```{r}
+## -----------------------------------------------------------------------------
 #
 # compute predicted p(g(z)|x)(black)and compare with
 # true p(y|x)(red)for first nine test set observations
@@ -246,11 +220,7 @@ for (k in kk:(kk + 8)) {
   plot(t, p, type = "l", xlim = c(-5, 5))
   lines(t, 1 / (1 + exp((e$f[k] - t) / e$s[k])), col = "red")
 }
-```
 
-## Session Info
-
-
-```{r}
+## -----------------------------------------------------------------------------
 sessionInfo()
-```
+

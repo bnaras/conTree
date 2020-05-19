@@ -2,7 +2,7 @@
 % Please edit documentation in R/contrast.R
 \name{ydist}
 \alias{ydist}
-\title{Transform z-values t(z) such that the distribution of \eqn{p(t(z) | x)} approximates \eqn{p(t(y | x)} for type = 'dist' only}
+\title{Generate sample from estimated \eqn{p(y | x)} for type = 'dist' only}
 \usage{
 ydist(x, z, model, num = model$niter)
 }
@@ -16,8 +16,8 @@ ydist(x, z, model, num = model$niter)
 \item{num}{number of trees used to compute model values}
 }
 \value{
-vector of \code{length(z)} containing transformed values t(z) approximating \eqn{p(y | x)}
+vector of \code{length(z)} containing transformed values representing \eqn{p(y | x)}
 }
 \description{
-Transform z-values t(z) such that the distribution of \eqn{p(t(z) | x)} approximates \eqn{p(t(y | x)} for type = 'dist' only
+Generate sample from estimated \eqn{p(y | x)} for type = 'dist' only
 }

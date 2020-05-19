@@ -3,7 +3,7 @@
 \name{nodesum}
 \alias{nodesum}
 \alias{nodeplots}
-\title{Summarize contrast tree}
+\title{Show all possible pruned subtrees}
 \usage{
 nodesum(x, y, z, tree, w = rep(1, nrow(x)), doplot = FALSE)
 
@@ -53,7 +53,7 @@ a named list of four items:
 }
 }
 \description{
-Summarize contrast tree
+Show all possible pruned subtrees
 
 Show graphical terminal node summaries
 }

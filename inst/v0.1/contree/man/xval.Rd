@@ -2,7 +2,7 @@
 % Please edit documentation in R/contrast.R
 \name{xval}
 \alias{xval}
-\title{Cross-validate boosted contrast tree boosted with (new) data}
+\title{Cross-validate boosted contrast tree boosted with new data}
 \usage{
 xval(
   x,
@@ -13,17 +13,16 @@ xval(
   del = 10,
   span = 0.15,
   ylab = "Average  Discrepancy",
-  doplot = "first",
-  doprint = TRUE,
-  col = "red"
+  doplot = TRUE,
+  doprint = TRUE
 )
 }
 \arguments{
-\item{x}{data predictor variables is same format as input to modtrast}
+\item{x}{new data predictor variables is same format as input to modtrast}
 
-\item{y}{data y values is same format as input to modtrast}
+\item{y}{new data y values is same format as input to modtrast}
 
-\item{z}{data z values is same format as input to modtrast}
+\item{z}{new data z values is same format as input to modtrast}
 
 \item{mdl}{model output from modtrast()}
 
@@ -33,17 +32,15 @@ xval(
 
 \item{span}{running median smoother span (\code{doplot=TRUE}, only)}
 
-\item{ylab}{graphical parameter (`doplot="first", only)}
+\item{ylab}{graphical parameter (\code{doplot=TRUE}, only)}
 
-\item{doplot}{logical flag. doplot="first" implies start new display. doplot="next" implies super impose plot on existing display. doplot="none" implies no plot displayed.}
+\item{doplot}{logical flag \code{TRUE/FALSE} implies do/don't show plot}
 
 \item{doprint}{logical flag \code{TRUE/FALSE} implies do/don't print progress while executing}
-
-\item{col}{color of plotted curve}
 }
 \value{
 a named list of two items: \code{ntree} the iteration numbers, and \code{error} the corresponding discrepancy values
 }
 \description{
-Cross-validate boosted contrast tree boosted with (new) data
+Cross-validate boosted contrast tree boosted with new data
 }

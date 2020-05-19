@@ -4,12 +4,12 @@
 \alias{treesum}
 \title{Print terminal node x-region boundaries}
 \usage{
-treesum(tree, nodes = NULL)
+treesum(tree, n = 0)
 }
 \arguments{
 \item{tree}{model object output from contrast() or prune()}
 
-\item{nodes}{vector of terminal node identifiers for the tree specifying the desired regions. The default is all terminal nodes.}
+\item{n}{the number of nodes displayed in order of criterion value (n=0 displays all terminal nodes)}
 }
 \description{
 Print terminal node x-region boundaries

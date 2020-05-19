@@ -4,7 +4,7 @@
 \alias{contrast}
 \alias{modtrast}
 \alias{bootcri}
-\title{Build contrast tree}
+\title{Find eqn{x}-regions in predictor space so that \eqn{p(y | x) != p(z | x)}}
 \usage{
 contrast(
   x,
@@ -57,7 +57,7 @@ modtrast(
   fsamp = 1,
   doprint = FALSE,
   niter = 100,
-  doplot = FALSE,
+  doplot = TRUE,
   span = 0,
   plot.span = 0.15,
   print.itr = 10
@@ -197,7 +197,7 @@ a contrast model object to be used with predtrast()
 a named list with \code{out$bcri} the bootstraped discrepancy values
 }
 \description{
-Build contrast tree
+Find eqn{x}-regions in predictor space so that \eqn{p(y | x) != p(z | x)}
 
 Build boosted contrast tree model
 

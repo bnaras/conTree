@@ -2,7 +2,7 @@
 % Please edit documentation in R/contrast.R
 \name{lofcurve}
 \alias{lofcurve}
-\title{Produce lack-of-fit curve for a contrast tree}
+\title{Show graphical terminal node summaries}
 \usage{
 lofcurve(x, y, z, tree, w = rep(1, length(y)), doplot = TRUE, ylim = NULL)
 }
@@ -25,5 +25,5 @@ lofcurve(x, y, z, tree, w = rep(1, length(y)), doplot = TRUE, ylim = NULL)
 a named list of plotted \code{x} and \code{y} points
 }
 \description{
-Produce lack-of-fit curve for a contrast tree
+Show graphical terminal node summaries
 }

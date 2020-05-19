@@ -144,9 +144,9 @@ nodesum(e$x, e$y, erf, treerf)
 nodeplots(e$x, e$y, erf, treerf)
 
 ##
-# x-region definitions for all terminal nodes
+# x-region definitions for top three nodes
 #
-treesum(treerf)
+treesum(treerf, 3)
 #
 # contrast y with LM predictions on test data
 #
