@@ -559,7 +559,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       call andarm10(n,y,z,w,dst,sw)                                     
       goto 10941                                                        
 11041 if(kri .ne. 11)goto 11051                                         
-      call andarm11(n,y,z,w,dst,sw)                                     
+      call andarm11(dst,sw)                                     
       goto 10941                                                        
 11051 if(kri .ne. 12)goto 11061                                         
       call andarm12(n,y,z,w,dst,sw)                                     
@@ -587,7 +587,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       irg=kri                                                           
       return                                                            
       end                                                               
-      subroutine andarm11(n,y,z,w,dst,sw)                               
+      subroutine andarm11(dst,sw)                               
       implicit double precision(a-h,o-z)                                
       dst=0.0                                                           
       sw=dst                                                            
@@ -796,8 +796,8 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       sw=sum(w)                                                         
       return                                                            
 11501 continue                                                          
-      call classin(2,idum,dum,nclass,out)                               
       allocate(costs(1:nclass,1:nclass),stat=jerr);                     
+      call classin(2,idum,costs,nclass,out)                               
       call reorg(2,nclass,out,costs)                                    
       dst=0.0                                                           
 11510 do 11511 i=1,n                                                    
@@ -919,7 +919,8 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       i=mod(i*16807.0,2147483647.0)                                     
       u=i                                                               
       u=u*.465661287d-9                                                 
-    1 x(j)=u                                                            
+      x(j)=u
+ 1    continue
       return                                                            
       entry stget (irg)                                                 
       irg=i                                                             
@@ -1198,7 +1199,8 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       kc2(j)=nt                                                         
 12031 continue                                                          
 12032 continue                                                          
-      if(ivrb.gt.0) write(6,'(''CDF iterations'',$)')                   
+      if(ivrb.gt.0) call labelpr('CDF iterations', -1)
+c     if(ivrb.gt.0) write(6,'(''CDF iterations'',$)')                   
 12050 do 12051 it=1,nit                                                 
       jt=it                                                             
       ps=p                                                              
@@ -1233,8 +1235,9 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       err=7777.0                                                        
       return                                                            
 12141 continue                                                          
-      if(err.lt.thr)goto 12052                                          
-      if(ivrb.gt.0) write(6,'(''.'',$)')                                
+      if(err.lt.thr)goto 12052
+      call labelpr('.', 1)
+c     if(ivrb.gt.0) write(6,'(''.'',$)')                                
 12051 continue                                                          
 12052 continue                                                          
       cdf(1)=p(1)                                                       
@@ -1243,8 +1246,9 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
 12151 continue                                                          
 12152 continue                                                          
       if(ivrb .le. 0)goto 12171                                         
-      write(6,12180)err                                                 
-12180 format (g10.2)                                                    
+      call dblepr1('Err = ', -1, err)
+c$$$  write(6,12180)err                                                 
+c$$$12180 format (g10.2)                                                    
 12171 continue                                                          
       return                                                            
       end                                                               

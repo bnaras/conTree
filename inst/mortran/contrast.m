@@ -424,7 +424,7 @@ elseif kri.eq.7 < call andarm7(n,y,z,w,dst,sw);>
 elseif kri.eq.8 < call andarm8(n,y,z,w,dst,sw);>
 elseif kri.eq.9 < call andarm7(n,y,z,w,dst,sw);>
 elseif kri.eq.10 < call andarm10(n,y,z,w,dst,sw);>
-elseif kri.eq.11 < call andarm11(n,y,z,w,dst,sw);>
+elseif kri.eq.11 < call andarm11(dst,sw);>
 elseif kri.eq.12 < call andarm12(n,y,z,w,dst,sw);>
 elseif kri.eq.13 < call andarm12(n,y,z,w,dst,sw);>
 elseif kri.eq.14 < call andarm14(n,y,z,w,dst,sw);>
@@ -441,7 +441,7 @@ irg=kri;
 return;                                                            
 end;
 %mortran       
-subroutine andarm11(n,y,z,w,dst,sw);
+subroutine andarm11(dst,sw);
 /dst,sw/=0.0; return; end;
 subroutine andarm2(n,y,z,w,dst,sw);
 parameter(nmin=100);
@@ -611,10 +611,11 @@ end;
       return
       entry rget (x,n)
       do 1 j=1,n
-      i=mod(i*16807.0,2147483647.0)
-      u=i
-      u=u*.465661287d-9
-    1 x(j)=u
+        i=mod(i*16807.0,2147483647.0)
+        u=i
+        u=u*.465661287d-9
+        x(j)=u
+ 1    continue
       return
       entry stget (irg)
       irg=i
@@ -766,7 +767,7 @@ nt=0;
    >
    kc2(j)=nt;
 >
-if(ivrb.gt.0) write(6,'(''CDF iterations'',$)');
+if(ivrb.gt.0) labelpr('CDF iterations', -1)
 <it=1,nit; jt=it; ps=p;
    <j=1,m; pij(:,j)=0.0;
       <ii=kc1(j),kc2(j); i=lc(ii);
@@ -785,10 +786,10 @@ if(ivrb.gt.0) write(6,'(''CDF iterations'',$)');
    err=sum(abs(p-ps))/m;
    if kbad(err).gt.0 < err=7777.0; return>
    if(err.lt.thr)  exit;
-   if(ivrb.gt.0) write(6,'(''.'',$)');
+   call labelpr('.', 1)
 >
 cdf(1)=p(1); <j=2,m; cdf(j)=cdf(j-1)+p(j);>
-if ivrb.gt.0 < <w> err; (g10.2);>
+if ivrb.gt.0 < call dblepr1('Err = ', -1, err);>
 return;
 end;
 subroutine set_vrb(irg,jrg);

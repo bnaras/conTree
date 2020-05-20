@@ -147,7 +147,6 @@ contrast <- function(x, y, z, w = rep(1, nrow(x)), cat.vars = NULL, not.used = N
   invisible(trees)
 }
 
-#' @export
 contrastt <- function(x, y, z, w = rep(1, nrow(x)), cat.vars = NULL, not.used = NULL, qint = 10,
                       xmiss = 9.0e35, tree.size = 10, min.node = 500, cri = "max", mode = "onesamp",
                       type = "dist", pwr = 2, qqtrim = 20, quant = 0.5, nclass = NULL, costs = NULL, cdfsamp = 500,
@@ -265,7 +264,6 @@ contrastt <- function(x, y, z, w = rep(1, nrow(x)), cat.vars = NULL, not.used = 
   invisible(list(tree = tree, parms = parms))
 }
 
-#' @export
 getvars <- function(vars, p, lx, names) {
   lv <- length(vars)
   iv <- rep(0, lv)
@@ -298,7 +296,6 @@ getvars <- function(vars, p, lx, names) {
   iv
 }
 
-#' @export
 parchk <- function(ax, x, lx, ux, df) {
   if (x < lx || x > ux) {
     warning(paste("invalid value for", ax, "- default (", df, ") used."))
@@ -309,7 +306,6 @@ parchk <- function(ax, x, lx, ux, df) {
   }
 }
 
-#' @export
 contrast1 <- function(x, y, z, w, lx, qint, xmiss, tree.size, min.node, cri,
                       mode, type, pwr, qqtrim, quant, nclass, costs, cdfsamp, verbose,
                       tree.store, cat.store) {
@@ -395,7 +391,6 @@ contrast1 <- function(x, y, z, w, lx, qint, xmiss, tree.size, min.node, cri,
   ))
 }
 
-#' @export
 xcheck <- function(x, xmiss = 9.0e35) {
   if (is.data.frame(x)) {
     p <- length(x)
@@ -447,7 +442,6 @@ prune <- function(tree, thr = 0.1) {
   invisible(list(tree = tr, parms = tree$parms))
 }
 
-#' @export
 crinode <- function(tree) {
   ## if (!is.loaded("crinode")) {
   ##   stop("dyn.load('contrast.so')   linux\n  dyn.load('contrast.dll') windows")
@@ -534,7 +528,6 @@ getnodes <- function(x, tree) {
   v$nodes
 }
 
-#' @export
 getlims <- function(node, tree) {
   ## if (!is.loaded("getlims")) {
   ##   stop("dyn.load('contrast.so')   linux\n  dyn.load('contrast.dll') windows")
@@ -574,11 +567,11 @@ getlims <- function(node, tree) {
 #' @export
 treesum=function(tree,nodes=NULL){
    q=tree$tree; v=crinode(tree);
-   if(is.null(nodes)) { nodes=v$nodes}   
+   if(is.null(nodes)) { nodes=v$nodes}
    for (k in 1:length(nodes)) {
       cat(paste('node',format(nodes[k],digits=0)))
-      u=getlims(nodes[k],tree)      
-      cat(paste('  var     dir    split'),'\n')      
+      u=getlims(nodes[k],tree)
+      cat(paste('  var     dir    split'),'\n')
       for (j in 1:u$nvar) {
          if (u$jvar[2,j] == 0) {
             if(sign(u$jvar[1,j])<0) {
@@ -603,9 +596,9 @@ treesum=function(tree,nodes=NULL){
             }
          }
       }
-   }  
+   }
 }
-#' @export
+
 getcri <- function(y, z, tree, w = rep(1, n), cdfsamp = 500) {
   ## if (!is.loaded("andarm")) {
   ##   stop("dyn.load('contrast.so')   linux\n  dyn.load('contrast.dll') windows")
@@ -680,7 +673,6 @@ getcri <- function(y, z, tree, w = rep(1, n), cdfsamp = 500) {
 
 #' @importFrom graphics lines par title
 #' @importFrom stats qqplot
-#' @export
 plotnodes <- function(x, y, z, tree, w = rep(1, nrow(x)), nodes = NULL,
                       pts = "FALSE", xlim = NULL, ylim = NULL) {
   ## if (!is.loaded("fintcdf1")) {
@@ -692,10 +684,10 @@ plotnodes <- function(x, y, z, tree, w = rep(1, nrow(x)), nodes = NULL,
    }
    nplts=length(nodes)
    nd=getnodes(x,tree)
-   if (nplts > 2) { 
+   if (nplts > 2) {
       nr=trunc(sqrt(nplts))
       if(nr*nr==nplts) { nc=nr}
-      else { nr=nr+1; 
+      else { nr=nr+1;
          nc=trunc(nplts/nr); if(nc*nr<nplts) nc=nc+1
       }
    }
@@ -728,8 +720,8 @@ plotnodes <- function(x, y, z, tree, w = rep(1, nrow(x)), nodes = NULL,
    }
    invisible()
 }
+
 #' @importFrom graphics par title
-#' @export
 plotnodes2 <- function(x, y, z, tree, w = rep(1, nrow(x)), nodes = NULL,
                        pts = "FALSE", xlim = NULL, ylim = NULL) {
   ## if (!is.loaded("fintcdf1")) {
@@ -788,7 +780,6 @@ plotnodes2 <- function(x, y, z, tree, w = rep(1, nrow(x)), nodes = NULL,
 }
 
 #' @importFrom graphics lines par title
-#' @export
 plotdiff <- function(x, y, z, tree, w = rep(1, nrow(x)),
                      nodes = NULL, xlim = NULL, ylim = NULL, span = 0.15) {
   ## if (!is.loaded("fintcdf1")) {
@@ -838,7 +829,6 @@ plotdiff <- function(x, y, z, tree, w = rep(1, nrow(x)),
 
 
 #' @importFrom graphics barplot lines
-#' @export
 showclass <- function(x, y, z, tree, w = rep(1, length(y))) {
   opar <- par(mfrow = c(2, 1))
   on.exit(par(opar))
@@ -853,7 +843,6 @@ showclass <- function(x, y, z, tree, w = rep(1, length(y))) {
 
 
 #' @importFrom graphics barplot par
-#' @export
 showprobs <- function(x, y, z, tree, w = rep(1, length(y)), vlab = "Prob ( y = 1 )") {
   x <- xcheck(x)
   opar <- par(mfrow = c(2, 1))
@@ -940,7 +929,6 @@ prune.seq <- function(tree, eps = 0.01, plot.it = TRUE) {
 
 
 #' @importFrom graphics barplot par title
-#' @export
 showquants <- function(x, y, z, tree, w = rep(1, length(y)), quant = 0.5, doplot = TRUE) {
   x <- xcheck(x)
   opar <- par(mfrow = c(2, 1))
@@ -964,7 +952,6 @@ showquants <- function(x, y, z, tree, w = rep(1, length(y)), quant = 0.5, doplot
 }
 
 #' @importFrom graphics plot lines
-#' @export
 diffcdf <- function(x1, cdf1, x2, cdf2, pts = "FALSE", xlab = "y", ylab = "CDF ( y )",
                     xlim = NULL, doplot = TRUE) {
   n1 <- length(x1)
@@ -1006,7 +993,6 @@ diffcdf <- function(x1, cdf1, x2, cdf2, pts = "FALSE", xlab = "y", ylab = "CDF (
   invisible(avediff)
 }
 
-#' @export
 cencdf <- function(yin, win = rep(1, n), nsamp = 2000, nit = 100, thr = 1.0e-2, vrb = 0,
                    xmiss = 9.0e35) {
   oldseed <- .Random.seed
@@ -1035,7 +1021,6 @@ cencdf <- function(yin, win = rep(1, n), nsamp = 2000, nit = 100, thr = 1.0e-2, 
   invisible(list(x = b, y = snt * z + st * v))
 }
 
-#' @export
 fintcdf <- function(y, w = rep(1, n), nit = 100, thr = 1.0e-2, xmiss = 9.0e35, vrb = 0) {
   b <- c(y[, 1], y[, 2])
   b <- b[b > -xmiss]
@@ -1046,7 +1031,8 @@ fintcdf <- function(y, w = rep(1, n), nit = 100, thr = 1.0e-2, xmiss = 9.0e35, v
   yy <- y[y[, 1] < y[, 2], ]
   n <- nrow(yy)  ## Naras addition to remove warning on `n` not being defined in formals!
   vrb0 <- vrb
-  call <- .Fortran("set_vrb", irg = as.integer(vrb))
+  ## Naras added jrg to .Fortran call below as set_vrb expects two args!
+  call <- .Fortran("set_vrb", irg = as.integer(vrb), jrg = 1L)
   z <- .Fortran("fintcdf1",
     ##n = as.integer(nrow(yy)), y = as.vector(as.numeric(yy)),  # Naras change below
     n = n, y = as.vector(as.numeric(yy)),
@@ -1054,7 +1040,8 @@ fintcdf <- function(y, w = rep(1, n), nit = 100, thr = 1.0e-2, xmiss = 9.0e35, v
     nit = as.integer(nit), thr = as.numeric(thr / m), cdf = numeric(m), jt = integer(1),
     err = numeric(1)
   )
-  call <- .Fortran("set_vrb", irg = as.integer(vrb0))
+  ## Naras added jrg to .Fortran call below as set_vrb expects two args!
+  call <- .Fortran("set_vrb", irg = as.integer(vrb0), jrg = 1L)
   if (vrb > 0) {
     cat(
       "CDF calc:", format(z$jt, digits = 3), "steps",
@@ -1066,7 +1053,6 @@ fintcdf <- function(y, w = rep(1, n), nit = 100, thr = 1.0e-2, xmiss = 9.0e35, v
   invisible(list(x = b[v], y = z$cdf[v]))
 }
 
-#' @export
 cdfpoints <- function(x, y, w = rep(1, length(y))) {
   z <- .Fortran("cdfpoints1",
     m = as.integer(length(x)), x = as.vector(as.numeric(x)),
@@ -1076,7 +1062,6 @@ cdfpoints <- function(x, y, w = rep(1, length(y))) {
   invisible(z$cdf)
 }
 
-#' @export
 xfm2 <- function(f, b00, b11, efac = 7, xmiss = 9.0e35) {
   b0 <- c(-xmiss, b00, xmiss)
   b1 <- rep(0, length(b0))
@@ -1240,7 +1225,6 @@ predtrast <- function(x, z, model, num = model$niter) {
 }
 
 #' @importFrom stats quantile
-#' @export
 adjnodes <- function(x, y, z, tree, w = rep(1, length(y)), learn.rate = 1) {
   t <- tree$parms$type
   if (!(t == "diff" | t == "quant" | t == "prob" | t == "maxmean" | t == "diffmean")) {
@@ -1277,7 +1261,6 @@ adjnodes <- function(x, y, z, tree, w = rep(1, length(y)), learn.rate = 1) {
 
 #' @importFrom stats scatter.smooth
 #' @importFrom graphics plot
-#' @export
 cvtrast <- function(x, y, z, model, w = rep(1, length(y)), doplot = TRUE, span = 0.5) {
   zo <- z
   t <- model$trees[[1]]$parms$type == "prob"
@@ -1322,7 +1305,6 @@ cvtrast <- function(x, y, z, model, w = rep(1, length(y)), doplot = TRUE, span =
 
 #' @importFrom graphics plot title lines
 #' @importFrom stats runmed
-#' @export
 medplot <- function(x, y, np = NULL, main = NULL, span = 0.15, lnln = FALSE, xlab = "x",
                     ylab = "y", xlim = c(min(x), max(x)), ylim = c(min(y), max(y)), line = FALSE,
                     col = "red", doplot = TRUE) {
@@ -1361,7 +1343,6 @@ medplot <- function(x, y, np = NULL, main = NULL, span = 0.15, lnln = FALSE, xla
 }
 
 #' @importFrom stats quantile
-#' @export
 quantloss <- function(y, z, quant = 0.5) {
   u <- y > z
   nu <- !u
@@ -1376,7 +1357,6 @@ quantloss <- function(y, z, quant = 0.5) {
   risk / risk0
 }
 
-#' @export
 devexp <- function(y, p) {
   ll <- mean(y * log(p) + (1 - y) * log(1 - p))
   u <- mean(y)
@@ -1385,7 +1365,6 @@ devexp <- function(y, p) {
 }
 
 #' @importFrom graphics plot
-#' @export
 losserr <- function(x, y, p, mdl, doplot = TRUE) {
   parms <- mdl$tree[[1]]$parms
   z <- rep(0, mdl$niter + 1)
@@ -1410,8 +1389,6 @@ losserr <- function(x, y, p, mdl, doplot = TRUE) {
   invisible(z)
 }
 
-#'
-#' @export
 predtrast1 <- function(x, z, model, num = model$niter) {
   zo <- z
   t <- model$trees[[1]]$parms$type == "prob"
@@ -1448,7 +1425,7 @@ predtrast1 <- function(x, z, model, num = model$niter) {
 #' @param doprint logical flag `TRUE/FALSE` implies do/don't print progress while executing
 #' @param col color of plotted curve
 #' @return a named list of two items: `ntree` the iteration numbers, and `error` the corresponding discrepancy values
-
+#' @importFrom graphics points
 #' @export
 xval=function(x,y,z,mdl,num=length(mdl$tree),del=10,span=0.15,
    ylab='Average  Discrepancy',doplot='first',doprint=TRUE,col='red') {
@@ -1465,7 +1442,7 @@ xval=function(x,y,z,mdl,num=length(mdl$tree),del=10,span=0.15,
    }
    if(doprint) cat('\n')
    if(doplot!='none') {
-      if (doplot=='first') 
+      if (doplot=='first')
          plot(ntree[1:k],error[1:k],xlab='Trees',ylab=ylab,ylim=c(0,max(error[1:k])),col=col)
       if (doplot=='next')
          points(ntree[1:k],error[1:k],col=col)
@@ -1476,7 +1453,6 @@ xval=function(x,y,z,mdl,num=length(mdl$tree),del=10,span=0.15,
    invisible(list(x=ntree[1:k],y=error[1:k]))
 }
 
-#' @export
 trans <- function(y, z, wy = rep(1, ny), wz = rep(1, nz), n = min(ny, nz)) {
   ny <- length(y)
   nz <- length(z)
@@ -1490,13 +1466,11 @@ trans <- function(y, z, wy = rep(1, ny), wz = rep(1, nz), n = min(ny, nz)) {
 }
 
 #' @importFrom stats approxfun
-#' @export
 xfm <- function(y, b0, b1) {
   f <- approxfun(b0, b1, rule = 2)
   invisible(f(y))
 }
 
-#' @export
 untie <- function(y) {
   n <- length(y)
   v <- .Fortran("untie", n = as.integer(n), y = as.vector(as.numeric(y)), u = numeric(n))
@@ -1505,7 +1479,6 @@ untie <- function(y) {
 
 #' @importFrom graphics plot lines
 #' @importFrom stats lsfit loess.smooth
-#' @export
 modtrans <-
   function(x, y, z, w = rep(1, nrow(x)), cat.vars = NULL, not.used = NULL, qint = 10,
            xmiss = 9.0e35, tree.size = 10, min.node = 500, learn.rate = 0.1, pwr = 2, cdfsamp = 500, verbose = FALSE,
@@ -1568,7 +1541,6 @@ modtrans <-
   }
 
 #' @importFrom stats approxfun
-#' @export
 predmod <- function(x, z, model, num = model$niter) {
   r <- z
   l <- 0
@@ -1605,7 +1577,6 @@ ydist <- function(x, z, model, num = model$niter) {
   invisible(h)
 }
 
-#' @export
 xvalmod <- function(x, y, z, model, num = model$niter, doplot = TRUE) {
   r <- z
   l <- 0
@@ -1629,7 +1600,6 @@ xvalmod <- function(x, y, z, model, num = model$niter, doplot = TRUE) {
 
 
 #' @importFrom graphics hist
-#' @export
 showdist <- function(v, xtrim = NULL, xlim = NULL, xlab = "Y | X", main = " ") {
   v <- sort(v)
   v <- v[v != v[1] & v != v[length(v)]]
@@ -1641,7 +1611,6 @@ showdist <- function(v, xtrim = NULL, xlim = NULL, xlab = "Y | X", main = " ") {
 
 #' @importFrom graphics plot
 #' @importFrom stats loess.smooth quantile
-#' @export
 plotpdf <- function(x, z, model, num = model$niter, nq = 200, span = 0.25, xlim = NULL, xlab = NULL) {
   p <- ((1:nq) - 0.5) / nq
   q <- as.numeric(quantile(z, p))
@@ -1660,7 +1629,6 @@ plotpdf <- function(x, z, model, num = model$niter, nq = 200, span = 0.25, xlim 
 
 #' @importFrom graphics plot
 #' @importFrom stats loess.smooth quantile
-#' @export
 plotcdf <- function(x, z, model, num = model$niter, nq = 100, span = 0.25, xlim = NULL, xlab = NULL) {
   p <- ((1:nq) - 0.5) / nq
   t <- as.numeric(quantile(ydist(x, z, model, num), p))
@@ -1670,9 +1638,9 @@ plotcdf <- function(x, z, model, num = model$niter, nq = 100, span = 0.25, xlim 
   plot(r$x, r$y, type = "l", xlim = xlim, xlab = xlab, ylab = "CDF")
   invisible()
 }
+
 #' @importFrom graphics plot
 #' @importFrom stats loess.smooth quantile
-#' @export
 plotdist <-
   function(x, z, model, num = model$niter, type = "cdf", nq = 100,
            span = 0.25, pts = 100, xlim = NULL, xlab = NULL, doplot = TRUE) {
@@ -1800,7 +1768,6 @@ lofcurve <- function(x, y, z, tree, w = rep(1, length(y)), doplot = TRUE, ylim =
   invisible(list(x = v$x / length(y), y = v$y))
 }
 
-#' @export
 avesum <-
   function(y, w = rep(1, n)) {
     n <- length(y)
@@ -1817,7 +1784,6 @@ avesum <-
     list(x = wout, y = yout)
   }
 
-#' @export
 extrap <- function(efac, x, x1, x2, y1, y2) {
   if (efac < 0) {
     x <- pmax(x, x1 + efac * (x2 - x1))
