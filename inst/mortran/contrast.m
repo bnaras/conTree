@@ -4,9 +4,10 @@ c                                CONTRAST
 c
 c                  Find x-regions p(y | x) != p(z | x)
 c                     
-c                                (2/24/19)
+c                                (5/21/20)
 c
-c             Coded and copyright (2019) by Jerome H. Friedman.
+c             Coded and copyright (2020) by Jerome H. Friedman.
+c             Modified for R package; search for occurences of: Naras
 c
 c Build tree:
 c
@@ -192,7 +193,9 @@ if(lstor.ne.0) return;
 nodes=3; ntrm=0; if(rtre(2,1).gt.0.0) ntrm=1; ktrg=1; kstor=0;
 until ntrm.ge.mxtrm < jt=itre(1,ktrg); st=rtre(1,ktrg);
    k5=itre(5,ktrg); k6=itre(6,ktrg);
-   if jt.lt.0 < ju=-jt; kp=st+0.1; np=abs(cat(kp))+0.1;>
+"Naras fix: explicit conversion to integer"
+"   if jt.lt.0 < ju=-jt; kp=st+0.1; np=abs(cat(kp))+0.1;>"
+if jt.lt.0 < ju=-jt; kp=int(st+0.1); np=int(abs(cat(kp))+0.1);>
    <j=1,ni; if(ni.gt.1.and.j.eq.jt) next; kl=k5-1; kr=k6+1;
       <i=k5,k6; l=ms(i,j,1);
          if jt.gt.0 <
@@ -262,7 +265,9 @@ until itre(4,k).lt.0 <
    if itre(1,k).gt.0 <
       if x(itre(1,k)).lt.rtre(1,k) < k=itre(2,k);> else < k=itre(3,k);>
    >
-   else < j=-itre(1,k); kp=rtre(1,k)+0.1; in=0; np=abs(cat(kp))+0.1;
+"Naras fix: explicit conversion to integer"
+"   else < j=-itre(1,k); kp=rtre(1,k)+0.1; in=0; np=abs(cat(kp))+0.1;"
+   else < j=-itre(1,k); kp=int(rtre(1,k)+0.1); in=0; np=int(abs(cat(kp))+0.1);
       <i=1,np; if(x(j).ne.cat(kp+i)) next; in=1; exit;>
       if cat(kp).gt.0.0 < if in.eq.0 < k=itre(2,k);> else < k=itre(3,k);>>
       else < if in.ne.0 < k=itre(2,k);> else < k=itre(3,k);>>
@@ -274,6 +279,8 @@ end;
 subroutine dosort(no,ni,x,w,ms,nu,isc);
 integer ms(no,ni,*),isc(no); real x(no,ni),w(no);
 data new /1/;
+"Naras fix: gfortran says isc is unused; so use it benignly."
+isc = isc + 0;
 if new.ne.0 <
    <j=1,ni; <i=1,no; ms(i,j,1)=i;> call psort8(x(1,j),ms(1,j,1),1,no);>
    <j=1,ni; <i=1,no; ms(i,j,2)=ms(i,j,1);> nu=0;
@@ -344,7 +351,9 @@ if nu.lt.m2 <
    crx=max(cri1xs,cri2xs);
    crimx=(crx**pwr)*float(nu-m1+1)*float(m2-nu)/float(m2-m1+1)**2;
 >
-rq=(nu-m1+1); mq=rq/nint; kq=1; crim=-xmiss; cris=-xmiss;
+"Naras fix: explicit conversion to integer"
+"rq=(nu-m1+1); mq=rq/nint; kq=1; crim=-xmiss; cris=-xmiss;"
+rq=(nu-m1+1); mq=int(rq/nint); kq=1; crim=-xmiss; cris=-xmiss;
 <i=nu,m1+1,-1; k=m(i);
    tq=0.5*(x(k)+x(m(i-1)));
    if(tq.le.x(m(i-1))) next; if(tq.ge.x(k)) next;
@@ -424,6 +433,8 @@ elseif kri.eq.7 < call andarm7(n,y,z,w,dst,sw);>
 elseif kri.eq.8 < call andarm8(n,y,z,w,dst,sw);>
 elseif kri.eq.9 < call andarm7(n,y,z,w,dst,sw);>
 elseif kri.eq.10 < call andarm10(n,y,z,w,dst,sw);>
+"Naras fix: andarm11 never uses args n,y,z,w! Orig followed by changed"
+" elseif kri.eq.11 < call andarm11(n,y,z,w,dst,sw);> "
 elseif kri.eq.11 < call andarm11(dst,sw);>
 elseif kri.eq.12 < call andarm12(n,y,z,w,dst,sw);>
 elseif kri.eq.13 < call andarm12(n,y,z,w,dst,sw);>
@@ -534,8 +545,8 @@ sw=sum(w); dst=dot_product(w,y)/sw-dot_product(w,z)/sw;
 return;
 end;
 subroutine andarm4(n,y,z,w,dst,sw);
-parameter(maxclass2=10000,nmin=100);
-real y(n),z(n),w(n),out(maxclass2);
+parameter(maxclass2=10000,nmin=100,idum=2);
+real y(n),z(n),w(n),out(maxclass2),dum(2,2);
 %fortran
       real, dimension (:,:), allocatable :: costs
 %mortran
@@ -546,7 +557,9 @@ call classin(2,idum,dum,nclass,out);
 %mortran
 call reorg(2,nclass,out,costs);
 dst=0.0;
-<i=1,n; ky=y(i)+0.1; kz=z(i)+0.1; 
+"Naras fix: explicit conversion to integer"
+"<i=1,n; ky=y(i)+0.1; kz=z(i)+0.1; "
+<i=1,n; ky=int(y(i)+0.1); kz=int(z(i)+0.1); 
    dst=dst+w(i)*costs(ky,kz);
 >
 sw=sum(w); dst=dst/sw;
@@ -611,11 +624,15 @@ end;
       return
       entry rget (x,n)
       do 1 j=1,n
-        i=mod(i*16807.0,2147483647.0)
-        u=i
-        u=u*.465661287d-9
-        x(j)=u
- 1    continue
+c Naras fix: explicit conversion of nq to integer
+c      i=mod(i*16807.0,2147483647.0)	   
+      i=int(mod(i*16807.0,2147483647.0))
+      u=i
+      u=u*.465661287d-9
+c Naras fix: gcc fortran warns about label for statement in do loop
+c So put label on a separate continue statement
+      x(j) = u
+    1 continue
       return
       entry stget (irg)
       irg=i
@@ -627,9 +644,13 @@ parameter(eps=0.1);
 real y(n,2),z(n),w(n),b(2*n+1),q(3*n),cdf(3*n),r(n);
 integer iq(3*n),mm(3*n),mz(n);
 data nsamp /500/;
+"Naras fix: gfortran warns argument sw is never used, so use it benignly."
+sw = sw + 0;
 n2=2*n; n3=3*n; sw=sum(w);
 <i=1,n; mz(i)=i;> call psort8(z,mz,1,n);
-nq=0.25*n; teps=(z(mz(n-nq))-z(mz(nq)))*eps;
+"Naras fix: explicit conversion of nq to integer"
+"nq=0.25*n; teps=(z(mz(n-nq))-z(mz(nq)))*eps;"
+nq=int(0.25*n); teps=(z(mz(n-nq))-z(mz(nq)))*eps;
 <i=1,n; if(y(i,2)-y(i,1).ge.teps) next;
    y(i,1)=y(i,1)-teps; y(i,2)=y(i,2)+teps;
 >
@@ -670,10 +691,14 @@ entry set_samp(irg);
 nsamp=irg; call set_samp1(nsamp); return;
 end;
 subroutine cendst1(n,y,z,w,nit,thr,xmiss,dst,sw);
+"Naras fix: POSSIBLY WRONG! teps is not defined so add parameter"
+parameter(teps=0.01);
 real y(n,2),z(n),w(n),b(2*n+1),cdf1(3*n),cdf2(3*n),r(n);
 real y1(n,2),y2(n,2),w1(n),w2(n);
 data nsamp /500/;
 /n1,n2/=0.0;
+"Naras fix: gfortran says sw is never used; use it benignly!"
+sw = sw + 0;
 <i=1,n;
    if(y(i,1).le.-xmiss) next; if(y(i,2).ge.xmiss) next;
    if(y(i,2)-y(i,1).ge.teps) next;
@@ -704,8 +729,13 @@ nsamp=irg; return;
 end;
 subroutine getcdf1(n,y,w,nit,thr,xmiss,nsamp,m,b,cdf,sw);
 parameter(teps=0.01);
-real y(n,2),z(n),w(n),b(2*n+1),q(3*n),cdf(3*n),r(n);
-integer iq(3*n),mm(3*n),mz(n);
+"Naras fix: gfortran says z,q,r,iq,mm,mz are never used!"
+"real y(n,2),z(n),w(n),b(2*n+1),q(3*n),cdf(3*n),r(n);"
+real y(n,2),w(n),b(2*n+1),cdf(3*n);
+"integer iq(3*n),mm(3*n),mz(n);"
+"Naras fix: gfortran says xmiss, nsamp is never used; so use it benignly!"
+xmiss = xmiss + 0;
+nsamp = nsamp + 0;
 n2=2*n; sw=sum(w);
 call fintcdf1(n,y,m,b,w,nit,thr/m,cdf,jt,err);
 m=m-1;
@@ -767,7 +797,9 @@ nt=0;
    >
    kc2(j)=nt;
 >
-if(ivrb.gt.0) labelpr('CDF iterations', -1)
+"Naras Fix: R does not allow FORTRAN output; so use R function"
+" if(ivrb.gt.0) write(6,'(''CDF iterations'',$)'); "
+if(ivrb.gt.0) < call labelpr('CDF iterations', -1);>
 <it=1,nit; jt=it; ps=p;
    <j=1,m; pij(:,j)=0.0;
       <ii=kc1(j),kc2(j); i=lc(ii);
@@ -786,9 +818,13 @@ if(ivrb.gt.0) labelpr('CDF iterations', -1)
    err=sum(abs(p-ps))/m;
    if kbad(err).gt.0 < err=7777.0; return>
    if(err.lt.thr)  exit;
-   call labelpr('.', 1)
+"Naras Fix: R does not allow FORTRAN output; so use R function"
+"   if(ivrb.gt.0) write(6,'(''.'',$)');"
+   if(ivrb.gt.0) < call labelpr('.', 1);>
 >
 cdf(1)=p(1); <j=2,m; cdf(j)=cdf(j-1)+p(j);>
+"Naras Fix: R does not allow FORTRAN output; so use R function"
+" if ivrb.gt.0 < <w> err; (g10.2);>"
 if ivrb.gt.0 < call dblepr1('Err = ', -1, err);>
 return;
 end;
@@ -904,7 +940,9 @@ until itre(4,k).lt.0 <
    if itre(1,k).gt.0 <
       if x(itre(1,k)).lt.rtre(1,k) < k=itre(2,k);> else < k=itre(3,k);>
    >
-   else < j=-itre(1,k); kp=rtre(1,k)+0.1; in=0; np=abs(cat(kp))+0.1;
+"Naras fix: explicit conversion to integer"
+"   else < j=-itre(1,k); kp=rtre(1,k)+0.1; in=0; np=abs(cat(kp))+0.1;"
+   else < j=-itre(1,k); kp=int(rtre(1,k)+0.1); in=0; np=int(abs(cat(kp))+0.1);
       <i=1,np; if(x(j).ne.cat(kp+i)) next; in=1; exit;>
       if cat(kp).gt.0.0 < if in.eq.0 < k=itre(2,k);> else < k=itre(3,k);>>
       else < if in.ne.0 < k=itre(2,k);> else < k=itre(3,k);>>
@@ -926,6 +964,8 @@ subroutine getlims(node,ni,itr,rtr,cat,nvar,jvar,vlims,jerr);
 !DEC$ ATTRIBUTES DLLEXPORT :: getlims
 %mortran
 integer itr(6,*),jvar(2,*); real rtr(4,*),cat(*),vlims(*);
+"Naras fix: gfortran says ni is unused; so use it benignly!"
+ni = ni + 0;
 jerr=0; if itr(4,node).ge.0 < jerr=1; return;>
 nvar=0;
 k=node;
@@ -937,7 +977,9 @@ loop < nvar=nvar+1; kpp=abs(itr(4,k));
    >
    else <
       if k.eq.itr(2,kpp) < sgn=-1.0;> else < sgn=1.0;>
-      jvar(1,nvar)=-itr(1,kpp); kp=rtr(1,kpp)+0.1; jvar(2,nvar)=kp;
+"Naras fix: explicit conversion to integer"
+"      jvar(1,nvar)=-itr(1,kpp); kp=rtr(1,kpp)+0.1; jvar(2,nvar)=kp;"
+jvar(1,nvar)=-itr(1,kpp); kp=int(rtr(1,kpp)+0.1); jvar(2,nvar)=kp;
       vlims(nvar)=sgn*abs(cat(kp));
    > 
    k=kpp;
