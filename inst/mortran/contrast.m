@@ -452,6 +452,8 @@ irg=kri;
 return;                                                            
 end;
 %mortran       
+"Naras fix: andarm11 never uses args n,y,z,w! Orig followed by changed"
+" subroutine andarm11(n,y,z,w,dst,sw);"
 subroutine andarm11(dst,sw);
 /dst,sw/=0.0; return; end;
 subroutine andarm2(n,y,z,w,dst,sw);
