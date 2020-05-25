@@ -10,7 +10,7 @@ Description: Contrast trees represent a new approach for assessing the
     assumption free method for estimating the full probability
     distribution of an outcome variable given any set of joint input
     predictor variable values.
-Version: 0.2-1
+Version: 0.2-2
 VignetteBuilder: knitr
 Authors@R: c(person("Jerome", "Friedman", role=c("aut", "cph"),
 	   	   email = "jhf@stat.stanford.edu"),

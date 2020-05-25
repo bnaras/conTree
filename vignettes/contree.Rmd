@@ -43,17 +43,9 @@ lgen <- function(n, f, s, dist) {
   }
   invisible(y)
 }
-
 datgen <- function(p = 10, no = 25000, scl = 0.5, sclf = 0.75, er = 2,
-                   dist = "logistic", smax = 50, mseed = 2, xseed = 32, yseed = 97) {
-    rng_state <- if (exists(".Random.seed", envir = .GlobalEnv)) {
-                     get(x = ".Random.seed", envir=.GlobalEnv)
-                 } else {
-                     NULL
-                 }
-    set.seed(xseed)
+                   dist = "logistic", smax = 50) {
     x <- matrix(rnorm(p * no), ncol = p)
-    set.seed(mseed)
     b <- rnorm(p)
     b <- b / sqrt(sum(b**2))
     z <- er * runif(p)
@@ -73,17 +65,9 @@ datgen <- function(p = 10, no = 25000, scl = 0.5, sclf = 0.75, er = 2,
       s <- s + b[j] * u / v
     }
     s <- pmin(smax, scl * exp(s))
-    set.seed(yseed)
     y <- lgen(no, f, s, dist)
-
-    ## Restore rng state
-    if (is.null(rng_state)) {
-        rm(".Random.seed", envir = .GlobalEnv)
-    } else {
-        assign(x = ".Random.seed", value = rng_state, envir = .GlobalEnv)
-    }
     invisible(list(x = x, y = y, f = f, s = s))
-  }
+}
 
 ## predictions
 lmpred <- function(x, lmm) {
@@ -102,8 +86,9 @@ library(contree)
 
 ## generate training and test data sets
 ## n=25000, p=10, heteroskedastic logistic error
+set.seed(12345)
 d <- datgen()
-e <- datgen(xseed = 17, yseed = 31)
+e <- datgen()
 
 ## fit random forest (RF) model on training data
 rf <- randomForest::randomForest(d$x, d$y)

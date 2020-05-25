@@ -43,7 +43,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       if(rtre(2,1).gt.0.0) ntrm=1                                       
       ktrg=1                                                            
       kstor=0                                                           
-10050 continue                                                          
+      continue                                                          
 10051 if(ntrm.ge.mxtrm)goto 10052                                       
       jt=itre(1,ktrg)                                                   
       st=rtre(1,ktrg)                                                   
@@ -51,14 +51,14 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       k6=itre(6,ktrg)                                                   
       if(jt .ge. 0)goto 10071                                           
       ju=-jt                                                            
-      kp=st+0.1                                                         
-      np=abs(cat(kp))+0.1                                               
+      kp=int(st+0.1)                                                    
+      np=int(abs(cat(kp))+0.1)                                          
 10071 continue                                                          
-10080 do 10081 j=1,ni                                                   
+      do 10081 j=1,ni                                                   
       if(ni.gt.1.and.j.eq.jt)goto 10081                                 
       kl=k5-1                                                           
       kr=k6+1                                                           
-10090 do 10091 i=k5,k6                                                  
+      do 10091 i=k5,k6                                                  
       l=ms(i,j,1)                                                       
       if(jt .le. 0)goto 10111                                           
       if(x(l,jt) .ge. st)goto 10131                                     
@@ -69,11 +69,11 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       kr=kr-1                                                           
       isc(kr)=l                                                         
 10141 continue                                                          
-10121 continue                                                          
+      continue                                                          
       goto 10151                                                        
 10111 continue                                                          
       in=0                                                              
-10160 do 10161 im=1,np                                                  
+      do 10161 im=1,np                                                  
       if(x(l,ju).ne.cat(kp+im))goto 10161                               
       in=1                                                              
       goto 10162                                                        
@@ -88,7 +88,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       kr=kr-1                                                           
       isc(kr)=l                                                         
 10211 continue                                                          
-10191 continue                                                          
+      continue                                                          
       goto 10221                                                        
 10181 continue                                                          
       if(in .eq. 0)goto 10241                                           
@@ -99,23 +99,23 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       kr=kr-1                                                           
       isc(kr)=l                                                         
 10251 continue                                                          
-10231 continue                                                          
+      continue                                                          
 10221 continue                                                          
-10171 continue                                                          
+      continue                                                          
 10151 continue                                                          
-10101 continue                                                          
+      continue                                                          
 10091 continue                                                          
-10092 continue                                                          
-10260 do 10261 i=k5,kl                                                  
+      continue                                                          
+      do 10261 i=k5,kl                                                  
       ms(i,j,1)=isc(i)                                                  
 10261 continue                                                          
-10262 continue                                                          
-10270 do 10271 i=kr,k6                                                  
+      continue                                                          
+      do 10271 i=kr,k6                                                  
       ms(i,j,1)=isc(k6-i+kr)                                            
 10271 continue                                                          
-10272 continue                                                          
+      continue                                                          
 10081 continue                                                          
-10082 continue                                                          
+      continue                                                          
       itre(5,itre(2,ktrg))=k5                                           
       itre(6,itre(2,ktrg))=kl                                           
       itre(5,itre(3,ktrg))=kr                                           
@@ -145,7 +145,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       itre(4,l+1)=itre(4,l)                                             
       rtre(2,nde)=sign(max(0.0,cri-rtre(3,nde)),cri)                    
 10321 continue                                                          
-10301 continue                                                          
+      continue                                                          
       nde=itre(3,ktrg)                                                  
       call split7(no,ni,x,y,y2,z,w,lx,ms,itre(5,nde),itre(6,nde),itre(1,
      *nde),  rtre(1,nde),cri1,cri2,w1,w2,cri,kct,cat(nct))
@@ -173,16 +173,16 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       itre(4,ktrg)=-itre(4,ktrg)                                        
       rsv=rtre(2,ktrg)                                                  
       crix=0.0                                                          
-10380 do 10381 k=1,nodes                                                
+      do 10381 k=1,nodes                                                
       if(itre(4,k).ge.0)goto 10381                                      
       if(abs(rtre(2,k)).le.crix)goto 10381                              
       if(itre(1,k).eq.0)goto 10381                                      
       crix=abs(rtre(2,k))                                               
       ktrg=k                                                            
 10381 continue                                                          
-10382 continue                                                          
+      continue                                                          
 10371 continue                                                          
-10351 continue                                                          
+      continue                                                          
       if(crix.le.0.0.or.kstor.ne.0.or.lstor.ne.0) return                
       nodes=nodes+4                                                     
       if(rsv.gt.0.0) ntrm=ntrm+1                                        
@@ -208,7 +208,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       integer itre(6,*)                                                 
       double precision x(*),rtre(4,*),cat(*)                            
       k=1                                                               
-10390 continue                                                          
+      continue                                                          
 10391 if(itre(4,k).lt.0)goto 10392                                      
       if(itre(1,k) .le. 0)goto 10411                                    
       if(x(itre(1,k)) .ge. rtre(1,k))goto 10431                         
@@ -217,14 +217,14 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
 10431 continue                                                          
       k=itre(3,k)                                                       
 10441 continue                                                          
-10421 continue                                                          
+      continue                                                          
       goto 10451                                                        
 10411 continue                                                          
       j=-itre(1,k)                                                      
-      kp=rtre(1,k)+0.1                                                  
+      kp=int(rtre(1,k)+0.1)                                             
       in=0                                                              
-      np=abs(cat(kp))+0.1                                               
-10460 do 10461 i=1,np                                                   
+      np=int(abs(cat(kp))+0.1)                                          
+      do 10461 i=1,np                                                   
       if(x(j).ne.cat(kp+i))goto 10461                                   
       in=1                                                              
       goto 10462                                                        
@@ -237,7 +237,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
 10501 continue                                                          
       k=itre(3,k)                                                       
 10511 continue                                                          
-10491 continue                                                          
+      continue                                                          
       goto 10521                                                        
 10481 continue                                                          
       if(in .eq. 0)goto 10541                                           
@@ -246,11 +246,11 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
 10541 continue                                                          
       k=itre(3,k)                                                       
 10551 continue                                                          
-10531 continue                                                          
+      continue                                                          
 10521 continue                                                          
-10471 continue                                                          
+      continue                                                          
 10451 continue                                                          
-10401 continue                                                          
+      continue                                                          
       goto 10391                                                        
 10392 continue                                                          
       yh=rtre(3,k)                                                      
@@ -261,41 +261,42 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       integer ms(no,ni,*),isc(no)                                       
       double precision x(no,ni),w(no)                                   
       data new /1/                                                      
+      isc = isc + 0                                                     
       if(new .eq. 0)goto 10571                                          
-10580 do 10581 j=1,ni                                                   
-10590 do 10591 i=1,no                                                   
+      do 10581 j=1,ni                                                   
+      do 10591 i=1,no                                                   
       ms(i,j,1)=i                                                       
 10591 continue                                                          
-10592 continue                                                          
+      continue                                                          
       call psort8(x(1,j),ms(1,j,1),1,no)                                
 10581 continue                                                          
-10582 continue                                                          
-10600 do 10601 j=1,ni                                                   
-10610 do 10611 i=1,no                                                   
+      continue                                                          
+      do 10601 j=1,ni                                                   
+      do 10611 i=1,no                                                   
       ms(i,j,2)=ms(i,j,1)                                               
 10611 continue                                                          
-10612 continue                                                          
+      continue                                                          
       nu=0                                                              
-10620 do 10621 i=1,no                                                   
+      do 10621 i=1,no                                                   
       if(w(ms(i,j,2)).le.0.0)goto 10621                                 
       nu=nu+1                                                           
       ms(nu,j,1)=ms(i,j,2)                                              
 10621 continue                                                          
-10622 continue                                                          
+      continue                                                          
 10601 continue                                                          
-10602 continue                                                          
+      continue                                                          
       return                                                            
 10571 continue                                                          
-10630 do 10631 j=1,ni                                                   
+      do 10631 j=1,ni                                                   
       nu=0                                                              
-10640 do 10641 i=1,no                                                   
+      do 10641 i=1,no                                                   
       if(w(ms(i,j,2)).le.0.0)goto 10641                                 
       nu=nu+1                                                           
       ms(nu,j,1)=ms(i,j,2)                                              
 10641 continue                                                          
-10642 continue                                                          
+      continue                                                          
 10631 continue                                                          
-10632 continue                                                          
+      continue                                                          
       return                                                            
       entry set_new(irg)                                                
       new=irg                                                           
@@ -312,7 +313,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       crm=0.0                                                           
       jt=0                                                              
       if(m2-m1+1.lt.2*ntn) return                                       
-10650 do 10651 j=1,ni                                                   
+      do 10651 j=1,ni                                                   
       if(x(m(m1,j),j).ge.x(m(m2,j),j).or.lx(j).eq.0)goto 10651          
       if(lx(j) .ne. 1)goto 10671                                        
       call eav(x(1,j),y,y2,z,w,m(1,j),m1,m2,ntn,pwr,xmiss,tp,  cril,criu
@@ -340,15 +341,15 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       w2=wu                                                             
       jt=-j                                                             
       kct=lct                                                           
-10730 do 10731 k=1,kct                                                  
+      do 10731 k=1,kct                                                  
       cat(k)=tcat(k)                                                    
 10731 continue                                                          
-10732 continue                                                          
+      continue                                                          
 10721 continue                                                          
 10701 continue                                                          
-10661 continue                                                          
+      continue                                                          
 10651 continue                                                          
-10652 continue                                                          
+      continue                                                          
       if(jt.gt.0) crm=crx                                               
       return                                                            
       entry set_miss(arg)                                               
@@ -377,7 +378,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
 10751 continue                                                          
       nu=m2                                                             
       k=m(nu)                                                           
-10760 continue                                                          
+      continue                                                          
 10761 if(x(k).lt.xmiss)goto 10762                                       
       nu=nu-1                                                           
       k=m(nu)                                                           
@@ -394,11 +395,11 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       crimx=(crx**pwr)*float(nu-m1+1)*float(m2-nu)/float(m2-m1+1)**2    
 10781 continue                                                          
       rq=(nu-m1+1)                                                      
-      mq=rq/nint                                                        
+      mq=int(rq/nint)                                                   
       kq=1                                                              
       crim=-xmiss                                                       
       cris=-xmiss                                                       
-10790 do 10791 i=nu,m1+1,-1                                             
+      do 10791 i=nu,m1+1,-1                                             
       k=m(i)                                                            
       tq=0.5*(x(k)+x(m(i-1)))                                           
       if(tq.le.x(m(i-1)))goto 10791                                     
@@ -416,7 +417,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
 10831 continue                                                          
       cri=abs(cri1-cri2)                                                
 10841 continue                                                          
-10821 continue                                                          
+      continue                                                          
       crit=(cri**pwr)*float(i-m1)*float(nu-i+1)/float(nu-m1+1)**2       
       if(crit.lt.crim)goto 10791                                        
       crim=crit                                                         
@@ -428,7 +429,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       cri2s=cri2                                                        
 10811 continue                                                          
 10791 continue                                                          
-10792 continue                                                          
+      continue                                                          
       cri=cris                                                          
       if(x(m(m2)).lt.xmiss) return                                      
       tp=xmiss                                                          
@@ -460,7 +461,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       fntn=ntn                                                          
       l=0                                                               
       i1=m1                                                             
-10870 do 10871 i=m1,m2-1                                                
+      do 10871 i=m1,m2-1                                                
       k=m(i)                                                            
       if(x(m(i+1)).le.x(k))goto 10871                                   
       l=l+1                                                             
@@ -470,21 +471,21 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
      *i2)),v(l,2),v(l,3))
       i1=i                                                              
 10871 continue                                                          
-10872 continue                                                          
+      continue                                                          
       k=m(m2)                                                           
       l=l+1                                                             
       v(l,1)=x(k)                                                       
       call andarm(m2-i1+1,y(m(i1:m2)),y2(m(i1:m2)),z(m(i1:m2)),w(m(i1:m2
      *)),  v(l,2),v(l,3))
-10880 do 10881 i=1,l                                                    
+      do 10881 i=1,l                                                    
       mt(i)=i                                                           
 10881 continue                                                          
-10882 continue                                                          
+      continue                                                          
       call psort8(v(1:l,2),mt,1,l)                                      
-10890 do 10891 j=1,l                                                    
+      do 10891 j=1,l                                                    
       v(j,2)=v(j,2)*v(j,3)                                              
 10891 continue                                                          
-10892 continue                                                          
+      continue                                                          
       sl=0.0                                                            
       wl=sl                                                             
       cri=wl                                                            
@@ -492,7 +493,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       sr=sum(v(1:l,2))                                                  
       wr=sum(v(1:l,3))                                                  
       kct=0                                                             
-10900 do 10901 i=1,l-1                                                  
+      do 10901 i=1,l-1                                                  
       k=mt(i)                                                           
       sl=sl+v(k,2)                                                      
       sr=sr-v(k,2)                                                      
@@ -509,16 +510,16 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       w2=wr                                                             
       scri=max(cri1,cri2)                                               
 10901 continue                                                          
-10902 continue                                                          
+      continue                                                          
       if(kct .ne. 0)goto 10921                                          
       cri=0.0                                                           
       return                                                            
 10921 continue                                                          
       cat(1)=-kct                                                       
-10930 do 10931 i=1,kct                                                  
+      do 10931 i=1,kct                                                  
       cat(i+1)=v(mt(i),1)                                               
 10931 continue                                                          
-10932 continue                                                          
+      continue                                                          
       cri=scri                                                          
       kct=kct+1                                                         
       return                                                            
@@ -559,7 +560,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       call andarm10(n,y,z,w,dst,sw)                                     
       goto 10941                                                        
 11041 if(kri .ne. 11)goto 11051                                         
-      call andarm11(dst,sw)                                     
+      call andarm11(dst,sw)                                             
       goto 10941                                                        
 11051 if(kri .ne. 12)goto 11061                                         
       call andarm12(n,y,z,w,dst,sw)                                     
@@ -587,7 +588,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       irg=kri                                                           
       return                                                            
       end                                                               
-      subroutine andarm11(dst,sw)                               
+      subroutine andarm11(dst,sw)                                       
       implicit double precision(a-h,o-z)                                
       dst=0.0                                                           
       sw=dst                                                            
@@ -609,23 +610,23 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       sw=dst                                                            
       return                                                            
 11151 continue                                                          
-11160 do 11161 i=1,n                                                    
+      do 11161 i=1,n                                                    
       my(i)=i                                                           
 11161 continue                                                          
-11162 continue                                                          
+      continue                                                          
       call psort8(y,my,1,n)                                             
-11170 do 11171 i=1,n                                                    
+      do 11171 i=1,n                                                    
       mz(i)=i                                                           
 11171 continue                                                          
-11172 continue                                                          
+      continue                                                          
       call psort8(z,mz,1,n)                                             
       dst=0.0                                                           
       sw1=dst                                                           
-11180 do 11181 i=itrm+1,n-itrm                                          
+      do 11181 i=itrm+1,n-itrm                                          
       sw1=sw1+w(my(i))                                                  
       dst=dst+w(my(i))*abs(y(my(i))-z(mz(i)))                           
 11181 continue                                                          
-11182 continue                                                          
+      continue                                                          
       dst=dst/sw1                                                       
       sw=sum(w)                                                         
       return                                                            
@@ -652,7 +653,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       return                                                            
 11221 continue                                                          
       n2=2*n                                                            
-11230 do 11231 i=1,n                                                    
+      do 11231 i=1,n                                                    
       q(i)=y(i)                                                         
       iq(i)=0                                                           
       q(i+n)=z(i)                                                       
@@ -660,17 +661,17 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       w2(i)=w(i)                                                        
       w2(i+n)=w(i)                                                      
 11231 continue                                                          
-11232 continue                                                          
-11240 do 11241 i=1,n2                                                   
+      continue                                                          
+      do 11241 i=1,n2                                                   
       m(i)=i                                                            
 11241 continue                                                          
-11242 continue                                                          
+      continue                                                          
       call psort8(q,m,1,n2)                                             
       sw=0.0                                                            
       tw=sw                                                             
       dst=tw                                                            
       sw2=2.0*sum(w)                                                    
-11250 do 11251 i=1,n2                                                   
+      do 11251 i=1,n2                                                   
       k=m(i)                                                            
       if(iq(k) .ne. 0)goto 11271                                        
       sw=sw+w2(k)                                                       
@@ -678,12 +679,12 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
 11271 continue                                                          
       tw=tw+w2(k)                                                       
 11281 continue                                                          
-11261 continue                                                          
+      continue                                                          
       pw=(sw+tw)*(sw2-sw-tw)                                            
       pw=max(eps,pw)                                                    
       dst=dst+abs(sw-tw)/sqrt(pw)                                       
 11251 continue                                                          
-11252 continue                                                          
+      continue                                                          
       dst=dst/n                                                         
       return                                                            
       end                                                               
@@ -720,7 +721,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       dst2=dst1                                                         
       sw1=dst2                                                          
       sw2=sw1                                                           
-11330 do 11331 i=1,n                                                    
+      do 11331 i=1,n                                                    
       if(z(i) .ge. 0.0)goto 11351                                       
       sw1=sw1+w(i)                                                      
       dst1=dst1+w(i)*y(i)                                               
@@ -729,9 +730,9 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       sw2=sw2+w(i)                                                      
       dst2=dst2+w(i)*y(i)                                               
 11361 continue                                                          
-11341 continue                                                          
+      continue                                                          
 11331 continue                                                          
-11332 continue                                                          
+      continue                                                          
       sw=sum(w)                                                         
       if((n*sw1/sw .ge. fmin) .and. (n*sw2/sw .ge. fmin))goto 11381     
       dst=0.0                                                           
@@ -753,7 +754,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       dst2=dst1                                                         
       sw1=dst2                                                          
       sw2=sw1                                                           
-11410 do 11411 i=1,n                                                    
+      do 11411 i=1,n                                                    
       if(z(i) .ge. 0.0)goto 11431                                       
       sw1=sw1+w(i)                                                      
       dst1=dst1+w(i)*y(i)                                               
@@ -762,9 +763,9 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       sw2=sw2+w(i)                                                      
       dst2=dst2+w(i)*y(i)                                               
 11441 continue                                                          
-11421 continue                                                          
+      continue                                                          
 11411 continue                                                          
-11412 continue                                                          
+      continue                                                          
       sw=sum(w)                                                         
       if((n*sw1/sw .ge. fmin) .and. (n*sw2/sw .ge. fmin))goto 11461     
       dst=sml                                                           
@@ -788,24 +789,24 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       end                                                               
       subroutine andarm4(n,y,z,w,dst,sw)                                
       implicit double precision(a-h,o-z)                                
-      parameter(maxclass2=10000,nmin=100)                               
-      double precision y(n),z(n),w(n),out(maxclass2)                    
+      parameter(maxclass2=10000,nmin=100,idum=2)                        
+      double precision y(n),z(n),w(n),out(maxclass2),dum(2,2)           
       double precision, dimension (:,:), allocatable :: costs           
       if(n .ge. nmin)goto 11501                                         
       dst=0.0                                                           
       sw=sum(w)                                                         
       return                                                            
 11501 continue                                                          
+      call classin(2,idum,dum,nclass,out)                               
       allocate(costs(1:nclass,1:nclass),stat=jerr);                     
-      call classin(2,idum,costs,nclass,out)                               
       call reorg(2,nclass,out,costs)                                    
       dst=0.0                                                           
-11510 do 11511 i=1,n                                                    
-      ky=y(i)+0.1                                                       
-      kz=z(i)+0.1                                                       
+      do 11511 i=1,n                                                    
+      ky=int(y(i)+0.1)                                                  
+      kz=int(z(i)+0.1)                                                  
       dst=dst+w(i)*costs(ky,kz)                                         
 11511 continue                                                          
-11512 continue                                                          
+      continue                                                          
       sw=sum(w)                                                         
       dst=dst/sw                                                        
       return                                                            
@@ -822,10 +823,10 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
 11531 continue                                                          
       sw=sum(w)                                                         
       up=0.0                                                            
-11540 do 11541 i=1,n                                                    
+      do 11541 i=1,n                                                    
       if(y(i).le.z(i)) up=up+w(i)                                       
 11541 continue                                                          
-11542 continue                                                          
+      continue                                                          
       dst=abs(up/sw-qntl)                                               
       return                                                            
       entry set_quant(arg)                                              
@@ -875,7 +876,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
 11601 continue                                                          
       sw1=0.0                                                           
       sw2=sw1                                                           
-11610 do 11611 i=1,n                                                    
+      do 11611 i=1,n                                                    
       m(i)=i                                                            
       if(z(i) .ge. 0.0)goto 11631                                       
       sw1=sw1+w(i)                                                      
@@ -883,15 +884,15 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
 11631 continue                                                          
       sw2=sw2+w(i)                                                      
 11641 continue                                                          
-11621 continue                                                          
+      continue                                                          
 11611 continue                                                          
-11612 continue                                                          
+      continue                                                          
       call psort8(y,m,1,n)                                              
       s1=0.0                                                            
       s2=s1                                                             
       s=s2                                                              
       dst=s                                                             
-11650 do 11651 i=1,n                                                    
+      do 11651 i=1,n                                                    
       k=m(i)                                                            
       s=s+w(k)                                                          
       if(z(k) .ge. 0)goto 11671                                         
@@ -900,12 +901,12 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
 11671 continue                                                          
       s2=s2+w(k)/sw2                                                    
 11681 continue                                                          
-11661 continue                                                          
+      continue                                                          
       pw=s*(sw-s)                                                       
       pw=max(eps,pw)                                                    
       dst=dst+abs(s1-s2)/sqrt(pw)                                       
 11651 continue                                                          
-11652 continue                                                          
+      continue                                                          
       return                                                            
       end                                                               
       subroutine stput (iseed)                                          
@@ -916,11 +917,15 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       return                                                            
       entry rget (x,n)                                                  
       do 1 j=1,n                                                        
-      i=mod(i*16807.0,2147483647.0)                                     
+c Naras fix: explicit conversion of nq to integer                       
+c      i=mod(i*16807.0,2147483647.0)                                    
+      i=int(mod(i*16807.0,2147483647.0))                                
       u=i                                                               
       u=u*.465661287d-9                                                 
-      x(j)=u
- 1    continue
+c Naras fix: gcc fortran warns about label for statement in do loop     
+c So put label on a separate continue statement                         
+      x(j) = u                                                          
+    1 continue                                                          
       return                                                            
       entry stget (irg)                                                 
       irg=i                                                             
@@ -932,42 +937,43 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       double precision y(n,2),z(n),w(n),b(2*n+1),q(3*n),cdf(3*n),r(n)   
       integer iq(3*n),mm(3*n),mz(n)                                     
       data nsamp /500/                                                  
+      sw = sw + 0                                                       
       n2=2*n                                                            
       n3=3*n                                                            
       sw=sum(w)                                                         
-11690 do 11691 i=1,n                                                    
+      do 11691 i=1,n                                                    
       mz(i)=i                                                           
 11691 continue                                                          
-11692 continue                                                          
+      continue                                                          
       call psort8(z,mz,1,n)                                             
-      nq=0.25*n                                                         
+      nq=int(0.25*n)                                                    
       teps=(z(mz(n-nq))-z(mz(nq)))*eps                                  
-11700 do 11701 i=1,n                                                    
+      do 11701 i=1,n                                                    
       if(y(i,2)-y(i,1).ge.teps)goto 11701                               
       y(i,1)=y(i,1)-teps                                                
       y(i,2)=y(i,2)+teps                                                
 11701 continue                                                          
-11702 continue                                                          
-11710 do 11711 i=1,n                                                    
+      continue                                                          
+      do 11711 i=1,n                                                    
       b(i)=y(i,1)                                                       
       b(i+n)=y(i,2)                                                     
 11711 continue                                                          
-11712 continue                                                          
+      continue                                                          
       m=0                                                               
-11720 do 11721 i=1,n2                                                   
+      do 11721 i=1,n2                                                   
       if(b(i).le.-xmiss)goto 11721                                      
       if(b(i).ge.xmiss)goto 11721                                       
       m=m+1                                                             
       b(m)=b(i)                                                         
 11721 continue                                                          
-11722 continue                                                          
+      continue                                                          
       call unique(m,b,nu)                                               
       if(nu .le. nsamp)goto 11741                                       
       call rget(r,nsamp)                                                
-11750 do 11751 i=1,nsamp                                                
+      do 11751 i=1,nsamp                                                
       r(i)=b(int(nu*r(i))+1)                                            
 11751 continue                                                          
-11752 continue                                                          
+      continue                                                          
       nu=nsamp                                                          
       b(1:nu)=r(1:nu)                                                   
       call sort(b,nu)                                                   
@@ -976,28 +982,28 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       b(m)=xmiss                                                        
       call fintcdf1(n,y,m,b,w,nit,thr/m,cdf,jt,err)                     
       m=m-1                                                             
-11760 do 11761 i=1,m                                                    
+      do 11761 i=1,m                                                    
       q(i)=b(i)                                                         
       iq(i)=0                                                           
 11761 continue                                                          
-11762 continue                                                          
-11770 do 11771 i=1,n                                                    
+      continue                                                          
+      do 11771 i=1,n                                                    
       mz(i)=i                                                           
 11771 continue                                                          
-11772 continue                                                          
+      continue                                                          
       call psort8(z,mz,1,n)                                             
       mpn=m+n                                                           
       k=0                                                               
-11780 do 11781 i=m+1,mpn                                                
+      do 11781 i=m+1,mpn                                                
       k=k+1                                                             
       q(i)=z(mz(k))                                                     
       iq(i)=1                                                           
 11781 continue                                                          
-11782 continue                                                          
-11790 do 11791 i=1,mpn                                                  
+      continue                                                          
+      do 11791 i=1,mpn                                                  
       mm(i)=i                                                           
 11791 continue                                                          
-11792 continue                                                          
+      continue                                                          
       call psort8(q,mm,1,mpn)                                           
       ycdf=0.0                                                          
       zcdf=ycdf                                                         
@@ -1005,7 +1011,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       spw=dst                                                           
       ny=0                                                              
       nz=ny                                                             
-11800 do 11801 i=1,mpn                                                  
+      do 11801 i=1,mpn                                                  
       k=mm(i)                                                           
       if(iq(k) .ne. 0)goto 11821                                        
       ny=ny+1                                                           
@@ -1020,9 +1026,9 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       nz=nz+1                                                           
       zcdf=zcdf+w(nz)/sw                                                
 11831 continue                                                          
-11811 continue                                                          
+      continue                                                          
 11801 continue                                                          
-11802 continue                                                          
+      continue                                                          
       dst=dst/spw                                                       
       return                                                            
       entry set_samp(irg)                                               
@@ -1033,21 +1039,23 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       end                                                               
       subroutine cendst1(n,y,z,w,nit,thr,xmiss,dst,sw)                  
       implicit double precision(a-h,o-z)                                
+      parameter(teps=0.01)                                              
       double precision y(n,2),z(n),w(n),b(2*n+1),cdf1(3*n),cdf2(3*n),r(n
      *)
       double precision y1(n,2),y2(n,2),w1(n),w2(n)                      
       data nsamp /500/                                                  
       n1=0.0                                                            
       n2=n1                                                             
-11840 do 11841 i=1,n                                                    
+      sw = sw + 0                                                       
+      do 11841 i=1,n                                                    
       if(y(i,1).le.-xmiss)goto 11841                                    
       if(y(i,2).ge.xmiss)goto 11841                                     
       if(y(i,2)-y(i,1).ge.teps)goto 11841                               
       y(i,1)=y(i,1)-teps                                                
       y(i,2)=y(i,2)+teps                                                
 11841 continue                                                          
-11842 continue                                                          
-11850 do 11851 i=1,n                                                    
+      continue                                                          
+      do 11851 i=1,n                                                    
       if(z(i) .ge. 0.0)goto 11871                                       
       n1=n1+1                                                           
       y1(n1,:)=y(i,:)                                                   
@@ -1058,29 +1066,29 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       y2(n2,:)=y(i,:)                                                   
       w2(n2)=w(i)                                                       
 11881 continue                                                          
-11861 continue                                                          
+      continue                                                          
 11851 continue                                                          
-11852 continue                                                          
-11890 do 11891 i=1,n                                                    
+      continue                                                          
+      do 11891 i=1,n                                                    
       b(i)=y(i,1)                                                       
       b(i+n)=y(i,2)                                                     
 11891 continue                                                          
-11892 continue                                                          
+      continue                                                          
       m=0                                                               
-11900 do 11901 i=1,n2                                                   
+      do 11901 i=1,n2                                                   
       if(b(i).le.-xmiss)goto 11901                                      
       if(b(i).ge.xmiss)goto 11901                                       
       m=m+1                                                             
       b(m)=b(i)                                                         
 11901 continue                                                          
-11902 continue                                                          
+      continue                                                          
       call unique(m,b,nu)                                               
       if(nu .le. nsamp)goto 11921                                       
       call rget(r,nsamp)                                                
-11930 do 11931 i=1,nsamp                                                
+      do 11931 i=1,nsamp                                                
       r(i)=b(int(nu*r(i))+1)                                            
 11931 continue                                                          
-11932 continue                                                          
+      continue                                                          
       nu=nsamp                                                          
       b(1:nu)=r(1:nu)                                                   
       call sort(b,nu)                                                   
@@ -1098,8 +1106,9 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       subroutine getcdf1(n,y,w,nit,thr,xmiss,nsamp,m,b,cdf,sw)          
       implicit double precision(a-h,o-z)                                
       parameter(teps=0.01)                                              
-      double precision y(n,2),z(n),w(n),b(2*n+1),q(3*n),cdf(3*n),r(n)   
-      integer iq(3*n),mm(3*n),mz(n)                                     
+      double precision y(n,2),w(n),b(2*n+1),cdf(3*n)                    
+      xmiss = xmiss + 0                                                 
+      nsamp = nsamp + 0                                                 
       n2=2*n                                                            
       sw=sum(w)                                                         
       call fintcdf1(n,y,m,b,w,nit,thr/m,cdf,jt,err)                     
@@ -1111,10 +1120,10 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       double precision cdf1(m),cdf2(m)                                  
       f12=sqrt(float(m))                                                
       dst=0.0                                                           
-11940 do 11941 i=1,m                                                    
+      do 11941 i=1,m                                                    
       dst=dst+abs(cdf1(i)-cdf2(i))/sqrt(float(i)*float(m-i+1))          
 11941 continue                                                          
-11942 continue                                                          
+      continue                                                          
       dst=f12*dst/m                                                     
       return                                                            
       end                                                               
@@ -1122,19 +1131,19 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       implicit double precision(a-h,o-z)                                
       double precision y(n),yu(n)                                       
       integer m(n)                                                      
-11950 do 11951 i=1,n                                                    
+      do 11951 i=1,n                                                    
       m(i)=i                                                            
 11951 continue                                                          
-11952 continue                                                          
+      continue                                                          
       call psort8(y,m,1,n)                                              
       nu=1                                                              
       yu(1)=y(m(1))                                                     
-11960 do 11961 i=2,n                                                    
+      do 11961 i=2,n                                                    
       if(y(m(i-1)).ge.y(m(i)))goto 11961                                
       nu=nu+1                                                           
       yu(nu)=y(m(i))                                                    
 11961 continue                                                          
-11962 continue                                                          
+      continue                                                          
       y(1:nu)=yu(1:nu)                                                  
       return                                                            
       end                                                               
@@ -1148,15 +1157,15 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       w=w1/sum(w1)                                                      
       p=1.0/m                                                           
       nt=0                                                              
-11970 do 11971 i=1,n                                                    
-11980 do 11981 k=1,m                                                    
+      do 11971 i=1,n                                                    
+      do 11981 k=1,m                                                    
       if(y(i,1).ge.b(k))goto 11981                                      
       if(y(i,2).lt.b(k))goto 11981                                      
       nt=nt+1                                                           
 11981 continue                                                          
-11982 continue                                                          
+      continue                                                          
 11971 continue                                                          
-11972 continue                                                          
+      continue                                                          
       allocate(ic(1:(n+1)),stat=jerr)                                   
       if(jerr.ne.0) return                                              
       allocate(jc(1:nt),stat=jerr)                                      
@@ -1175,91 +1184,91 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
 12001 continue                                                          
       nt=0                                                              
       ic(1)=1                                                           
-12010 do 12011 i=1,n                                                    
-12020 do 12021 k=1,m                                                    
+      do 12011 i=1,n                                                    
+      do 12021 k=1,m                                                    
       if(y(i,1).ge.b(k))goto 12021                                      
       if(y(i,2).lt.b(k))goto 12021                                      
       nt=nt+1                                                           
       jc(nt)=k                                                          
 12021 continue                                                          
-12022 continue                                                          
+      continue                                                          
       ic(i+1)=nt+1                                                      
 12011 continue                                                          
-12012 continue                                                          
+      continue                                                          
       nt=0                                                              
-12030 do 12031 j=1,m                                                    
+      do 12031 j=1,m                                                    
       kc1(j)=nt+1                                                       
-12040 do 12041 i=1,n                                                    
+      do 12041 i=1,n                                                    
       if(y(i,1).ge.b(j))goto 12041                                      
       if(y(i,2).lt.b(j))goto 12041                                      
       nt=nt+1                                                           
       lc(nt)=i                                                          
 12041 continue                                                          
-12042 continue                                                          
+      continue                                                          
       kc2(j)=nt                                                         
 12031 continue                                                          
-12032 continue                                                          
-      if(ivrb.gt.0) call labelpr('CDF iterations', -1)
-c     if(ivrb.gt.0) write(6,'(''CDF iterations'',$)')                   
-12050 do 12051 it=1,nit                                                 
+      continue                                                          
+      if(ivrb .le. 0)goto 12061                                         
+      call labelpr('CDF iterations', -1)                                
+12061 continue                                                          
+      do 12071 it=1,nit                                                 
       jt=it                                                             
       ps=p                                                              
-12060 do 12061 j=1,m                                                    
+      do 12081 j=1,m                                                    
       pij(:,j)=0.0                                                      
-12070 do 12071 ii=kc1(j),kc2(j)                                         
+      do 12091 ii=kc1(j),kc2(j)                                         
       i=lc(ii)                                                          
       s=sum(p(jc(ic(i):(ic(i+1)-1))))                                   
-      if(s .gt. 0.0)goto 12091                                          
+      if(s .gt. 0.0)goto 12111                                          
       err=-7777.0                                                       
       return                                                            
-12091 continue                                                          
+12111 continue                                                          
       pij(i,j)=w(i)*p(j)/s                                              
-12071 continue                                                          
-12072 continue                                                          
+12091 continue                                                          
+      continue                                                          
       p(j)=sum(pij(:,j))                                                
-12061 continue                                                          
-12062 continue                                                          
-      if(m .le. 100)goto 12111                                          
+12081 continue                                                          
+      continue                                                          
+      if(m .le. 100)goto 12131                                          
       smo(1)=(2.0*p(1)+p(2))/3.0                                        
       smo(m)=(2.0*p(m)+p(m-1))/3.0                                      
       smo(2)=0.25*(p(1)+2.0*p(2)+p(3))                                  
       smo(m-1)=0.25*(p(m)+2.0*p(m-1)+p(m-2))                            
-12120 do 12121 j=3,m-2                                                  
+      do 12141 j=3,m-2                                                  
       smo(j)=(p(j-2)+2.0*p(j-1)+3.0*p(j)+2.0*p(j+1)+p(j+2))/9.0         
-12121 continue                                                          
-12122 continue                                                          
+12141 continue                                                          
+      continue                                                          
       p=smo                                                             
-12111 continue                                                          
+12131 continue                                                          
       err=sum(abs(p-ps))/m                                              
-      if(kbad(err) .le. 0)goto 12141                                    
+      if(kbad(err) .le. 0)goto 12161                                    
       err=7777.0                                                        
       return                                                            
-12141 continue                                                          
-      if(err.lt.thr)goto 12052
-      call labelpr('.', 1)
-c     if(ivrb.gt.0) write(6,'(''.'',$)')                                
-12051 continue                                                          
-12052 continue                                                          
+12161 continue                                                          
+      if(err.lt.thr)goto 12072                                          
+      if(ivrb .le. 0)goto 12181                                         
+      call labelpr('.', 1)                                              
+12181 continue                                                          
+12071 continue                                                          
+12072 continue                                                          
       cdf(1)=p(1)                                                       
-12150 do 12151 j=2,m                                                    
+      do 12191 j=2,m                                                    
       cdf(j)=cdf(j-1)+p(j)                                              
-12151 continue                                                          
-12152 continue                                                          
-      if(ivrb .le. 0)goto 12171                                         
-      call dblepr1('Err = ', -1, err)
-c$$$  write(6,12180)err                                                 
-c$$$12180 format (g10.2)                                                    
-12171 continue                                                          
+12191 continue                                                          
+      continue                                                          
+      if(ivrb .le. 0)goto 12211                                         
+      call dblepr1('Err = ', -1, err)                                   
+12211 continue                                                          
       return                                                            
       end                                                               
       subroutine set_vrb(irg,jrg)                                       
       implicit double precision(a-h,o-z)                                
 !DEC$ ATTRIBUTES DLLEXPORT :: set_vrb                                   
       save ivrb                                                         
-      if(jrg .ne. 1)goto 12201                                          
+      if(jrg .ne. 1)goto 12231                                          
       ivrb=irg                                                          
       return                                                            
-12201 continue                                                          
+12231 continue                                                          
       irg=ivrb                                                          
       return                                                            
       end                                                               
@@ -1270,29 +1279,29 @@ c$$$12180 format (g10.2)
       i=1                                                               
       j=0                                                               
       sw=0.0                                                            
-12210 continue                                                          
-12211 continue                                                          
+      continue                                                          
+12241 continue                                                          
       j=j+1                                                             
-      if(j.gt.m) go to 12220                                            
-12230 continue                                                          
-12231 if(y(i).gt.x(j))goto 12232                                        
+      if(j.gt.m) go to 12250                                            
+      continue                                                          
+12261 if(y(i).gt.x(j))goto 12262                                        
       sw=sw+w(i)                                                        
       i=i+1                                                             
-      if(i.gt.n)goto 12232                                              
-      goto 12231                                                        
-12232 continue                                                          
-      if(i .le. n)goto 12251                                            
-12260 do 12261 k=j,m                                                    
-      cdf(k)=sw                                                         
-12261 continue                                                          
+      if(i.gt.n)goto 12262                                              
+      goto 12261                                                        
 12262 continue                                                          
-      go to 12270                                                       
-12251 continue                                                          
+      if(i .le. n)goto 12281                                            
+      do 12291 k=j,m                                                    
+      cdf(k)=sw                                                         
+12291 continue                                                          
+      continue                                                          
+      go to 12300                                                       
+12281 continue                                                          
       cdf(j)=sw                                                         
-      goto 12211                                                        
-12212 continue                                                          
-12270 continue                                                          
-12220 continue                                                          
+      goto 12241                                                        
+      continue                                                          
+12300 continue                                                          
+12250 continue                                                          
       cdf=cdf/sum(w)                                                    
       return                                                            
       end                                                               
@@ -1300,16 +1309,16 @@ c$$$12180 format (g10.2)
       implicit double precision(a-h,o-z)                                
       double precision x(n),z(n)                                        
       integer m(n)                                                      
-12280 do 12281 i=1,n                                                    
+      do 12311 i=1,n                                                    
       m(i)=i                                                            
-12281 continue                                                          
-12282 continue                                                          
+12311 continue                                                          
+      continue                                                          
       z=x                                                               
       call psort8(z,m,1,n)                                              
-12290 do 12291 i=1,n                                                    
+      do 12321 i=1,n                                                    
       x(i)=z(m(i))                                                      
-12291 continue                                                          
-12292 continue                                                          
+12321 continue                                                          
+      continue                                                          
       return                                                            
       end                                                               
       function kbad(u)                                                  
@@ -1327,44 +1336,44 @@ c$$$12180 format (g10.2)
       nq=nclasssv*nclasssv                                              
       allocate(costs(1:nq),stat=jerr)                                   
       if(jerr.ne.0) return                                              
-      if(ient .ne. 1)goto 12311                                         
+      if(ient .ne. 1)goto 12341                                         
       nclass=nclasssv                                                   
       call reorg(1,nclass,costs,costssv)                                
       nout=1                                                            
       out=1.0                                                           
-      goto 12321                                                        
-12311 continue                                                          
+      goto 12351                                                        
+12341 continue                                                          
       nout=nclass                                                       
       call reorg(2,nclass,costs,out)                                    
-12321 continue                                                          
-12301 continue                                                          
+12351 continue                                                          
+      continue                                                          
       return                                                            
       end                                                               
       subroutine reorg(ient,n,a,b)                                      
       implicit double precision(a-h,o-z)                                
       double precision a(n*n),b(n,n)                                    
       i=0                                                               
-      if(ient .ne. 2)goto 12341                                         
-12350 do 12351 k=1,n                                                    
-12360 do 12361 j=1,n                                                    
+      if(ient .ne. 2)goto 12371                                         
+      do 12381 k=1,n                                                    
+      do 12391 j=1,n                                                    
       i=i+1                                                             
       b(j,k)=a(i)                                                       
-12361 continue                                                          
-12362 continue                                                          
-12351 continue                                                          
-12352 continue                                                          
-      goto 12371                                                        
-12341 continue                                                          
-12380 do 12381 k=1,n                                                    
-12390 do 12391 j=1,n                                                    
+12391 continue                                                          
+      continue                                                          
+12381 continue                                                          
+      continue                                                          
+      goto 12401                                                        
+12371 continue                                                          
+      do 12411 k=1,n                                                    
+      do 12421 j=1,n                                                    
       i=i+1                                                             
       a(i)=b(j,k)                                                       
-12391 continue                                                          
-12392 continue                                                          
-12381 continue                                                          
-12382 continue                                                          
-12371 continue                                                          
-12331 continue                                                          
+12421 continue                                                          
+      continue                                                          
+12411 continue                                                          
+      continue                                                          
+12401 continue                                                          
+      continue                                                          
       return                                                            
       end                                                               
       subroutine crinode (itr,rtr,mxnodes,node,nodes,cri,wt)            
@@ -1374,12 +1383,12 @@ c$$$12180 format (g10.2)
       double precision rtr(4,*),cri(mxnodes),wt(mxnodes),sc(mxnodes,2)  
       node=0                                                            
       k=itr(2,1)                                                        
-12400 continue                                                          
-12401 continue                                                          
-      if(itr(4,k) .lt. 0)goto 12421                                     
+      continue                                                          
+12431 continue                                                          
+      if(itr(4,k) .lt. 0)goto 12451                                     
       k=itr(2,k)                                                        
-      goto 12401                                                        
-12421 continue                                                          
+      goto 12431                                                        
+12451 continue                                                          
       i1=itr(5,k)                                                       
       i2=itr(6,k)                                                       
       node=node+1                                                       
@@ -1387,33 +1396,33 @@ c$$$12180 format (g10.2)
       nodes(node)=k                                                     
       cri(node)=rtr(3,k)                                                
       wt(node)=rtr(4,k)                                                 
-12430 continue                                                          
-12431 if(k.eq.itr(2,iabs(itr(4,k))))goto 12432                          
+      continue                                                          
+12461 if(k.eq.itr(2,iabs(itr(4,k))))goto 12462                          
       k=iabs(itr(4,k))                                                  
+      if(k.eq.1)goto 12462                                              
+      goto 12461                                                        
+12462 continue                                                          
       if(k.eq.1)goto 12432                                              
+      k=itr(3,iabs(itr(4,k)))                                           
       goto 12431                                                        
 12432 continue                                                          
-      if(k.eq.1)goto 12402                                              
-      k=itr(3,iabs(itr(4,k)))                                           
-      goto 12401                                                        
-12402 continue                                                          
-12440 do 12441 k=1,node                                                 
+      do 12471 k=1,node                                                 
       m(k)=k                                                            
-12441 continue                                                          
-12442 continue                                                          
+12471 continue                                                          
+      continue                                                          
       call psort8(-cri,m,1,node)                                        
-12450 do 12451 i=1,node                                                 
+      do 12481 i=1,node                                                 
       ic(i)=nodes(m(i))                                                 
       sc(i,1)=cri(m(i))                                                 
       sc(i,2)=wt(m(i))                                                  
-12451 continue                                                          
-12452 continue                                                          
-12460 do 12461 i=1,node                                                 
+12481 continue                                                          
+      continue                                                          
+      do 12491 i=1,node                                                 
       nodes(i)=ic(i)                                                    
       cri(i)=sc(i,1)                                                    
       wt(i)=sc(i,2)                                                     
-12461 continue                                                          
-12462 continue                                                          
+12491 continue                                                          
+      continue                                                          
       return                                                            
       end                                                               
       subroutine prune1 (itr,rtr,nodes,thr,itro,rtro)                   
@@ -1432,23 +1441,23 @@ c$$$12180 format (g10.2)
       implicit double precision(a-h,o-z)                                
       integer itr(6,nodes)                                              
       double precision rtr(4,nodes)                                     
-12470 continue                                                          
-12471 continue                                                          
+      continue                                                          
+12501 continue                                                          
       nch=0                                                             
-12480 do 12481 k=1,nodes                                                
-      if(itr(4,k).le.0)goto 12481                                       
+      do 12511 k=1,nodes                                                
+      if(itr(4,k).le.0)goto 12511                                       
       nl=itr(2,k)                                                       
       nr=itr(3,k)                                                       
-      if(itr(4,nl).ge.0)goto 12481                                      
-      if(itr(4,nr).ge.0)goto 12481                                      
-      if(max(rtr(3,nl),rtr(3,nr)).gt.rtr(3,k)+thr)goto 12481            
+      if(itr(4,nl).ge.0)goto 12511                                      
+      if(itr(4,nr).ge.0)goto 12511                                      
+      if(max(rtr(3,nl),rtr(3,nr)).gt.rtr(3,k)+thr)goto 12511            
       itr(4,k)=-itr(4,k)                                                
       nch=nch+1                                                         
-12481 continue                                                          
-12482 continue                                                          
-      if(nch.eq.0)goto 12472                                            
-      goto 12471                                                        
-12472 continue                                                          
+12511 continue                                                          
+      continue                                                          
+      if(nch.eq.0)goto 12502                                            
+      goto 12501                                                        
+12502 continue                                                          
       return                                                            
       end                                                               
       subroutine getnode (x,itre,rtre,cat,node)                         
@@ -1456,51 +1465,51 @@ c$$$12180 format (g10.2)
       integer itre(6,*)                                                 
       double precision x(*),rtre(4,*),cat(*)                            
       k=1                                                               
-12490 continue                                                          
-12491 if(itre(4,k).lt.0)goto 12492                                      
-      if(itre(1,k) .le. 0)goto 12511                                    
-      if(x(itre(1,k)) .ge. rtre(1,k))goto 12531                         
+      continue                                                          
+12521 if(itre(4,k).lt.0)goto 12522                                      
+      if(itre(1,k) .le. 0)goto 12541                                    
+      if(x(itre(1,k)) .ge. rtre(1,k))goto 12561                         
       k=itre(2,k)                                                       
-      goto 12541                                                        
-12531 continue                                                          
-      k=itre(3,k)                                                       
-12541 continue                                                          
-12521 continue                                                          
-      goto 12551                                                        
-12511 continue                                                          
-      j=-itre(1,k)                                                      
-      kp=rtre(1,k)+0.1                                                  
-      in=0                                                              
-      np=abs(cat(kp))+0.1                                               
-12560 do 12561 i=1,np                                                   
-      if(x(j).ne.cat(kp+i))goto 12561                                   
-      in=1                                                              
-      goto 12562                                                        
+      goto 12571                                                        
 12561 continue                                                          
-12562 continue                                                          
-      if(cat(kp) .le. 0.0)goto 12581                                    
-      if(in .ne. 0)goto 12601                                           
-      k=itre(2,k)                                                       
-      goto 12611                                                        
-12601 continue                                                          
       k=itre(3,k)                                                       
-12611 continue                                                          
-12591 continue                                                          
-      goto 12621                                                        
-12581 continue                                                          
-      if(in .eq. 0)goto 12641                                           
-      k=itre(2,k)                                                       
-      goto 12651                                                        
-12641 continue                                                          
-      k=itre(3,k)                                                       
-12651 continue                                                          
-12631 continue                                                          
-12621 continue                                                          
 12571 continue                                                          
-12551 continue                                                          
-12501 continue                                                          
-      goto 12491                                                        
-12492 continue                                                          
+      continue                                                          
+      goto 12581                                                        
+12541 continue                                                          
+      j=-itre(1,k)                                                      
+      kp=int(rtre(1,k)+0.1)                                             
+      in=0                                                              
+      np=int(abs(cat(kp))+0.1)                                          
+      do 12591 i=1,np                                                   
+      if(x(j).ne.cat(kp+i))goto 12591                                   
+      in=1                                                              
+      goto 12592                                                        
+12591 continue                                                          
+12592 continue                                                          
+      if(cat(kp) .le. 0.0)goto 12611                                    
+      if(in .ne. 0)goto 12631                                           
+      k=itre(2,k)                                                       
+      goto 12641                                                        
+12631 continue                                                          
+      k=itre(3,k)                                                       
+12641 continue                                                          
+      continue                                                          
+      goto 12651                                                        
+12611 continue                                                          
+      if(in .eq. 0)goto 12671                                           
+      k=itre(2,k)                                                       
+      goto 12681                                                        
+12671 continue                                                          
+      k=itre(3,k)                                                       
+12681 continue                                                          
+      continue                                                          
+12651 continue                                                          
+      continue                                                          
+12581 continue                                                          
+      continue                                                          
+      goto 12521                                                        
+12522 continue                                                          
       node=k                                                            
       return                                                            
       end                                                               
@@ -1509,11 +1518,11 @@ c$$$12180 format (g10.2)
 !DEC$ ATTRIBUTES DLLEXPORT :: getnodes1                                 
       integer itre(6,*),nodes(no)                                       
       double precision x(no,ni),rtre(4,*),cat(*)                        
-12660 do 12661 i=1,no                                                   
+      do 12691 i=1,no                                                   
       call getnode (x(i,:),itre,rtre,cat,node)                          
       nodes(i)=node                                                     
-12661 continue                                                          
-12662 continue                                                          
+12691 continue                                                          
+      continue                                                          
       return                                                            
       end                                                               
       subroutine getlims(node,ni,itr,rtr,cat,nvar,jvar,vlims,jerr)      
@@ -1521,46 +1530,47 @@ c$$$12180 format (g10.2)
 !DEC$ ATTRIBUTES DLLEXPORT :: getlims                                   
       integer itr(6,*),jvar(2,*)                                        
       double precision rtr(4,*),cat(*),vlims(*)                         
+      ni = ni + 0                                                       
       jerr=0                                                            
-      if(itr(4,node) .lt. 0)goto 12681                                  
+      if(itr(4,node) .lt. 0)goto 12711                                  
       jerr=1                                                            
       return                                                            
-12681 continue                                                          
+12711 continue                                                          
       nvar=0                                                            
       k=node                                                            
-12690 continue                                                          
-12691 continue                                                          
+      continue                                                          
+12721 continue                                                          
       nvar=nvar+1                                                       
       kpp=abs(itr(4,k))                                                 
-      if(itr(1,kpp) .le. 0)goto 12711                                   
+      if(itr(1,kpp) .le. 0)goto 12741                                   
       jvar(2,nvar)=0                                                    
-      if(itr(2,kpp) .ne. k)goto 12731                                   
+      if(itr(2,kpp) .ne. k)goto 12761                                   
       jvar(1,nvar)=-itr(1,kpp)                                          
-      goto 12741                                                        
-12731 continue                                                          
-      jvar(1,nvar)=itr(1,kpp)                                           
-12741 continue                                                          
-12721 continue                                                          
-      vlims(nvar)=rtr(1,kpp)                                            
-      goto 12751                                                        
-12711 continue                                                          
-      if(k .ne. itr(2,kpp))goto 12771                                   
-      sgn=-1.0                                                          
-      goto 12781                                                        
-12771 continue                                                          
-      sgn=1.0                                                           
-12781 continue                                                          
+      goto 12771                                                        
 12761 continue                                                          
+      jvar(1,nvar)=itr(1,kpp)                                           
+12771 continue                                                          
+      continue                                                          
+      vlims(nvar)=rtr(1,kpp)                                            
+      goto 12781                                                        
+12741 continue                                                          
+      if(k .ne. itr(2,kpp))goto 12801                                   
+      sgn=-1.0                                                          
+      goto 12811                                                        
+12801 continue                                                          
+      sgn=1.0                                                           
+12811 continue                                                          
+      continue                                                          
       jvar(1,nvar)=-itr(1,kpp)                                          
-      kp=rtr(1,kpp)+0.1                                                 
+      kp=int(rtr(1,kpp)+0.1)                                            
       jvar(2,nvar)=kp                                                   
       vlims(nvar)=sgn*abs(cat(kp))                                      
-12751 continue                                                          
-12701 continue                                                          
+12781 continue                                                          
+      continue                                                          
       k=kpp                                                             
-      if(kpp.eq.1)goto 12692                                            
-      goto 12691                                                        
-12692 continue                                                          
+      if(kpp.eq.1)goto 12722                                            
+      goto 12721                                                        
+12722 continue                                                          
       return                                                            
       end                                                               
       subroutine trans(ny,y,wy,nz,z,wz,nt,t)                            
@@ -1569,40 +1579,40 @@ c$$$12180 format (g10.2)
       double precision y(ny),wy(ny),z(nz),wz(nz),t(nt+2,2),u(max(ny,nz))
       double precision p(nt)                                            
       integer m(max(ny,nz))                                             
-12790 do 12791 i=1,ny                                                   
+      do 12821 i=1,ny                                                   
       m(i)=i                                                            
       u(i)=y(i)                                                         
-12791 continue                                                          
-12792 continue                                                          
+12821 continue                                                          
+      continue                                                          
       call psort8(u,m,1,ny)                                             
-12800 do 12801 i=1,ny                                                   
+      do 12831 i=1,ny                                                   
       y(i)=u(m(i))                                                      
-12801 continue                                                          
-12802 continue                                                          
+12831 continue                                                          
+      continue                                                          
       u=wy                                                              
-12810 do 12811 i=1,ny                                                   
+      do 12841 i=1,ny                                                   
       wy(i)=u(m(i))                                                     
-12811 continue                                                          
-12812 continue                                                          
-12820 do 12821 i=1,nz                                                   
+12841 continue                                                          
+      continue                                                          
+      do 12851 i=1,nz                                                   
       m(i)=i                                                            
       u(i)=z(i)                                                         
-12821 continue                                                          
-12822 continue                                                          
-      call psort8(u,m,1,nz)                                             
-12830 do 12831 i=1,nz                                                   
-      z(i)=u(m(i))                                                      
-12831 continue                                                          
-12832 continue                                                          
-      u=wz                                                              
-12840 do 12841 i=1,nz                                                   
-      wz(i)=u(m(i))                                                     
-12841 continue                                                          
-12842 continue                                                          
-12850 do 12851 i=1,nt                                                   
-      p(i)=(i-0.5)/float(nt)                                            
 12851 continue                                                          
-12852 continue                                                          
+      continue                                                          
+      call psort8(u,m,1,nz)                                             
+      do 12861 i=1,nz                                                   
+      z(i)=u(m(i))                                                      
+12861 continue                                                          
+      continue                                                          
+      u=wz                                                              
+      do 12871 i=1,nz                                                   
+      wz(i)=u(m(i))                                                     
+12871 continue                                                          
+      continue                                                          
+      do 12881 i=1,nt                                                   
+      p(i)=(i-0.5)/float(nt)                                            
+12881 continue                                                          
+      continue                                                          
       call untie(ny,y,u)                                                
       call qntl(ny,u,wy,nt,p,t(:,1))                                    
       call untie(nz,z,u)                                                
@@ -1617,15 +1627,15 @@ c$$$12180 format (g10.2)
       ff=w(1)                                                           
       q(1)=y(1)                                                         
       q(nq+2)=y(n)                                                      
-12860 do 12861 i=2,n                                                    
+      do 12891 i=2,n                                                    
       ff=ff+w(i)                                                        
       pp=ff/sw                                                          
-      if(pp.lt.p(k))goto 12861                                          
+      if(pp.lt.p(k))goto 12891                                          
       k=k+1                                                             
       q(k)=0.5*(y(i)+y(i-1))                                            
-      if(k.ge.nq)goto 12862                                             
-12861 continue                                                          
-12862 continue                                                          
+      if(k.ge.nq)goto 12892                                             
+12891 continue                                                          
+12892 continue                                                          
       q(nq+1)=0.5*(q(nq+2)+q(nq))                                       
       return                                                            
       end                                                               
@@ -1635,60 +1645,60 @@ c$$$12180 format (g10.2)
       double precision y(n),u(n)                                        
       i=1                                                               
       k=0                                                               
-12870 continue                                                          
-12871 if(i.ge.n)goto 12872                                              
-      if(y(i+1) .le. y(i))goto 12891                                    
+      continue                                                          
+12901 if(i.ge.n)goto 12902                                              
+      if(y(i+1) .le. y(i))goto 12921                                    
       k=k+1                                                             
       u(k)=y(i)                                                         
       i=i+1                                                             
-      goto 12871                                                        
-12891 continue                                                          
-      i1=i                                                              
-12900 continue                                                          
-12901 if(y(i+1).gt.y(i))goto 12902                                      
-      i=i+1                                                             
-      if(i.ge.n)goto 12902                                              
       goto 12901                                                        
-12902 continue                                                          
+12921 continue                                                          
+      i1=i                                                              
+      continue                                                          
+12931 if(y(i+1).gt.y(i))goto 12932                                      
+      i=i+1                                                             
+      if(i.ge.n)goto 12932                                              
+      goto 12931                                                        
+12932 continue                                                          
       i2=i                                                              
-      if(i1 .gt. 1)goto 12921                                           
+      if(i1 .gt. 1)goto 12951                                           
       a=y(i1+1)                                                         
       b=y(i2+1)                                                         
       u(1)=y(1)                                                         
       k=1                                                               
-12930 do 12931 j=i1+1,i2                                                
+      do 12961 j=i1+1,i2                                                
       k=k+1                                                             
       u(k)=a+(b-a)*(j-i1)/(i2-i1+1)                                     
-12931 continue                                                          
-12932 continue                                                          
+12961 continue                                                          
+      continue                                                          
       i=i2+1                                                            
-      goto 12911                                                        
-12921 if(i2 .lt. n)goto 12941                                           
+      goto 12941                                                        
+12951 if(i2 .lt. n)goto 12971                                           
       a=y(i1-1)                                                         
       b=(y(i2)-a)/(i2-i1+1)                                             
-12950 do 12951 j=i1,i2                                                  
+      do 12981 j=i1,i2                                                  
       k=k+1                                                             
       u(k)=a+b*(j-i1+1)                                                 
-12951 continue                                                          
-12952 continue                                                          
-      goto 12961                                                        
-12941 continue                                                          
+12981 continue                                                          
+      continue                                                          
+      goto 12991                                                        
+12971 continue                                                          
       a=y(i1-1)                                                         
       b=y(i2)                                                           
-12970 do 12971 j=i1,i2                                                  
+      do 13001 j=i1,i2                                                  
       k=k+1                                                             
       u(k)=a+(b-a)*(j-i1+1)/(i2-i1+1)                                   
-12971 continue                                                          
-12972 continue                                                          
+13001 continue                                                          
+      continue                                                          
       i=i+1                                                             
-12961 continue                                                          
-12911 continue                                                          
-      goto 12871                                                        
-12872 continue                                                          
-      if(k .ge. n)goto 12991                                            
+12991 continue                                                          
+12941 continue                                                          
+      goto 12901                                                        
+12902 continue                                                          
+      if(k .ge. n)goto 13021                                            
       k=k+1                                                             
       u(k)=y(n)                                                         
-12991 continue                                                          
+13021 continue                                                          
       return                                                            
       end                                                               
       subroutine psort8 (v,a,ii,jj)                                     
