@@ -4,14 +4,14 @@
 \alias{ydist}
 \title{Transform z-values t(z) such that the distribution of \eqn{p(t(z) | x)} approximates \eqn{p(t(y | x)} for type = 'dist' only}
 \usage{
-ydist(x, z, model, num = model$niter)
+ydist(model, x, z, num = model$niter)
 }
 \arguments{
+\item{model}{model object output from modtrast()}
+
 \item{x}{vector of predictor variable values for a (single) observation}
 
 \item{z}{sample of z-values drawn from \eqn{p(z | x)}}
-
-\item{model}{model object output from modtrast()}
 
 \item{num}{number of trees used to compute model values}
 }

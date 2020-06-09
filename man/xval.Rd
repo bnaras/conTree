@@ -5,10 +5,10 @@
 \title{Cross-validate boosted contrast tree boosted with (new) data}
 \usage{
 xval(
+  mdl,
   x,
   y,
   z,
-  mdl,
   num = length(mdl$tree),
   del = 10,
   span = 0.15,
@@ -19,13 +19,13 @@ xval(
 )
 }
 \arguments{
+\item{mdl}{model output from modtrast()}
+
 \item{x}{data predictor variables is same format as input to modtrast}
 
 \item{y}{data y values is same format as input to modtrast}
 
 \item{z}{data z values is same format as input to modtrast}
-
-\item{mdl}{model output from modtrast()}
 
 \item{num}{number of trees used to compute model values}
 

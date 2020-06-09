@@ -133,7 +133,7 @@ contrast <- function(x, y, z, w = rep(1, nrow(x)), cat.vars = NULL, not.used = N
       xmiss, tree.size, min.node, cri, mode, type, pwr, qqtrim, quant, nclass, costs,
       cdfsamp, verbose, tree.store, cat.store
     )
-    v <- nodesum(x, y, z, trek, doplot = FALSE)
+    v <- nodesum(trek, x, y, z, doplot = FALSE)
     nf <- as.integer(max(1, fnodes * length(v$nodes)))
     crt <- sum(v$wt[1:nf] * v$cri[1:nf]) / sum(v$wt[1:nf])
     if (doprint) print(c(k, crt))
@@ -463,10 +463,10 @@ crinode <- function(tree) {
 
 #' Summarize contrast tree
 #'
+#' @param tree model object output from contrast() or prune()
 #' @param x training input predictor data matrix or data frame in same format as in contrast()
 #' @param y vector, or matrix containing training data input outcome values or censoring intervals for each observation in same format as in contrast()
 #' @param z vector containing values of a second contrasting quantity for each observation in same observation format as in contrast()
-#' @param tree model object output from contrast() or prune()
 #' @param w observation weights.
 #' @param doplot a flag to display/not display plots of output quantities
 #' @return a named list of four items:
@@ -476,10 +476,10 @@ crinode <- function(tree) {
 #' - `avecri` weighted criterion average over all terminal nodes
 #' @importFrom graphics par barplot
 #' @export
-nodesum <- function(x, y, z, tree, w = rep(1, nrow(x)), doplot = FALSE) {
+nodesum <- function(tree, x, y, z, w = rep(1, nrow(x)), doplot = FALSE) {
   u <- crinode(tree)
   nds <- u$nodes
-  nd <- getnodes(x, tree)
+  nd <- getnodes(tree, x)
   ln <- length(u$nodes)
   crio <- rep(0, ln)
   wt <- rep(0, ln)
@@ -489,7 +489,7 @@ nodesum <- function(x, y, z, tree, w = rep(1, nrow(x)), doplot = FALSE) {
     } else {
       yy <- y[nd == nds[j], ]
     }
-    v <- getcri(yy, z[nd == nds[j]], tree, w[nd == nds[j]])
+    v <- getcri(tree, yy, z[nd == nds[j]], w[nd == nds[j]])
     crio[j] <- abs(v$cri)
     wt[j] <- v$wt
   }
@@ -507,11 +507,11 @@ nodesum <- function(x, y, z, tree, w = rep(1, nrow(x)), doplot = FALSE) {
 
 #' Get terminal node observation assignments
 #'
-#' @param x training input predictor data matrix or data frame in same format as in contrast()
 #' @param tree model object output from contrast() or prune()
+#' @param x training input predictor data matrix or data frame in same format as in contrast()
 #' @return vector of tree terminal node identifiers (numbers) corresponding to each observation (row of x)
 #' @export
-getnodes <- function(x, tree) {
+getnodes <- function(tree, x) {
   ## if (!is.loaded("getnodes1")) {
   ##   stop("dyn.load('contrast.so')   linux\n  dyn.load('contrast.dll') windows")
   ## }
@@ -528,7 +528,7 @@ getnodes <- function(x, tree) {
   v$nodes
 }
 
-getlims <- function(node, tree) {
+getlims <- function(tree, node) {
   ## if (!is.loaded("getlims")) {
   ##   stop("dyn.load('contrast.so')   linux\n  dyn.load('contrast.dll') windows")
   ## }
@@ -570,7 +570,7 @@ treesum=function(tree,nodes=NULL){
    if(is.null(nodes)) { nodes=v$nodes}
    for (k in 1:length(nodes)) {
       cat(paste('node',format(nodes[k],digits=0)))
-      u=getlims(nodes[k],tree)
+      u=getlims(tree, nodes[k])
       cat(paste('  var     dir    split'),'\n')
       for (j in 1:u$nvar) {
          if (u$jvar[2,j] == 0) {
@@ -599,7 +599,7 @@ treesum=function(tree,nodes=NULL){
    }
 }
 
-getcri <- function(y, z, tree, w = rep(1, n), cdfsamp = 500) {
+getcri <- function(tree, y, z, w = rep(1, n), cdfsamp = 500) {
   ## if (!is.loaded("andarm")) {
   ##   stop("dyn.load('contrast.so')   linux\n  dyn.load('contrast.dll') windows")
   ## }
@@ -673,7 +673,7 @@ getcri <- function(y, z, tree, w = rep(1, n), cdfsamp = 500) {
 
 #' @importFrom graphics lines par title
 #' @importFrom stats qqplot
-plotnodes <- function(x, y, z, tree, w = rep(1, nrow(x)), nodes = NULL,
+plotnodes <- function(tree, x, y, z, w = rep(1, nrow(x)), nodes = NULL,
                       pts = "FALSE", xlim = NULL, ylim = NULL) {
   ## if (!is.loaded("fintcdf1")) {
   ##   stop("dyn.load('contrast.so')   linux\n  dyn.load('contrast.dll') windows")
@@ -683,7 +683,7 @@ plotnodes <- function(x, y, z, tree, w = rep(1, nrow(x)), nodes = NULL,
       nodes=v$nodes[1:min(length(v$nodes),9)]
    }
    nplts=length(nodes)
-   nd=getnodes(x,tree)
+   nd=getnodes(tree, x)
    if (nplts > 2) {
       nr=trunc(sqrt(nplts))
       if(nr*nr==nplts) { nc=nr}
@@ -722,7 +722,7 @@ plotnodes <- function(x, y, z, tree, w = rep(1, nrow(x)), nodes = NULL,
 }
 
 #' @importFrom graphics par title
-plotnodes2 <- function(x, y, z, tree, w = rep(1, nrow(x)), nodes = NULL,
+plotnodes2 <- function(tree, x, y, z, w = rep(1, nrow(x)), nodes = NULL,
                        pts = "FALSE", xlim = NULL, ylim = NULL) {
   ## if (!is.loaded("fintcdf1")) {
   ##   stop("dyn.load('contrast.so')   linux\n  dyn.load('contrast.dll') windows")
@@ -733,7 +733,7 @@ plotnodes2 <- function(x, y, z, tree, w = rep(1, nrow(x)), nodes = NULL,
     nodes <- v$nodes[1:min(length(v$nodes), 9)]
   }
   nplts <- length(nodes)
-  nd <- getnodes(x, tree)
+  nd <- getnodes(tree, x)
   if (nplts > 2) {
     nr <- trunc(sqrt(nplts))
     if (nr * nr == nplts) {
@@ -780,7 +780,7 @@ plotnodes2 <- function(x, y, z, tree, w = rep(1, nrow(x)), nodes = NULL,
 }
 
 #' @importFrom graphics lines par title
-plotdiff <- function(x, y, z, tree, w = rep(1, nrow(x)),
+plotdiff <- function(tree, x, y, z, w = rep(1, nrow(x)),
                      nodes = NULL, xlim = NULL, ylim = NULL, span = 0.15) {
   ## if (!is.loaded("fintcdf1")) {
   ##   stop("dyn.load('contrast.so')   linux\n  dyn.load('contrast.dll') windows")
@@ -793,7 +793,7 @@ plotdiff <- function(x, y, z, tree, w = rep(1, nrow(x)),
     nodes <- v$nodes[1:min(length(v$nodes), 9)]
   }
   nplts <- length(nodes)
-  nd <- getnodes(x, tree)
+  nd <- getnodes(tree, x)
   if (nplts > 2) {
     nr <- trunc(sqrt(nplts))
     if (nr * nr == nplts) {
@@ -829,10 +829,10 @@ plotdiff <- function(x, y, z, tree, w = rep(1, nrow(x)),
 
 
 #' @importFrom graphics barplot lines
-showclass <- function(x, y, z, tree, w = rep(1, length(y))) {
+showclass <- function(tree, x, y, z, w = rep(1, length(y))) {
   opar <- par(mfrow = c(2, 1))
   on.exit(par(opar))
-  v <- nodesum(x, y, z, tree, w)
+  v <- nodesum(tree, x, y, z, w)
   kk <- length(v$nodes)
   u <- barplot(v$cri, names = v$nodes, xlab = "Node", ylab = "Class  Risk")
   left <- 0.5 * (u[2] - u[1])
@@ -843,12 +843,12 @@ showclass <- function(x, y, z, tree, w = rep(1, length(y))) {
 
 
 #' @importFrom graphics barplot par
-showprobs <- function(x, y, z, tree, w = rep(1, length(y)), vlab = "Prob ( y = 1 )") {
+showprobs <- function(tree, x, y, z, w = rep(1, length(y)), vlab = "Prob ( y = 1 )") {
   x <- xcheck(x)
   opar <- par(mfrow = c(2, 1))
   on.exit(par(opar))
-  v <- nodesum(x, y, z, tree, w)
-  nd <- getnodes(x, tree)
+  v <- nodesum(tree, x, y, z, w)
+  nd <- getnodes(tree, x)
   kk <- length(v$nodes)
   plt <- matrix(nrow = 2, ncol = kk)
   for (k in 1:kk) {
@@ -929,12 +929,12 @@ prune.seq <- function(tree, eps = 0.01, plot.it = TRUE) {
 
 
 #' @importFrom graphics barplot par title
-showquants <- function(x, y, z, tree, w = rep(1, length(y)), quant = 0.5, doplot = TRUE) {
+showquants <- function(tree, x, y, z, w = rep(1, length(y)), quant = 0.5, doplot = TRUE) {
   x <- xcheck(x)
   opar <- par(mfrow = c(2, 1))
   on.exit(par(opar))
-  v <- nodesum(x, y, z, tree, w)
-  nd <- getnodes(x, tree)
+  v <- nodesum(tree, x, y, z, w)
+  nd <- getnodes(tree, x)
   kk <- length(v$nodes)
   quants <- rep(0, kk)
   num <- rep(0, kk)
@@ -1108,40 +1108,40 @@ xfm2 <- function(f, b00, b11, efac = 7, xmiss = 9.0e35) {
 #' - type = 'quant' => upper barplot of fraction of y-values greater than or equal to corresponding z-values (quantile prediction) in each terminal node. Horizontal line reflects specified target quantile. Lower barplot showing total  weight in each terminal node.
 #' - `type = 'diffmean'` or `type = 'maxmean'` implies upper barplot contrasting y-mean (blue) and z-mean (red) in each terminal node. Lower barplot showing total weight in each terminal node.
 #' @export
-nodeplots <- function(x, y, z, tree, w = rep(1, nrow(x)), nodes = NULL,
+nodeplots <- function(tree, x, y, z, w = rep(1, nrow(x)), nodes = NULL,
                       xlim = NULL, ylim = NULL, pts = "FALSE", span = 0.15) {
   parms <- tree$parms
   if (parms$type == "dist") {
     if (parms$mode == "onesamp" | is.vector(y)) {
-      plotnodes(x, y, z, tree, w, nodes, pts, xlim, ylim)
+      plotnodes(tree, x, y, z, w, nodes, pts, xlim, ylim)
     }
     else {
-      plotnodes2(x, y, z, tree, w, nodes, pts, xlim, ylim)
+      plotnodes2(tree, x, y, z, w, nodes, pts, xlim, ylim)
     }
     return(invisible())
   }
   if (parms$type == "diff") {
-    plotdiff(x, y, z, tree, w, nodes, xlim, ylim, span)
+    plotdiff(tree, x, y, z, w, nodes, xlim, ylim, span)
     return(invisible())
   }
   if (parms$type == "class") {
-    showclass(x, y, z, tree, w)
+    showclass(tree, x, y, z, w)
     return(invisible())
   }
   if (parms$type == "prob") {
-    showprobs(x, y, z, tree, w)
+    showprobs(tree, x, y, z, w)
     return(invisible())
   }
   if (parms$type == "maxmean") {
-    showprobs(x, y, z, tree, w, vlab = "Mean")
+    showprobs(tree, x, y, z, w, vlab = "Mean")
     return(invisible())
   }
   if (parms$type == "diffmean") {
-    showprobs(x, y, z, tree, w, vlab = "Mean")
+    showprobs(tree, x, y, z, w, vlab = "Mean")
     return(invisible())
   }
   if (parms$type == "quant") {
-    showquants(x, y, z, tree, w, quant = parms$quant, doplot = TRUE)
+    showquants(tree, x, y, z, w, quant = parms$quant, doplot = TRUE)
     return(invisible())
   }
   print("invalid type")
@@ -1174,7 +1174,7 @@ modtrast <- function(x,y,z,w=rep(1,nrow(x)),cat.vars=NULL,not.used=NULL,qint=10,
       trees[[k]]=contrast(x,y,r,w,cat.vars,not.used,qint,xmiss,tree.size,
          min.node,mode,type,pwr,quant,nclass=NULL,costs=NULL,cdfsamp,verbose,tree.store,
          cat.store,nbump,fnodes,fsamp,doprint)
-      acri[k]=nodesum(x,y,r,trees[[k]],w)$avecri
+      acri[k]=nodesum(trees[[k]],x,y,r,w)$avecri
       u=adjnodes(x,y,r,trees[[k]],w,learn.rate)
       r=u$az; dels[[k]]=u$del; nodes[[k]]=u$nodes
       if(k<=10 | k%%print.itr==0) cat('.')
@@ -1195,21 +1195,21 @@ modtrast <- function(x,y,z,w=rep(1,nrow(x)),cat.vars=NULL,not.used=NULL,qint=10,
 
 #' Predict y-values from boosted contrast model
 #'
+#' @param model model object output from modtrast()
 #' @param x x-values for new data
 #' @param z z-values for new data
-#' @param model model object output from modtrast()
 #' @param num number of trees used to compute model values
 #' @return predicted y-values for new data from model
 #' @export
-predtrast <- function(x, z, model, num = model$niter) {
+predtrast <- function(model, x, z, num = model$niter) {
   if (model$trees[[1]]$parms$type == "dist") {
-    return(predmod(x, z, model, num))
+    return(predmod(model, x, z, num))
   }
   zo <- z
   t <- model$trees[[1]]$parms$type == "prob"
   if (t) zo <- log(zo / (1 - zo))
   for (k in 1:num) {
-    nd <- getnodes(x, model$trees[[k]])
+    nd <- getnodes(model$trees[[k]], x)
     for (j in 1:length(model$nodes[[k]])) {
       u <- nd == model$nodes[[k]][j]
       if (t) {
@@ -1230,10 +1230,10 @@ adjnodes <- function(x, y, z, tree, w = rep(1, length(y)), learn.rate = 1) {
   if (!(t == "diff" | t == "quant" | t == "prob" | t == "maxmean" | t == "diffmean")) {
     stop("incorrect tree type")
   }
-  u <- nodesum(x, y, z, tree)
+  u <- nodesum(tree, x, y, z)
   nodes <- length(u$nodes)
   r <- z
-  v <- getnodes(x, tree)
+  v <- getnodes(tree, x)
   del <- rep(0, nodes)
   if (t == "quant") {
     quant <- tree$parms$quant
@@ -1261,7 +1261,7 @@ adjnodes <- function(x, y, z, tree, w = rep(1, length(y)), learn.rate = 1) {
 
 #' @importFrom stats scatter.smooth
 #' @importFrom graphics plot
-cvtrast <- function(x, y, z, model, w = rep(1, length(y)), doplot = TRUE, span = 0.5) {
+cvtrast <- function(model, x, y, z, w = rep(1, length(y)), doplot = TRUE, span = 0.5) {
   zo <- z
   t <- model$trees[[1]]$parms$type == "prob"
   if (t) zo <- log(zo / (1 - zo))
@@ -1269,8 +1269,8 @@ cvtrast <- function(x, y, z, model, w = rep(1, length(y)), doplot = TRUE, span =
   cvcri <- rep(0, niter)
   h <- z
   for (k in 1:niter) {
-    cvcri[k] <- nodesum(x, y, h, model$trees[[k]], w)$avecri
-    nd <- getnodes(x, model$trees[[k]])
+    cvcri[k] <- nodesum(model$trees[[k]], x, y, h, w)$avecri
+    nd <- getnodes(model$trees[[k]], x)
     for (j in 1:length(model$nodes[[k]])) {
       u <- nd == model$nodes[[k]][j]
       if (t) {
@@ -1374,7 +1374,7 @@ losserr <- function(x, y, p, mdl, doplot = TRUE) {
   else {
     z[1] <- quantloss(y, p, parms$quant)
   }
-  u <- predtrast1(x, p, mdl)
+  u <- predtrast1(mdl, x, p)
   for (k in 2:(mdl$niter + 1)) {
     if (parms$type == "prob") {
       z[k] <- devexp(y, u[, k - 1])
@@ -1389,13 +1389,13 @@ losserr <- function(x, y, p, mdl, doplot = TRUE) {
   invisible(z)
 }
 
-predtrast1 <- function(x, z, model, num = model$niter) {
+predtrast1 <- function(model, x, z, num = model$niter) {
   zo <- z
   t <- model$trees[[1]]$parms$type == "prob"
   if (t) zo <- log(zo / (1 - zo))
   zout <- matrix(nrow = length(zo), ncol = num)
   for (k in 1:num) {
-    nd <- getnodes(x, model$trees[[k]])
+    nd <- getnodes(model$trees[[k]], x)
     for (j in 1:length(model$nodes[[k]])) {
       u <- nd == model$nodes[[k]][j]
       if (t) {
@@ -1413,10 +1413,10 @@ predtrast1 <- function(x, z, model, num = model$niter) {
 
 #' Cross-validate boosted contrast tree boosted with (new) data
 #'
+#' @param mdl model output from modtrast()
 #' @param x data predictor variables is same format as input to modtrast
 #' @param y data y values is same format as input to modtrast
 #' @param z data z values is same format as input to modtrast
-#' @param mdl model output from modtrast()
 #' @param num number of trees used to compute model values
 #' @param del plot discrepancy value computed every del-th iteration (tree)
 #' @param span running median smoother span (`doplot=TRUE`, only)
@@ -1427,13 +1427,13 @@ predtrast1 <- function(x, z, model, num = model$niter) {
 #' @return a named list of two items: `ntree` the iteration numbers, and `error` the corresponding discrepancy values
 #' @importFrom graphics points
 #' @export
-xval=function(x,y,z,mdl,num=length(mdl$tree),del=10,span=0.15,
-   ylab='Average  Discrepancy',doplot='first',doprint=TRUE,col='red') {
+xval=function(mdl, x, y, z, num = length(mdl$tree), del = 10, span = 0.15,
+              ylab = 'Average  Discrepancy', doplot = 'first', doprint = TRUE, col = 'red') {
    parms=mdl$tree[[1]]$parms;
    error=rep(0,num); ntree=rep(0,num); k=0
    for(j in 1:num) {
       if (j==1 | j%%del==0) { k=k+1
-         yp=predtrast(x,z,mdl,num=j)
+         yp=predtrast(mdl, x,z,num=j)
          tree=contrast(x,y,yp,type=parms$type,quant=parms$quant)
          error[k]=crinode(tree)$avecri
          ntree[k]=j
@@ -1496,11 +1496,11 @@ modtrans <-
         mode = "onesamp", type = "dist", pwr, quant = 0.5, nclass = NULL, costs = NULL, cdfsamp, verbose, tree.store,
         cat.store, nbump, fnodes, fsamp, doprint
       )
-      v <- nodesum(x, y, r, trees[[k]], w)
+      v <- nodesum(trees[[k]], x, y, r, w)
       nodes[[k]] <- v$nodes
       lnodes <- length(v$nodes)
       acri[k] <- v$avecri
-      nd <- getnodes(x, trees[[k]])
+      nd <- getnodes(trees[[k]], x)
       for (i in 1:lnodes) {
         j <- v$nodes[i]
         h <- nd == j
@@ -1541,11 +1541,11 @@ modtrans <-
   }
 
 #' @importFrom stats approxfun
-predmod <- function(x, z, model, num = model$niter) {
+predmod <- function(model, x, z, num = model$niter) {
   r <- z
   l <- 0
   for (k in 1:num) {
-    nd <- getnodes(x, model$trees[[k]])
+    nd <- getnodes(model$trees[[k]], x)
     nodes <- model$nodes[[k]]
     for (i in 1:length(nodes)) {
       j <- nodes[i]
@@ -1563,27 +1563,27 @@ predmod <- function(x, z, model, num = model$niter) {
 
 #' Transform z-values t(z) such that the distribution of \eqn{p(t(z) | x)} approximates \eqn{p(t(y | x)} for type = 'dist' only
 #'
+#' @param model model object output from modtrast()
 #' @param x vector of predictor variable values for a (single) observation
 #' @param z  sample of z-values drawn from \eqn{p(z | x)}
-#' @param model model object output from modtrast()
 #' @param num number of trees used to compute model values
 #' @return vector of `length(z)` containing transformed values t(z) approximating \eqn{p(y | x)}
 #' @export
-ydist <- function(x, z, model, num = model$niter) {
+ydist <- function(model, x, z, num = model$niter) {
   x=xcheck(x)
   xr <- matrix(nrow = length(z), ncol = length(x))
   for (i in 1:nrow(xr)) xr[i, ] <- x
-  h <- predmod(xr, z, model, num)
+  h <- predmod(model, xr, z, num)
   invisible(h)
 }
 
-xvalmod <- function(x, y, z, model, num = model$niter, doplot = TRUE) {
+xvalmod <- function(model, x, y, z, num = model$niter, doplot = TRUE) {
   r <- z
   l <- 0
   cri <- rep(0, num + 1)
   cri[1] <- crinode(contrast(x, y, r))$avecri
   for (k in 1:num) {
-    nd <- getnodes(x, model$trees[[k]])
+    nd <- getnodes(model$trees[[k]], x)
     nodes <- model$nodes[[k]]
     for (i in 1:length(nodes)) {
       j <- nodes[i]
@@ -1611,10 +1611,10 @@ showdist <- function(v, xtrim = NULL, xlim = NULL, xlab = "Y | X", main = " ") {
 
 #' @importFrom graphics plot
 #' @importFrom stats loess.smooth quantile
-plotpdf <- function(x, z, model, num = model$niter, nq = 200, span = 0.25, xlim = NULL, xlab = NULL) {
+plotpdf <- function(model, x, z, num = model$niter, nq = 200, span = 0.25, xlim = NULL, xlab = NULL) {
   p <- ((1:nq) - 0.5) / nq
   q <- as.numeric(quantile(z, p))
-  t <- as.numeric(quantile(ydist(x, z, model, num), p))
+  t <- as.numeric(quantile(ydist(model, x, z, num), p))
   b <- t != t[1] & t != t[length(t)]
   p <- p[b]
   t <- t[b]
@@ -1629,9 +1629,9 @@ plotpdf <- function(x, z, model, num = model$niter, nq = 200, span = 0.25, xlim 
 
 #' @importFrom graphics plot
 #' @importFrom stats loess.smooth quantile
-plotcdf <- function(x, z, model, num = model$niter, nq = 100, span = 0.25, xlim = NULL, xlab = NULL) {
+plotcdf <- function(model, x, z, num = model$niter, nq = 100, span = 0.25, xlim = NULL, xlab = NULL) {
   p <- ((1:nq) - 0.5) / nq
-  t <- as.numeric(quantile(ydist(x, z, model, num), p))
+  t <- as.numeric(quantile(ydist(model, x, z, num), p))
   r <- loess.smooth(t, p, type = "l", span = span)
   if (is.null(xlim)) xlim <- c(min(r$x), max(r$x))
   if (is.null(xlab)) xlab <- "Y"
@@ -1642,10 +1642,10 @@ plotcdf <- function(x, z, model, num = model$niter, nq = 100, span = 0.25, xlim 
 #' @importFrom graphics plot
 #' @importFrom stats loess.smooth quantile
 plotdist <-
-  function(x, z, model, num = model$niter, type = "cdf", nq = 100,
+  function(model, x, z, num = model$niter, type = "cdf", nq = 100,
            span = 0.25, pts = 100, xlim = NULL, xlab = NULL, doplot = TRUE) {
     p <- ((1:nq) - 0.5) / nq
-    t <- as.numeric(quantile(ydist(x, z, model, num), p))
+    t <- as.numeric(quantile(ydist(model, x, z, num), p))
     if (span > 0) {
       r <- loess.smooth(t, p, type = "l", span = span, evaluation = pts)
       rx <- r$x
@@ -1709,7 +1709,7 @@ bootcri <-
         xmiss, tree.size, min.node, cri, mode, type, pwr, qqtrim, quant, nclass, costs,
         cdfsamp, verbose, tree.store, cat.store
       )
-      v <- nodesum(x[s, ], yy, z[s], trek, doplot = FALSE)
+      v <- nodesum(trek, x[s, ], yy, z[s], doplot = FALSE)
       for (j in 1:length(fnodes)) {
         nf <- as.integer(max(1, fnodes[j] * length(v$nodes)))
         crt <- sum(v$wt[1:nf] * v$cri[1:nf]) / sum(v$wt[1:nf])
@@ -1740,10 +1740,10 @@ bootcri <-
 
 #' Produce lack-of-fit curve for a contrast tree
 #'
+#' @param tree model object output from contrast() or prune()
 #' @param x training input predictor data matrix or data frame in same format as in contrast()
 #' @param y vector, or matrix containing training data input outcome values or censoring intervals for each observation in same format as in contrast()
 #' @param z vector containing values of a second contrasting quantity for each observation in same observation format as in contrast ()
-#' @param tree model object output from contrast() or prune()
 #' @param w observation weights
 #' @param doplot a flag to display/not display graphical plots
 #' @param ylim y-axis limit
@@ -1751,8 +1751,8 @@ bootcri <-
 #' @importFrom graphics plot lines
 #' @importFrom stats runmed qqplot
 #' @export
-lofcurve <- function(x, y, z, tree, w = rep(1, length(y)), doplot = TRUE, ylim = NULL) {
-  u <- nodesum(x, y, z, tree, w)
+lofcurve <- function(tree, x, y, z, w = rep(1, length(y)), doplot = TRUE, ylim = NULL) {
+  u <- nodesum(tree, x, y, z, w)
   v <- avesum(u$cri, u$wt)
   if (doplot) {
     if (is.null(ylim)) {

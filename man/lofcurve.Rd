@@ -4,16 +4,16 @@
 \alias{lofcurve}
 \title{Produce lack-of-fit curve for a contrast tree}
 \usage{
-lofcurve(x, y, z, tree, w = rep(1, length(y)), doplot = TRUE, ylim = NULL)
+lofcurve(tree, x, y, z, w = rep(1, length(y)), doplot = TRUE, ylim = NULL)
 }
 \arguments{
+\item{tree}{model object output from contrast() or prune()}
+
 \item{x}{training input predictor data matrix or data frame in same format as in contrast()}
 
 \item{y}{vector, or matrix containing training data input outcome values or censoring intervals for each observation in same format as in contrast()}
 
 \item{z}{vector containing values of a second contrasting quantity for each observation in same observation format as in contrast ()}
-
-\item{tree}{model object output from contrast() or prune()}
 
 \item{w}{observation weights}
 

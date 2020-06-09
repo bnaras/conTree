@@ -4,14 +4,14 @@
 \alias{predtrast}
 \title{Predict y-values from boosted contrast model}
 \usage{
-predtrast(x, z, model, num = model$niter)
+predtrast(model, x, z, num = model$niter)
 }
 \arguments{
+\item{model}{model object output from modtrast()}
+
 \item{x}{x-values for new data}
 
 \item{z}{z-values for new data}
-
-\item{model}{model object output from modtrast()}
 
 \item{num}{number of trees used to compute model values}
 }

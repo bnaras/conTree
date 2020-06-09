@@ -4,12 +4,12 @@
 \alias{getnodes}
 \title{Get terminal node observation assignments}
 \usage{
-getnodes(x, tree)
+getnodes(tree, x)
 }
 \arguments{
-\item{x}{training input predictor data matrix or data frame in same format as in contrast()}
-
 \item{tree}{model object output from contrast() or prune()}
+
+\item{x}{training input predictor data matrix or data frame in same format as in contrast()}
 }
 \value{
 vector of tree terminal node identifiers (numbers) corresponding to each observation (row of x)
