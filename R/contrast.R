@@ -311,14 +311,14 @@ contrast1 <- function(x, y, z, w, lx, qint, xmiss, tree.size, min.node, cri,
                       tree.store, cat.store) {
   n <- nrow(x)
   p <- ncol(x)
-  call <- .Fortran("set_miss", arg = as.numeric(xmiss))
-  call <- .Fortran("set_trm", irg = as.integer(tree.size))
-  call <- .Fortran("set_ntn", irg = as.integer(min.node))
-  call <- .Fortran("set_qint", irg = as.integer(qint))
-  call <- .Fortran("set_pwr", arg = as.numeric(pwr))
+  call <- .Fortran("set_miss", arg = as.numeric(xmiss), PACKAGE = 'conTree')
+  call <- .Fortran("set_trm", irg = as.integer(tree.size), PACKAGE = 'conTree')
+  call <- .Fortran("set_ntn", irg = as.integer(min.node), PACKAGE = 'conTree')
+  call <- .Fortran("set_qint", irg = as.integer(qint), PACKAGE = 'conTree')
+  call <- .Fortran("set_pwr", arg = as.numeric(pwr), PACKAGE = 'conTree')
   icri <- 1
   if (cri != "max") icri <- 2
-  call <- .Fortran("set_cri", irg = as.integer(icri))
+  call <- .Fortran("set_cri", irg = as.integer(icri), PACKAGE = 'conTree')
   if (mode == "onesamp") {
     kri <- 1
     if (type == "qq") kri <- 2
@@ -331,7 +331,7 @@ contrast1 <- function(x, y, z, w, lx, qint, xmiss, tree.size, min.node, cri,
     if (kri == 1) {
       if (is.matrix(y)) {
         kri <- 6
-        call <- .Fortran("set_samp", irg = as.integer(cdfsamp))
+        call <- .Fortran("set_samp", irg = as.integer(cdfsamp), PACKAGE = 'conTree')
       }
     }
   }
@@ -344,16 +344,16 @@ contrast1 <- function(x, y, z, w, lx, qint, xmiss, tree.size, min.node, cri,
     if (kri == 10) {
       if (is.matrix(y)) {
         kri <- 15
-        call <- .Fortran("set_samp", irg = as.integer(cdfsamp))
+        call <- .Fortran("set_samp", irg = as.integer(cdfsamp), PACKAGE = 'conTree')
       }
     }
   }
-  call <- .Fortran("set_kri", irg = as.integer(kri), jrg = as.integer(1))
-  call <- .Fortran("set_qqtrm", irg = as.integer(qqtrim), jrg = as.integer(1))
-  call <- .Fortran("set_quant", arg = as.numeric(quant))
+  call <- .Fortran("set_kri", irg = as.integer(kri), jrg = as.integer(1), PACKAGE = 'conTree')
+  call <- .Fortran("set_qqtrm", irg = as.integer(qqtrim), jrg = as.integer(1), PACKAGE = 'conTree')
+  call <- .Fortran("set_quant", arg = as.numeric(quant), PACKAGE = 'conTree')
   ivrb <- 0
   if (verbose) ivrb <- 1
-  call <- .Fortran("set_vrb", irg = as.integer(ivrb), jrg = as.integer(1))
+  call <- .Fortran("set_vrb", irg = as.integer(ivrb), jrg = as.integer(1), PACKAGE = 'conTree')
   if (kri == 4) {
     if (is.null(nclass)) nclass <- 2
     if (is.null(costs)) {
@@ -362,7 +362,8 @@ contrast1 <- function(x, y, z, w, lx, qint, xmiss, tree.size, min.node, cri,
     }
     call <- .Fortran("classin",
       ient = as.integer(1), nclasssv = as.integer(nclass),
-      costssv = as.vector(as.numeric(costs)), nout = integer(1), out = numeric(1)
+      costssv = as.vector(as.numeric(costs)), nout = integer(1), out = numeric(1),
+      PACKAGE = 'conTree'
     )
   }
   if (kri == 6 | kri == 15) {
@@ -380,9 +381,10 @@ contrast1 <- function(x, y, z, w, lx, qint, xmiss, tree.size, min.node, cri,
     itre = integer(6 * tree.store), rtre = numeric(4 * tree.store),
     mxc = as.integer(cat.store), cat = numeric(cat.store),
     ms = as.vector(as.integer(rep(0, 2 * n * p))),
-    isc = as.vector(as.integer(rep(0, n)))
+    isc = as.vector(as.integer(rep(0, n))),
+    PACKAGE = 'conTree'
   )
-  v <- .Fortran("get_stor", kxt = integer(1), kxc = integer(1))
+  v <- .Fortran("get_stor", kxt = integer(1), kxc = integer(1), PACKAGE = 'conTree')
   if (v$kxt > tree.store) stop("tree memory too small.")
   if (v$kxc > cat.store) stop("categorical memory too small.")
   invisible(list(
@@ -414,7 +416,7 @@ xcheck <- function(x, xmiss = 9.0e35) {
     stop(" x must be a data frame, matrix, or vector.")
   }
   xx[is.na(xx)] <- xmiss
-  call <- .Fortran("set_miss", arg = as.numeric(xmiss))
+  call <- .Fortran("set_miss", arg = as.numeric(xmiss), PACKAGE = 'conTree')
   invisible(xx)
 }
 
@@ -433,7 +435,8 @@ prune <- function(tree, thr = 0.1) {
     itr = as.vector(as.integer(v$itre)),
     rtr = as.vector(as.numeric(v$rtre)),
     nodes = as.integer(v$kxt), thr = as.numeric(thr),
-    itro = integer(6 * v$kxt), rtro = numeric(4 * v$kxt)
+    itro = integer(6 * v$kxt), rtro = numeric(4 * v$kxt),
+    PACKAGE = 'conTree'
   )
   tr <- list(
     itre = u$itro, rtre = u$rtro, cat = v$cat,
@@ -451,7 +454,8 @@ crinode <- function(tree) {
     itr = as.vector(as.integer(u$itre)),
     rtr = as.vector(as.numeric(u$rtre)),
     mxnodes = as.integer(u$kxt), node = integer(1), nodes = integer(u$kxt),
-    cri = numeric(u$kxt), wt = numeric(u$kxt)
+    cri = numeric(u$kxt), wt = numeric(u$kxt),
+    PACKAGE = 'conTree'
   )
   nodes <- v$nodes[1:v$node]
   cri <- v$cri[1:v$node]
@@ -523,7 +527,8 @@ getnodes <- function(tree, x) {
     no = as.integer(n), ni = as.integer(p),
     x = as.vector(as.numeric(x)), itre = as.vector(as.integer(u$itre)),
     rtre = as.vector(as.numeric(u$rtre)), cat = as.vector(as.numeric(u$cat)),
-    nodes = integer(n)
+    nodes = integer(n),
+    PACKAGE = 'conTree'
   )
   v$nodes
 }
@@ -537,7 +542,8 @@ getlims <- function(tree, node) {
     node = as.integer(node), ni = as.integer(u$p),
     itr = as.vector(as.integer(u$itre)), rtr = as.vector(as.numeric(u$rtre)),
     cat = as.vector(as.numeric(u$cat)), nvar = integer(1), jvar = integer(2 * 1000),
-    vlims = numeric(1000), jerr = integer(1)
+    vlims = numeric(1000), jerr = integer(1),
+    PACKAGE = 'conTree'
   )
   if (v$jerr != 0) stop(paste("node", as.character(node), "not terminal."))
   jvar <- v$jvar[1:(2 * v$nvar)]
@@ -623,7 +629,7 @@ getcri <- function(tree, y, z, w = rep(1, n), cdfsamp = 500) {
     if (kri == 1) {
       if (is.matrix(y)) {
         kri <- 6
-        call <- .Fortran("set_samp", irg = as.integer(cdfsamp))
+        call <- .Fortran("set_samp", irg = as.integer(cdfsamp), PACKAGE = 'conTree')
       }
     }
   }
@@ -636,16 +642,16 @@ getcri <- function(tree, y, z, w = rep(1, n), cdfsamp = 500) {
     if (kri == 10) {
       if (is.matrix(y)) {
         kri <- 15
-        call <- .Fortran("set_samp", irg = as.integer(cdfsamp))
+        call <- .Fortran("set_samp", irg = as.integer(cdfsamp), PACKAGE = 'conTree')
       }
     }
   }
-  call <- .Fortran("set_kri", irg = as.integer(kri), jrg = as.integer(1))
-  call <- .Fortran("set_qqtrm", irg = as.integer(v$qqtrim), jrg = as.integer(1))
-  call <- .Fortran("set_quant", arg = as.numeric(v$quant))
+  call <- .Fortran("set_kri", irg = as.integer(kri), jrg = as.integer(1), PACKAGE = 'conTree')
+  call <- .Fortran("set_qqtrm", irg = as.integer(v$qqtrim), jrg = as.integer(1), PACKAGE = 'conTree')
+  call <- .Fortran("set_quant", arg = as.numeric(v$quant), PACKAGE = 'conTree')
   ivrb <- 0
   if (v$verbose) ivrb <- 1
-  call <- .Fortran("set_vrb", irg = as.integer(ivrb), jrg = as.integer(1))
+  call <- .Fortran("set_vrb", irg = as.integer(ivrb), jrg = as.integer(1), PACKAGE = 'conTree')
   if (kri == 4) {
     if (is.null(v$nclass)) v$nclass <- 2
     if (is.null(v$costs)) {
@@ -654,7 +660,8 @@ getcri <- function(tree, y, z, w = rep(1, n), cdfsamp = 500) {
     }
     call <- .Fortran("classin",
       ient = as.integer(1), nclasssv = as.integer(v$nclass),
-      costssv = as.vector(as.numeric(costs)), nout = integer(1), out = numeric(1)
+      costssv = as.vector(as.numeric(costs)), nout = integer(1), out = numeric(1),
+      PACKAGE = 'conTree'
     )
   }
   if (kri == 6 | kri == 15) {
@@ -666,7 +673,8 @@ getcri <- function(tree, y, z, w = rep(1, n), cdfsamp = 500) {
   u <- .Fortran("andarm",
     n = as.integer(n), y = as.vector(as.numeric(y)),
     y2 = as.vector(as.numeric(y2)), z = as.vector(as.numeric(z)),
-    w = as.vector(as.numeric(w)), dst = numeric(1), sw = numeric(1)
+    w = as.vector(as.numeric(w)), dst = numeric(1), sw = numeric(1),
+    PACKAGE = 'conTree'
   )
   list(cri = u$dst, wt = u$sw)
 }
@@ -1032,16 +1040,17 @@ fintcdf <- function(y, w = rep(1, n), nit = 100, thr = 1.0e-2, xmiss = 9.0e35, v
   n <- nrow(yy)  ## Naras addition to remove warning on `n` not being defined in formals!
   vrb0 <- vrb
   ## Naras added jrg to .Fortran call below as set_vrb expects two args!
-  call <- .Fortran("set_vrb", irg = as.integer(vrb), jrg = 1L)
+  call <- .Fortran("set_vrb", irg = as.integer(vrb), jrg = 1L, PACKAGE = 'conTree')
   z <- .Fortran("fintcdf1",
     ##n = as.integer(nrow(yy)), y = as.vector(as.numeric(yy)),  # Naras change below
     n = n, y = as.vector(as.numeric(yy)),
     m = as.integer(m), b = as.vector(as.numeric(b)), w = as.vector(as.numeric(w)),
     nit = as.integer(nit), thr = as.numeric(thr / m), cdf = numeric(m), jt = integer(1),
-    err = numeric(1)
+    err = numeric(1),
+    PACKAGE = 'conTree'
   )
   ## Naras added jrg to .Fortran call below as set_vrb expects two args!
-  call <- .Fortran("set_vrb", irg = as.integer(vrb0), jrg = 1L)
+  call <- .Fortran("set_vrb", irg = as.integer(vrb0), jrg = 1L, PACKAGE = 'conTree')
   if (vrb > 0) {
     cat(
       "CDF calc:", format(z$jt, digits = 3), "steps",
@@ -1057,7 +1066,8 @@ cdfpoints <- function(x, y, w = rep(1, length(y))) {
   z <- .Fortran("cdfpoints1",
     m = as.integer(length(x)), x = as.vector(as.numeric(x)),
     n = as.integer(length(y)), y = as.vector(as.numeric(y)),
-    w = as.vector(as.numeric(w)), cdf = numeric(length(x))
+    w = as.vector(as.numeric(w)), cdf = numeric(length(x)),
+    PACKAGE = 'conTree'
   )
   invisible(z$cdf)
 }
@@ -1460,7 +1470,8 @@ trans <- function(y, z, wy = rep(1, ny), wz = rep(1, nz), n = min(ny, nz)) {
   u <- .Fortran("trans",
     ny = as.integer(ny), y = as.vector(as.numeric(y)),
     wy = as.vector(as.numeric(wy)), nz = as.integer(nz), z = as.vector(as.numeric(z)),
-    wz = as.vector(as.numeric(wz)), nt = as.integer(n), t = numeric(2 * n + 4)
+    wz = as.vector(as.numeric(wz)), nt = as.integer(n), t = numeric(2 * n + 4),
+    PACKAGE = 'conTree'
   )
   invisible(list(x = u$t[1:(n + 2)], y = u$t[(n + 3):(2 * n + 4)]))
 }
@@ -1473,7 +1484,8 @@ xfm <- function(y, b0, b1) {
 
 untie <- function(y) {
   n <- length(y)
-  v <- .Fortran("untie", n = as.integer(n), y = as.vector(as.numeric(y)), u = numeric(n))
+  v <- .Fortran("untie", n = as.integer(n), y = as.vector(as.numeric(y)), u = numeric(n),
+                PACKAGE = 'conTree')
   invisible(v$u)
 }
 

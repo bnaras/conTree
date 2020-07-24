@@ -1,7 +1,7 @@
 #
 # census_income_data
 #
-library(contree)
+library(conTree)
 load('census_income_data.Rdata')
 dx = 1:10000; dxt = 10001:16281
 tree=contrast(xt[dx,],yt[dx],gblt[dx],type='prob')

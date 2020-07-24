@@ -10,10 +10,10 @@
 #' outcome variable given any set of joint input predictor variable
 #' values.
 #'
-#' @name contree-package
+#' @name conTree-package
 #' @docType package
-#' @useDynLib contree
-#' @author Original code by Jerome H. Friedman, minor modifications,
+#' @useDynLib conTree
+#' @author Original code (C) by Jerome H. Friedman, minor modifications,
 #'     formatting, and packaging by Balasubramanian Narasimhan
 #' @references Jerome Friedman (2019). _Contrast Trees and
 #'     Distribution Boosting_ \url{https://arxiv.org/abs/1912.03785}

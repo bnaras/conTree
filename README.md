@@ -1,2 +1,3 @@
-# contree
-Contrast Trees
+# conTree
+
+Contrast Trees and Distribution Boosting

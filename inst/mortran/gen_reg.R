@@ -44,7 +44,5 @@ l  <- sapply(fns, grep, x = fs, value = TRUE)
 l$set_samp <- l$set_samp[[1]]
 l$andarm  <- l$andarm[[1]]
 reg_fns  <- unlist(l)
-##registration  <- gen_registration(pkg_name="ConTree", fun_list = stringr::str_trim(reg_fns))
-##writeLines(registration, con = "ConTree_init.c")
 registration  <- gen_registration(pkg_name="contree", fun_list = stringr::str_trim(reg_fns))
-writeLines(registration, con = "contree_init.c")
+writeLines(registration, con = "conTree_init.c")

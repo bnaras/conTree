@@ -9,7 +9,7 @@ output:
   toc: yes
   toc_depth: 2
 vignette: >
-  %\VignetteIndexEntry{contree}
+  %\VignetteIndexEntry{conTree}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -82,13 +82,13 @@ library("randomForest")
 
 
 ```{r}
-library(contree)
+library(conTree)
 
 ## generate training and test data sets
 ## n=25000, p=10, heteroskedastic logistic error
 set.seed(12345)
-d <- datgen()
-e <- datgen()
+d <- datgen(n = 5000)
+e <- datgen(n = 5000)
 
 ## fit random forest (RF) model on training data
 rf <- randomForest::randomForest(d$x, d$y)
@@ -196,7 +196,7 @@ nodeplots(tree, e$x, e$y, z)
 
 ```{r}
 
-mdld <- modtrast(d$x, d$y, z, niter = 200)
+mdld <- modtrast(d$x, d$y, z, niter = 100)
 #
 # test set discrepancies vs iterations
 #

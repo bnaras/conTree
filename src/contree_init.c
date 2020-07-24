@@ -6,7 +6,7 @@
 #include <R_ext/Rdynload.h>
 #ifdef ENABLE_NLS
 #include <libintl.h>
-#define _(String) dgettext ("contree", String)
+#define _(String) dgettext ("conTree", String)
 #else
 #define _(String) (String)
 #endif
@@ -353,7 +353,7 @@ FDEF(untie) ,
 {NULL, NULL, 0}
 };
 
-void R_init_contree(DllInfo *dll){
+void R_init_conTree(DllInfo *dll){
   R_registerRoutines(dll, NULL, NULL, fMethods, NULL);
   R_useDynamicSymbols(dll, FALSE);
 }

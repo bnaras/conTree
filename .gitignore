@@ -11,6 +11,10 @@
 # Example code in package build process
 *-Ex.R
 
+# Binary objects in src
+src/*.o
+src/*.so
+
 # Output files from R CMD build
 /*.tar.gz
 
