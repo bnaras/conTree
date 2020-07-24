@@ -1151,6 +1151,8 @@ c So put label on a separate continue statement
       implicit double precision(a-h,o-z)                                
 !DEC$ ATTRIBUTES DLLEXPORT :: fintcdf1                                  
       double precision y(n,2),b(m),w(n),w1(n),p(m),pij(n,m),ps(m),cdf(m)
+      double precision djunk(1)                                         
+      integer ijunk(1)                                                  
       integer, dimension (:), allocatable :: ic,jc,kc1,kc2,lc           
       double precision, dimension (:), allocatable :: smo               
       call set_vrb(ivrb,2)                                              
@@ -1209,7 +1211,7 @@ c So put label on a separate continue statement
 12031 continue                                                          
       continue                                                          
       if(ivrb .le. 0)goto 12061                                         
-      call labelpr('CDF iterations', -1)                                
+      call intpr('CDF iterations', -1, ijunk, 0)                        
 12061 continue                                                          
       do 12071 it=1,nit                                                 
       jt=it                                                             
@@ -1247,7 +1249,7 @@ c So put label on a separate continue statement
 12161 continue                                                          
       if(err.lt.thr)goto 12072                                          
       if(ivrb .le. 0)goto 12181                                         
-      call labelpr('.', 1)                                              
+      call intpr('.', -1, ijunk, 0)                                     
 12181 continue                                                          
 12071 continue                                                          
 12072 continue                                                          
@@ -1257,7 +1259,8 @@ c So put label on a separate continue statement
 12191 continue                                                          
       continue                                                          
       if(ivrb .le. 0)goto 12211                                         
-      call dblepr1('Err = ', -1, err)                                   
+      djunk(1) = err                                                    
+      call dblepr('Err = ', -1, djunk, 1)                               
 12211 continue                                                          
       return                                                            
       end                                                               

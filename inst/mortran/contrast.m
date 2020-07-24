@@ -767,6 +767,7 @@ subroutine fintcdf1(n,y,m,b,w1,nit,thr,cdf,jt,err);
 !DEC$ ATTRIBUTES DLLEXPORT :: fintcdf1
 %mortran
 real y(n,2),b(m),w(n),w1(n),p(m),pij(n,m),ps(m),cdf(m);
+real djunk(1); integer ijunk(1);
 %fortran
       integer, dimension (:), allocatable :: ic,jc,kc1,kc2,lc
       real, dimension (:), allocatable :: smo
@@ -801,7 +802,7 @@ nt=0;
 >
 "Naras Fix: R does not allow FORTRAN output; so use R function"
 " if(ivrb.gt.0) write(6,'(''CDF iterations'',$)'); "
-if(ivrb.gt.0) < call labelpr('CDF iterations', -1);>
+if(ivrb.gt.0) < call intpr('CDF iterations', -1, ijunk, 0);>
 <it=1,nit; jt=it; ps=p;
    <j=1,m; pij(:,j)=0.0;
       <ii=kc1(j),kc2(j); i=lc(ii);
@@ -822,12 +823,12 @@ if(ivrb.gt.0) < call labelpr('CDF iterations', -1);>
    if(err.lt.thr)  exit;
 "Naras Fix: R does not allow FORTRAN output; so use R function"
 "   if(ivrb.gt.0) write(6,'(''.'',$)');"
-   if(ivrb.gt.0) < call labelpr('.', 1);>
+   if(ivrb.gt.0) < call intpr('.', -1, ijunk, 0);>
 >
 cdf(1)=p(1); <j=2,m; cdf(j)=cdf(j-1)+p(j);>
 "Naras Fix: R does not allow FORTRAN output; so use R function"
 " if ivrb.gt.0 < <w> err; (g10.2);>"
-if ivrb.gt.0 < call dblepr1('Err = ', -1, err);>
+if ivrb.gt.0 < djunk(1) = err; call dblepr('Err = ', -1, djunk, 1);>
 return;
 end;
 subroutine set_vrb(irg,jrg);
