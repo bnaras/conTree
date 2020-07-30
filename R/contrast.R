@@ -1478,7 +1478,7 @@ trans <- function(y, z, wy = rep(1, ny), wz = rep(1, nz), n = min(ny, nz)) {
 
 #' @importFrom stats approxfun
 xfm <- function(y, b0, b1) {
-  f <- approxfun(b0, b1, rule = 2)
+  f <- approxfun(b0, b1, rule = 2 , method = 'linear', ties = list("ordered", mean))
   invisible(f(y))
 }
 
@@ -1566,7 +1566,7 @@ predmod <- function(model, x, z, num = model$niter) {
       if (sum(u) == 0) next
       u1 <- model$trans[[l]][, 1]
       u2 <- model$trans[[l]][, 2]
-      f <- approxfun(u1, u2, rule = 2)
+      f <- approxfun(u1, u2, rule = 2, method = 'linear', ties = list("ordered", mean))
       r[u] <- f(r[u])
     }
   }
@@ -1757,25 +1757,28 @@ bootcri <-
 #' @param y vector, or matrix containing training data input outcome values or censoring intervals for each observation in same format as in contrast()
 #' @param z vector containing values of a second contrasting quantity for each observation in same observation format as in contrast ()
 #' @param w observation weights
-#' @param doplot a flag to display/not display graphical plots
+#' @param doplot logical flag. doplot="first" implies start new display. doplot="next" implies super impose plot on existing display. doplot="none" implies no plot displayed.
+#' @param col color of plotted curve
 #' @param ylim y-axis limit
 #' @return a named list of plotted `x` and `y` points
 #' @importFrom graphics plot lines
 #' @importFrom stats runmed qqplot
 #' @export
-lofcurve <- function(tree, x, y, z, w = rep(1, length(y)), doplot = TRUE, ylim = NULL) {
+lofcurve <- function(tree, x, y, z, w = rep(1, length(y)), doplot = 'first', col = 'black', ylim = NULL) {
   u <- nodesum(tree, x, y, z, w)
   v <- avesum(u$cri, u$wt)
-  if (doplot) {
-    if (is.null(ylim)) {
-      yl <- c(0, max(v$y))
-    } else {
-      yl <- ylim
+  if (doplot != 'none') {
+    if (doplot == 'first') {
+       if (is.null(ylim)) {
+         yl <- c(0, max(v$y))
+       } else {
+         yl <- ylim
+       }
+       plot(v$x / length(y), v$y,
+         ylim = yl, type = "l", col = col,
+         xlab = "Fraction of Observations", ylab = "Average  Discrepancy")
     }
-    plot(v$x / length(y), v$y,
-      ylim = yl, type = "l",
-      xlab = "Fraction of Observations", ylab = "Average  Discrepancy"
-    )
+    if (doplot == 'next') lines(v$x/length(y), v$y, col=col)
   }
   invisible(list(x = v$x / length(y), y = v$y))
 }

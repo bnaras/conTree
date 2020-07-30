@@ -4,7 +4,16 @@
 \alias{lofcurve}
 \title{Produce lack-of-fit curve for a contrast tree}
 \usage{
-lofcurve(tree, x, y, z, w = rep(1, length(y)), doplot = TRUE, ylim = NULL)
+lofcurve(
+  tree,
+  x,
+  y,
+  z,
+  w = rep(1, length(y)),
+  doplot = "first",
+  col = "black",
+  ylim = NULL
+)
 }
 \arguments{
 \item{tree}{model object output from contrast() or prune()}
@@ -17,7 +26,9 @@ lofcurve(tree, x, y, z, w = rep(1, length(y)), doplot = TRUE, ylim = NULL)
 
 \item{w}{observation weights}
 
-\item{doplot}{a flag to display/not display graphical plots}
+\item{doplot}{logical flag. doplot="first" implies start new display. doplot="next" implies super impose plot on existing display. doplot="none" implies no plot displayed.}
+
+\item{col}{color of plotted curve}
 
 \item{ylim}{y-axis limit}
 }
