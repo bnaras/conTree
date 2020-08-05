@@ -423,7 +423,7 @@ subroutine andarm(n,y,y2,z,w,dst,sw);
 %mortran
 real y(n),y2(n),z(n),w(n);
 call set_kri(kri,2);
-if kri.eq.1000 < call fcallr(n, y, z, w, dst); sw=sum(sw);>
+if kri.eq.1000 < call rfcall(n, y, z, w, dst); sw=sum(w);>
 elseif kri.eq.1 < call andarm1(n,y,z,w,dst,sw);>
 elseif kri.eq.2 < call andarm2(n,y,z,w,dst,sw);>
 elseif kri.eq.3 < call andarm3(n,y,z,w,dst,sw);>

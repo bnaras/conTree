@@ -530,8 +530,8 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       double precision y(n),y2(n),z(n),w(n)                             
       call set_kri(kri,2)                                               
       if(kri .ne. 1000)goto 10951                                       
-      call fcallr(n, y, z, w, dst)                                      
-      sw=sum(sw)                                                        
+      call rfcall(n, y, z, w, dst)                                      
+      sw=sum(w)                                                        
       goto 10941                                                        
 10951 if(kri .ne. 1)goto 10961                                          
       call andarm1(n,y,z,w,dst,sw)                                      

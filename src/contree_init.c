@@ -19,22 +19,6 @@ static const R_CallMethodDef CallEntries[] = {
 
 #define FDEF(name)  {#name, (DL_FUNC) &F77_SUB(name), sizeof(name ## _t)/sizeof(name ## _t[0]), name ##_t}
 
-void F77_SUB(fcallr)(
-int *n,
-double *y,
-double *z,
-double *w,
-double *res
-);
- 
-static R_NativePrimitiveArgType fcallr_t[] = {
-INTSXP,
-REALSXP,
-REALSXP,
-REALSXP,
-REALSXP
-};
-
 void F77_SUB(set_miss)(
 double *arg
 );
@@ -373,7 +357,6 @@ FDEF(fintcdf1) ,
 FDEF(cdfpoints1) ,
 FDEF(trans) ,
 FDEF(untie) ,
-FDEF(fcallr) ,
 {NULL, NULL, 0}
 };
 

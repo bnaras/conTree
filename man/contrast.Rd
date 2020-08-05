@@ -30,7 +30,8 @@ contrast(
   nbump = 1,
   fnodes = 0.25,
   fsamp = 1,
-  doprint = FALSE
+  doprint = FALSE,
+  dfun = NULL
 )
 
 modtrast(
@@ -175,6 +176,8 @@ bumped trees}
 for bumped trees}
 
 \item{doprint}{logical flag \code{TRUE/FALSE} implies do/don't plot iteration progress}
+
+\item{dfun}{a discrepancy function in R \code{dfun(y,z,w)} returning a double scalar result that will be used if not NULL}
 
 \item{learn.rate}{learning rate parameter in \verb{(0,1]}}
 
