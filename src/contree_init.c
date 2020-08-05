@@ -11,7 +11,30 @@
 #define _(String) (String)
 #endif
 
+extern SEXP store_rfun(SEXP rfun);
+static const R_CallMethodDef CallEntries[] = {
+  {"store_rfun", (DL_FUNC) &store_rfun, 1},
+  {NULL, NULL, 0}
+};
+
 #define FDEF(name)  {#name, (DL_FUNC) &F77_SUB(name), sizeof(name ## _t)/sizeof(name ## _t[0]), name ##_t}
+
+void F77_SUB(fcallr)(
+int *n,
+double *y,
+double *z,
+double *w,
+double *res
+);
+ 
+static R_NativePrimitiveArgType fcallr_t[] = {
+INTSXP,
+REALSXP,
+REALSXP,
+REALSXP,
+REALSXP
+};
+
 void F77_SUB(set_miss)(
 double *arg
 );
@@ -350,11 +373,12 @@ FDEF(fintcdf1) ,
 FDEF(cdfpoints1) ,
 FDEF(trans) ,
 FDEF(untie) ,
+FDEF(fcallr) ,
 {NULL, NULL, 0}
 };
 
 void R_init_conTree(DllInfo *dll){
-  R_registerRoutines(dll, NULL, NULL, fMethods, NULL);
+  R_registerRoutines(dll, NULL, CallEntries, fMethods, NULL);
   R_useDynamicSymbols(dll, FALSE);
 }
 #endif

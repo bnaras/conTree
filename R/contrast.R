@@ -62,6 +62,7 @@
 #'     for bumped trees
 #' @param doprint a logical flag indicating print/don't print
 #'     bootstrapped tree quality during execution, default `FALSE`
+#' @param dfun a discrepancy function in R `dfun(y,z,w)` returning a double scalar result that will be used if not NULL
 #' @return a contrast model object use as input to interpretation
 #'     procedures
 #'
@@ -110,7 +111,7 @@ contrast <- function(x, y, z, w = rep(1, nrow(x)), cat.vars = NULL, not.used = N
                      xmiss = 9.0e35, tree.size = 10, min.node = 500, mode = "onesamp", type = "dist", pwr = 2,
                      quant = 0.5, nclass = NULL, costs = NULL, cdfsamp = 500, verbose = FALSE,
                      tree.store = 1000000, cat.store = 100000, nbump = 1, fnodes = 0.25, fsamp = 1,
-                     doprint = FALSE) {
+                     doprint = FALSE, dfun = NULL) {
   cri <- "max"
   qqtrim <- 20
   n <- nrow(x)
@@ -131,7 +132,7 @@ contrast <- function(x, y, z, w = rep(1, nrow(x)), cat.vars = NULL, not.used = N
     trek <- contrastt(
       x[s, ], yy, z[s], w[s], cat.vars, not.used, qint,
       xmiss, tree.size, min.node, cri, mode, type, pwr, qqtrim, quant, nclass, costs,
-      cdfsamp, verbose, tree.store, cat.store
+      cdfsamp, verbose, tree.store, cat.store, dfun
     )
     v <- nodesum(trek, x, y, z, doplot = FALSE)
     nf <- as.integer(max(1, fnodes * length(v$nodes)))
@@ -150,7 +151,7 @@ contrast <- function(x, y, z, w = rep(1, nrow(x)), cat.vars = NULL, not.used = N
 contrastt <- function(x, y, z, w = rep(1, nrow(x)), cat.vars = NULL, not.used = NULL, qint = 10,
                       xmiss = 9.0e35, tree.size = 10, min.node = 500, cri = "max", mode = "onesamp",
                       type = "dist", pwr = 2, qqtrim = 20, quant = 0.5, nclass = NULL, costs = NULL, cdfsamp = 500,
-                      verbose = FALSE, tree.store = 1000000, cat.store = 100000) {
+                      verbose = FALSE, tree.store = 1000000, cat.store = 100000, dfun) {
   ## if (!is.loaded("fcontrast")) {
   ##   stop("dyn.load('contrast.so')   linux\n  dyn.load('contrast.dll') windows")
   ## }
@@ -254,7 +255,7 @@ contrastt <- function(x, y, z, w = rep(1, nrow(x)), cat.vars = NULL, not.used = 
   if (!is.null(nclass)) nclass <- parchk("nclass", nclass, 2, 100, 2)
   v <- contrast1(
     xx, y, z, w, lx, qint, xmiss, tree.size, min.node, cri, mode, type,
-    pwr, qqtrim, quant, nclass, costs, cdfsamp, verbose, tree.store, cat.store
+    pwr, qqtrim, quant, nclass, costs, cdfsamp, verbose, tree.store, cat.store, dfun
   )
   tree <- list(itre = v$itre, rtre = v$rtre, cat = v$cat, kxt = v$kxt, kxc = v$kxc, p = v$p)
   parms <- list(
@@ -308,7 +309,7 @@ parchk <- function(ax, x, lx, ux, df) {
 
 contrast1 <- function(x, y, z, w, lx, qint, xmiss, tree.size, min.node, cri,
                       mode, type, pwr, qqtrim, quant, nclass, costs, cdfsamp, verbose,
-                      tree.store, cat.store) {
+                      tree.store, cat.store, dfun) {
   n <- nrow(x)
   p <- ncol(x)
   call <- .Fortran("set_miss", arg = as.numeric(xmiss), PACKAGE = 'conTree')
@@ -348,6 +349,11 @@ contrast1 <- function(x, y, z, w, lx, qint, xmiss, tree.size, min.node, cri,
       }
     }
   }
+  if (!is.null(dfun)) {
+      save_rfun(dfun)
+      kri <- 1000  ## MARKER FOR USER DEFINED DISCREPANCY
+  }
+
   call <- .Fortran("set_kri", irg = as.integer(kri), jrg = as.integer(1), PACKAGE = 'conTree')
   call <- .Fortran("set_qqtrm", irg = as.integer(qqtrim), jrg = as.integer(1), PACKAGE = 'conTree')
   call <- .Fortran("set_quant", arg = as.numeric(quant), PACKAGE = 'conTree')
@@ -372,6 +378,7 @@ contrast1 <- function(x, y, z, w, lx, qint, xmiss, tree.size, min.node, cri,
   } else {
     y2 <- rep(0, n)
   }
+
   u <- .Fortran("fcontrast",
     no = as.integer(n), ni = as.integer(p),
     x = as.vector(as.numeric(x)), y = as.vector(as.numeric(y)),
