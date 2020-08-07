@@ -17,7 +17,7 @@ contrast(
   xmiss = 9e+35,
   tree.size = 10,
   min.node = 500,
-  mode = "onesamp",
+  mode = c("onesamp", "twosamp"),
   type = "dist",
   pwr = 2,
   quant = 0.5,
@@ -30,8 +30,7 @@ contrast(
   nbump = 1,
   fnodes = 0.25,
   fsamp = 1,
-  doprint = FALSE,
-  dfun = NULL
+  doprint = FALSE
 )
 
 modtrast(
@@ -177,8 +176,6 @@ for bumped trees}
 
 \item{doprint}{logical flag \code{TRUE/FALSE} implies do/don't plot iteration progress}
 
-\item{dfun}{a discrepancy function in R \code{dfun(y,z,w)} returning a double scalar result that will be used if not NULL}
-
 \item{learn.rate}{learning rate parameter in \verb{(0,1]}}
 
 \item{niter}{number of trees}
@@ -234,9 +231,9 @@ The \code{mode} argument is either
 \item \code{x} are predictor variables for both samples
 \item \code{y} are outcomes for both samples
 \item \code{z} is sample identity flag with \code{z < 0} implying first sample observations and \code{z > 0}, the second sample observations.
-The \code{type} argument indicates the type of contrast. If \code{mode} is \code{'onesamp'}
+The \code{type} argument indicates the type of contrast. It can be either a user defined function or a string. If \code{mode} is \code{'onesamp'}, the default,
 }
-\item \code{type = 'dist'} implies contrast distribution of \code{y} with that of \code{z} (\code{y} may be censored - see above)
+\item \code{type = 'dist'} (default) implies contrast distribution of \code{y} with that of \code{z} (\code{y} may be censored - see above)
 \item \code{type = 'diff'} implies contrast joint paired values of \code{y} and \code{z}
 \item \code{type = 'class'} implies classification: contrast class labels \code{y[i]} and \code{z[i]} are two class labels (in \code{1:nclass}) for each observation.
 \item \code{type = 'prob'} implies contrast predicted with empirical probabilities: \code{y[i] = 0/1} and  \code{z[i]} is predicted probability \eqn{P(y=1)} for \eqn{i}-th observation
@@ -247,10 +244,15 @@ The \code{type} argument indicates the type of contrast. If \code{mode} is \code
 
 When mode is \code{'twosamp'}
 \itemize{
-\item \code{type= 'dist'} implies contrast \code{y} distributions of both samples
+\item \code{type= 'dist'} (default) implies contrast \code{y} distributions of both samples
 \item \code{type = 'diffmean'} implies maximize absolute difference between means of two samples
 \item \code{type = 'maxmean'} maximize signed difference between means of two samples
 }
+
+When \code{type} is a function, it must be a function of three arguments
+\code{f(y,z,w)} where \code{y} and \code{z} are double vectors and \code{w} is a weight
+vector, not necessarily normalized. The function should return a
+double vector of length 1 as the result. See example below.
 }
 \references{
 Jerome H. Friedman (2019). \emph{Contrast Trees and Distribution Boosting}, \url{https://arxiv.org/abs/1912.03785}
