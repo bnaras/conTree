@@ -1109,6 +1109,10 @@ xfm2 <- function(f, b00, b11, efac = 7, xmiss = 9.0e35) {
 nodeplots <- function(tree, x, y, z, w = rep(1, nrow(x)), nodes = NULL,
                       xlim = NULL, ylim = NULL, pts = "FALSE", span = 0.15) {
   parms <- tree$parms
+  if (is.function(parms$type)) {
+      stop("nodeplots cannot handle user discrepancy!")
+  }
+
   if (parms$type == "dist") {
     if (parms$mode == "onesamp" | is.vector(y)) {
       plotnodes(tree, x, y, z, w, nodes, pts, xlim, ylim)
@@ -1157,11 +1161,14 @@ nodeplots <- function(tree, x, y, z, w = rep(1, nrow(x)), nodes = NULL,
 #' @return a contrast model object to be used with predtrast()
 #' @export
 modtrast <- function(x,y,z,w=rep(1,nrow(x)),cat.vars=NULL,not.used=NULL,qint=10,
-   xmiss=9.0e35,tree.size=10,min.node=500,learn.rate=0.1,type='dist',pwr=2,
-   quant=0.5,cdfsamp=500,verbose=FALSE,
-   tree.store=1000000,cat.store=100000,nbump=1,fnodes=0.25,fsamp=1,
-   doprint=FALSE,niter=100,doplot=FALSE,span=0,plot.span=0.15,print.itr=10) {
-   if (type=='dist') {
+                     xmiss=9.0e35,tree.size=10,min.node=500,learn.rate=0.1,
+                     type=c("dist", "diff", "class", "quant", "prob", "maxmean", "diffmean"),
+                     pwr=2,
+                     quant=0.5,cdfsamp=500,verbose=FALSE,
+                     tree.store=1000000,cat.store=100000,nbump=1,fnodes=0.25,fsamp=1,
+                     doprint=FALSE,niter=100,doplot=FALSE,span=0,plot.span=0.15,print.itr=10) {
+    type <- match.arg(type)
+    if (type=='dist') {
       return(modtrans(x,y,z,w=rep(1,nrow(x)),cat.vars,not.used,qint,
          xmiss,tree.size,min.node,learn.rate,pwr,cdfsamp,verbose,tree.store,
          cat.store,nbump,fnodes,fsamp,doprint,niter,doplot,
