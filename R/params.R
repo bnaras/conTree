@@ -24,8 +24,8 @@ twosamp_types <- c(
 #' @return a named list for each of the types.
 #' @description These functions are mostly useful when one wants to
 #'     test one's own discrepancy function in R `f(y, z, w)` to
-#'     determine if the results are correct. So a natural experimentis
-#'     to experiment by programming one of the already implemented
+#'     determine if the results are correct. So a natural experiment
+#'     is to experiment by programming one of the already implemented
 #'     discrepancy functions in R. However, the Fortran
 #'     implementations of such discrepancy measures use some
 #'     parameters in the computations and therefore the returned
@@ -38,7 +38,8 @@ twosamp_types <- c(
 #'     the formula for the Anderson-Darling statistic is at least
 #'     `eps`. Next, for `type = "prob"`, if the length of the vector
 #'     is less than `nmin = 20` the discrepancy is computed to be
-#'     0. And so on. Refer to the Fortran.
+#'     0. And so on. Refer to the R and Fortran source for further
+#'     details as this is an advanced topic.
 #' @rdname Fortran_details
 #' @export
 onesample_parameters  <- function() {

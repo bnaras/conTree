@@ -45,7 +45,7 @@ modtrast(
   tree.size = 10,
   min.node = 500,
   learn.rate = 0.1,
-  type = "dist",
+  type = c("dist", "diff", "class", "quant", "prob", "maxmean", "diffmean"),
   pwr = 2,
   quant = 0.5,
   cdfsamp = 500,
