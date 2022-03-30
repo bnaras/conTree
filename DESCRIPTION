@@ -18,13 +18,13 @@ Authors@R: c(person("Jerome", "Friedman", role=c("aut", "cph"),
 	           email = "naras@stat.stanford.edu"))
 License: Apache License 2.0 | file LICENSE
 Encoding: UTF-8
-URL: https://jhfhub.github.io/conTree_tutorial
+URL: https://jhfhub.github.io/conTree_tutorial/
 BugReports: https://github.com/bnaras/conTree/issues
 Roxygen: list(markdown = TRUE)
 Imports: 
     stats,
     graphics
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.2
 Suggests: 
     randomForest,
     knitr
