@@ -1,3 +1,12 @@
+# conTree 0.2.8
+
+- Modified `getcri` to become aware of argument `dfun` for
+  user-defined discrepancy function
+
+# conTree 0.2.7
+
+- Added argument `dfun` for user-defined discrepancy function
+
 # conTree 0.2.6
 
 - Reverted to original plotting behavior via `doplot` used by Jerry
