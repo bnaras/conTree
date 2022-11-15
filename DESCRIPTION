@@ -10,7 +10,7 @@ Description: Contrast trees represent a new approach for assessing the
     assumption free method for estimating the full probability
     distribution of an outcome variable given any set of joint input
     predictor variable values.
-Version: 0.2-6
+Version: 0.2-8
 VignetteBuilder: knitr
 Authors@R: c(person("Jerome", "Friedman", role=c("aut", "cph"),
 	   	   email = "jhf@stat.stanford.edu"),
@@ -18,15 +18,15 @@ Authors@R: c(person("Jerome", "Friedman", role=c("aut", "cph"),
 	           email = "naras@stat.stanford.edu"))
 License: Apache License 2.0 | file LICENSE
 Encoding: UTF-8
-URL: https://jhfhub.github.io/conTree_tutorial/
+URL: https://jhfhub.github.io/conTree_tutorial
 BugReports: https://github.com/bnaras/conTree/issues
 Roxygen: list(markdown = TRUE)
-Imports: 
-    stats,
-    graphics
-RoxygenNote: 7.1.2
-Suggests: 
-    randomForest,
-    knitr
-Depends: 
-    R (>= 3.5)
+Imports: stats, graphics
+RoxygenNote: 7.1.0
+Suggests: randomForest, knitr
+Depends: R (>= 3.5)
+NeedsCompilation: yes
+Packaged: 2020-08-07 23:23:13 UTC; naras
+Author: Jerome Friedman [aut, cph],
+  Balasubramanian Narasimhan [aut, cre]
+Maintainer: Balasubramanian Narasimhan <naras@stat.stanford.edu>
