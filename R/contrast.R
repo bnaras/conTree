@@ -89,8 +89,8 @@
 #'   * `y` are outcomes for both samples
 #'   * `z` is sample identity flag with `z < 0` implying first sample observations and `z > 0`, the second sample observations.
 
-#' The `type` argument indicates the type of contrast. If `mode` is `'onesamp'`
-#' - `type = 'dist'` implies contrast distribution of `y` with that of `z` (`y` may be censored - see above)
+#' The `type` argument indicates the type of contrast. It can be either a user defined function or a string. If `mode` is `'onesamp'`, the default,
+#' - `type = 'dist'` (default) implies contrast distribution of `y` with that of `z` (`y` may be censored - see above)
 #' - `type = 'diff'` implies contrast joint paired values of `y` and `z`
 #' - `type = 'class'` implies classification: contrast class labels `y[i]` and `z[i]` are two class labels (in `1:nclass`) for each observation.
 #' - `type = 'prob'` implies contrast predicted with empirical probabilities: `y[i] = 0/1` and  `z[i]` is predicted probability \eqn{P(y=1)} for \eqn{i}-th observation
@@ -99,18 +99,25 @@
 #' - `type = 'maxmean'` implies maximize signed mean difference between `y` and `z`
 #'
 #' When mode is `'twosamp'`
-#' - `type= 'dist'` implies contrast `y` distributions of both samples
+#' - `type= 'dist'` (default) implies contrast `y` distributions of both samples
 #' - `type = 'diffmean'` implies maximize absolute difference between means of two samples
 #' - `type = 'maxmean'` maximize signed difference between means of two samples
+#'
+#' When `type` is a function, it must be a function of three arguments
+#' `f(y,z,w)` where `y` and `z` are double vectors and `w` is a weight
+#' vector, not necessarily normalized. The function should return a
+#' double vector of length 1 as the result. See example below.
 #'
 #' @author Jerome H. Friedman
 #' @references Jerome H. Friedman (2019). _Contrast Trees and Distribution Boosting_, \url{https://arxiv.org/abs/1912.03785}
 #' @export
 contrast <- function(x, y, z, w = rep(1, nrow(x)), cat.vars = NULL, not.used = NULL, qint = 10,
-                     xmiss = 9.0e35, tree.size = 10, min.node = 500, mode = "onesamp", type = "dist", pwr = 2,
+                     xmiss = 9.0e35, tree.size = 10, min.node = 500, mode = c("onesamp", "twosamp"),
+                     type = "dist", pwr = 2,
                      quant = 0.5, nclass = NULL, costs = NULL, cdfsamp = 500, verbose = FALSE,
                      tree.store = 1000000, cat.store = 100000, nbump = 1, fnodes = 0.25, fsamp = 1,
                      doprint = FALSE) {
+  mode  <- match.arg(mode)
   cri <- "max"
   qqtrim <- 20
   n <- nrow(x)
@@ -148,8 +155,8 @@ contrast <- function(x, y, z, w = rep(1, nrow(x)), cat.vars = NULL, not.used = N
 }
 
 contrastt <- function(x, y, z, w = rep(1, nrow(x)), cat.vars = NULL, not.used = NULL, qint = 10,
-                      xmiss = 9.0e35, tree.size = 10, min.node = 500, cri = "max", mode = "onesamp",
-                      type = "dist", pwr = 2, qqtrim = 20, quant = 0.5, nclass = NULL, costs = NULL, cdfsamp = 500,
+                      xmiss = 9.0e35, tree.size = 10, min.node = 500, cri = "max", mode,
+                      type, pwr = 2, qqtrim = 20, quant = 0.5, nclass = NULL, costs = NULL, cdfsamp = 500,
                       verbose = FALSE, tree.store = 1000000, cat.store = 100000) {
   ## if (!is.loaded("fcontrast")) {
   ##   stop("dyn.load('contrast.so')   linux\n  dyn.load('contrast.dll') windows")
@@ -236,9 +243,18 @@ contrastt <- function(x, y, z, w = rep(1, nrow(x)), cat.vars = NULL, not.used = 
     warning
     ("training weights contain negative numbers - zeros substituted.")
   }
-  if (!is.character(cri)) stop(" cri must be of type chracter.")
-  if (!is.character(mode)) stop(" mode must be of type chracter.")
-  if (!is.character(type)) stop(" type must be of type chracter.")
+  if (!is.character(cri)) stop(" cri must be of type character.")
+
+  if (!(is.function(type) || is.character(type))) stop(" type must be user discpancy function or of type character.")
+    if(is.character(type)) {
+        if (mode == "onesamp" && !(type %in% names(onesamp_types))) {
+            stop(sprintf(" one sample type must be one of %s", paste(names(onesamp_types), collapse = ", ")))
+        }
+        if (mode == "twosamp" && !(type %in% names(onesamp_types))) {
+            stop(sprintf(" two sample type must be one of %s", paste(names(onesamp_types), collapse = ", ")))
+        }
+    }
+
   if (!is.null(costs)) {
     if (nrow(costs) != nclass) stop("nrow(costs) incorrect.")
     if (ncol(costs) != nclass) stop("ncol(costs) incorrect.")
@@ -259,7 +275,7 @@ contrastt <- function(x, y, z, w = rep(1, nrow(x)), cat.vars = NULL, not.used = 
   tree <- list(itre = v$itre, rtre = v$rtre, cat = v$cat, kxt = v$kxt, kxc = v$kxc, p = v$p)
   parms <- list(
     cri = cri, mode = mode, type = type, qqtrim = qqtrim, quant = quant,
-    nclass = nclass, costs = costs, cdfsamp = cdfsamp, verbose = verbose
+    nclass = nclass, costs = costs, cdfsamp = cdfsamp, verbose = verbose, kri = v$kri
   )
   invisible(list(tree = tree, parms = parms))
 }
@@ -319,42 +335,34 @@ contrast1 <- function(x, y, z, w, lx, qint, xmiss, tree.size, min.node, cri,
   icri <- 1
   if (cri != "max") icri <- 2
   call <- .Fortran("set_cri", irg = as.integer(icri), PACKAGE = 'conTree')
-  if (mode == "onesamp") {
-    kri <- 1
-    if (type == "qq") kri <- 2
-    if (type == "diff") kri <- 3
-    if (type == "class") kri <- 4
-    if (type == "quant") kri <- 5
-    if (type == "prob") kri <- 7
-    if (type == "maxmean") kri <- 8
-    if (type == "diffmean") kri <- 9
-    if (kri == 1) {
-      if (is.matrix(y)) {
-        kri <- 6
-        call <- .Fortran("set_samp", irg = as.integer(cdfsamp), PACKAGE = 'conTree')
+
+  if (is.function(type)) {
+      save_rfun(type) ## User defined function
+      kri <- 1000L  ## MARKER FOR USER DEFINED DISCREPANCY
+  } else if (mode == "onesamp") {
+      kri <- onesamp_types[type]
+      if (kri == 1L) {
+          if (is.matrix(y)) {
+              kri <- 6L
+              call <- .Fortran("set_samp", irg = as.integer(cdfsamp), PACKAGE = 'conTree')
+          }
       }
-    }
-  }
-  else {
-    if (type == "dist") kri <- 10
-    if (type == "qq") kri <- 11
-    if (type == "prob") kri <- 12
-    if (type == "diffmean") kri <- 13
-    if (type == "maxmean") kri <- 14
-    if (kri == 10) {
-      if (is.matrix(y)) {
-        kri <- 15
-        call <- .Fortran("set_samp", irg = as.integer(cdfsamp), PACKAGE = 'conTree')
+  } else {
+      kri  <- twosamp_types[type]
+      if (kri == 10L) {
+          if (is.matrix(y)) {
+              kri <- 15L
+              call <- .Fortran("set_samp", irg = as.integer(cdfsamp), PACKAGE = 'conTree')
+          }
       }
-    }
   }
-  call <- .Fortran("set_kri", irg = as.integer(kri), jrg = as.integer(1), PACKAGE = 'conTree')
+
+  call <- .Fortran("set_kri", irg = kri, jrg = as.integer(1), PACKAGE = 'conTree')
   call <- .Fortran("set_qqtrm", irg = as.integer(qqtrim), jrg = as.integer(1), PACKAGE = 'conTree')
   call <- .Fortran("set_quant", arg = as.numeric(quant), PACKAGE = 'conTree')
-  ivrb <- 0
-  if (verbose) ivrb <- 1
-  call <- .Fortran("set_vrb", irg = as.integer(ivrb), jrg = as.integer(1), PACKAGE = 'conTree')
-  if (kri == 4) {
+  ivrb <- as.integer(verbose)
+  call <- .Fortran("set_vrb", irg = ivrb, jrg = as.integer(1), PACKAGE = 'conTree')
+  if (kri == 4L) {
     if (is.null(nclass)) nclass <- 2
     if (is.null(costs)) {
       costs <- matrix(rep(1, nclass * nclass), nrow = nclass, ncol = nclass)
@@ -366,12 +374,13 @@ contrast1 <- function(x, y, z, w, lx, qint, xmiss, tree.size, min.node, cri,
       PACKAGE = 'conTree'
     )
   }
-  if (kri == 6 | kri == 15) {
+  if (kri == 6L | kri == 15L) {
     y2 <- y[, 2]
     y <- y[, 1]
   } else {
     y2 <- rep(0, n)
   }
+
   u <- .Fortran("fcontrast",
     no = as.integer(n), ni = as.integer(p),
     x = as.vector(as.numeric(x)), y = as.vector(as.numeric(y)),
@@ -384,12 +393,13 @@ contrast1 <- function(x, y, z, w, lx, qint, xmiss, tree.size, min.node, cri,
     isc = as.vector(as.integer(rep(0, n))),
     PACKAGE = 'conTree'
   )
+
   v <- .Fortran("get_stor", kxt = integer(1), kxc = integer(1), PACKAGE = 'conTree')
   if (v$kxt > tree.store) stop("tree memory too small.")
   if (v$kxc > cat.store) stop("categorical memory too small.")
   invisible(list(
     itre = u$itre[1:(6 * v$kxt)], rtre = u$rtre[1:(4 * v$kxt)],
-    cat = u$cat[1:v$kxc], kxt = v$kxt, kxc = v$kxc, p = p
+    cat = u$cat[1:v$kxc], kxt = v$kxt, kxc = v$kxc, p = p, kri = kri
   ))
 }
 
@@ -615,48 +625,25 @@ getcri <- function(tree, y, z, w = rep(1, n), cdfsamp = 500) {
     n <- nrow(y)
   }
   v <- tree$parms
-  mode <- v$mode
-  type <- v$type
-  if (mode == "onesamp") {
-    kri <- 1
-    if (type == "qq") kri <- 2
-    if (type == "diff") kri <- 3
-    if (type == "class") kri <- 4
-    if (type == "quant") kri <- 5
-    if (type == "prob") kri <- 7
-    if (type == "maxmean") kri <- 8
-    if (type == "diffmean") kri <- 9
-    if (kri == 1) {
-      if (is.matrix(y)) {
-        kri <- 6
-        call <- .Fortran("set_samp", irg = as.integer(cdfsamp), PACKAGE = 'conTree')
-      }
-    }
+  kri  <- v$kri
+
+  if (kri == 6L || kri == 15L) {
+      call <- .Fortran("set_samp", irg = as.integer(cdfsamp), PACKAGE = 'conTree')
   }
-  else {
-    if (type == "dist") kri <- 10
-    if (type == "qq") kri <- 11
-    if (type == "prob") kri <- 12
-    if (type == "diffmean") kri <- 13
-    if (type == "maxmean") kri <- 14
-    if (kri == 10) {
-      if (is.matrix(y)) {
-        kri <- 15
-        call <- .Fortran("set_samp", irg = as.integer(cdfsamp), PACKAGE = 'conTree')
-      }
-    }
+
+  if (kri == 1000L) {## MARKER FOR USER DEFINED DISCREPANCY
+      save_rfun(v$type) ## The user discrepancy function
   }
+
   call <- .Fortran("set_kri", irg = as.integer(kri), jrg = as.integer(1), PACKAGE = 'conTree')
   call <- .Fortran("set_qqtrm", irg = as.integer(v$qqtrim), jrg = as.integer(1), PACKAGE = 'conTree')
   call <- .Fortran("set_quant", arg = as.numeric(v$quant), PACKAGE = 'conTree')
-  ivrb <- 0
-  if (v$verbose) ivrb <- 1
-  call <- .Fortran("set_vrb", irg = as.integer(ivrb), jrg = as.integer(1), PACKAGE = 'conTree')
-  if (kri == 4) {
+  call <- .Fortran("set_vrb", irg = as.integer(v$verbose), jrg = as.integer(1), PACKAGE = 'conTree')
+  if (kri == 4L) {
     if (is.null(v$nclass)) v$nclass <- 2
     if (is.null(v$costs)) {
-      costs <- matrix(rep(1, v$nclass * v$nclass), nrow = v$nclass, ncol = v$nclass)
-      for (k in (1:v$nclass)) costs[k, k] <- 0
+        costs <- matrix(1, nrow = nclass, ncol = nclass)
+        diag(costs) <- 0
     }
     call <- .Fortran("classin",
       ient = as.integer(1), nclasssv = as.integer(v$nclass),
@@ -664,18 +651,19 @@ getcri <- function(tree, y, z, w = rep(1, n), cdfsamp = 500) {
       PACKAGE = 'conTree'
     )
   }
-  if (kri == 6 | kri == 15) {
+  if (kri == 6L | kri == 15L) {
     y2 <- y[, 2]
     y <- y[, 1]
   } else {
     y2 <- rep(0, n)
   }
+
   u <- .Fortran("andarm",
-    n = as.integer(n), y = as.vector(as.numeric(y)),
-    y2 = as.vector(as.numeric(y2)), z = as.vector(as.numeric(z)),
-    w = as.vector(as.numeric(w)), dst = numeric(1), sw = numeric(1),
-    PACKAGE = 'conTree'
-  )
+                n = as.integer(n), y = as.vector(as.numeric(y)),
+                y2 = as.vector(as.numeric(y2)), z = as.vector(as.numeric(z)),
+                w = as.vector(as.numeric(w)), dst = numeric(1), sw = numeric(1),
+                PACKAGE = 'conTree'
+                )
   list(cri = u$dst, wt = u$sw)
 }
 
@@ -1121,6 +1109,10 @@ xfm2 <- function(f, b00, b11, efac = 7, xmiss = 9.0e35) {
 nodeplots <- function(tree, x, y, z, w = rep(1, nrow(x)), nodes = NULL,
                       xlim = NULL, ylim = NULL, pts = "FALSE", span = 0.15) {
   parms <- tree$parms
+  if (is.function(parms$type)) {
+      stop("nodeplots cannot handle user discrepancy!")
+  }
+
   if (parms$type == "dist") {
     if (parms$mode == "onesamp" | is.vector(y)) {
       plotnodes(tree, x, y, z, w, nodes, pts, xlim, ylim)
@@ -1169,11 +1161,14 @@ nodeplots <- function(tree, x, y, z, w = rep(1, nrow(x)), nodes = NULL,
 #' @return a contrast model object to be used with predtrast()
 #' @export
 modtrast <- function(x,y,z,w=rep(1,nrow(x)),cat.vars=NULL,not.used=NULL,qint=10,
-   xmiss=9.0e35,tree.size=10,min.node=500,learn.rate=0.1,type='dist',pwr=2,
-   quant=0.5,cdfsamp=500,verbose=FALSE,
-   tree.store=1000000,cat.store=100000,nbump=1,fnodes=0.25,fsamp=1,
-   doprint=FALSE,niter=100,doplot=FALSE,span=0,plot.span=0.15,print.itr=10) {
-   if (type=='dist') {
+                     xmiss=9.0e35,tree.size=10,min.node=500,learn.rate=0.1,
+                     type=c("dist", "diff", "class", "quant", "prob", "maxmean", "diffmean"),
+                     pwr=2,
+                     quant=0.5,cdfsamp=500,verbose=FALSE,
+                     tree.store=1000000,cat.store=100000,nbump=1,fnodes=0.25,fsamp=1,
+                     doprint=FALSE,niter=100,doplot=FALSE,span=0,plot.span=0.15,print.itr=10) {
+    type <- match.arg(type)
+    if (type=='dist') {
       return(modtrans(x,y,z,w=rep(1,nrow(x)),cat.vars,not.used,qint,
          xmiss,tree.size,min.node,learn.rate,pwr,cdfsamp,verbose,tree.store,
          cat.store,nbump,fnodes,fsamp,doprint,niter,doplot,

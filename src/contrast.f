@@ -529,51 +529,55 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
 !DEC$ ATTRIBUTES DLLEXPORT :: andarm                                    
       double precision y(n),y2(n),z(n),w(n)                             
       call set_kri(kri,2)                                               
-      if(kri .ne. 1)goto 10951                                          
+      if(kri .ne. 1000)goto 10951                                       
+      call rfcall(n, y, z, w, dst)                                      
+      sw=sum(w)                                                        
+      goto 10941                                                        
+10951 if(kri .ne. 1)goto 10961                                          
       call andarm1(n,y,z,w,dst,sw)                                      
       goto 10941                                                        
-10951 if(kri .ne. 2)goto 10961                                          
+10961 if(kri .ne. 2)goto 10971                                          
       call andarm2(n,y,z,w,dst,sw)                                      
       goto 10941                                                        
-10961 if(kri .ne. 3)goto 10971                                          
+10971 if(kri .ne. 3)goto 10981                                          
       call andarm3(n,y,z,w,dst,sw)                                      
       goto 10941                                                        
-10971 if(kri .ne. 4)goto 10981                                          
+10981 if(kri .ne. 4)goto 10991                                          
       call andarm4(n,y,z,w,dst,sw)                                      
       goto 10941                                                        
-10981 if(kri .ne. 5)goto 10991                                          
+10991 if(kri .ne. 5)goto 11001                                          
       call andarm5(n,y,z,w,dst,sw)                                      
       goto 10941                                                        
-10991 if(kri .ne. 6)goto 11001                                          
+11001 if(kri .ne. 6)goto 11011                                          
       call andarm6(n,y,y2,z,w,dst,sw)                                   
       goto 10941                                                        
-11001 if(kri .ne. 7)goto 11011                                          
+11011 if(kri .ne. 7)goto 11021                                          
       call andarm7(n,y,z,w,dst,sw)                                      
       goto 10941                                                        
-11011 if(kri .ne. 8)goto 11021                                          
+11021 if(kri .ne. 8)goto 11031                                          
       call andarm8(n,y,z,w,dst,sw)                                      
       goto 10941                                                        
-11021 if(kri .ne. 9)goto 11031                                          
+11031 if(kri .ne. 9)goto 11041                                          
       call andarm7(n,y,z,w,dst,sw)                                      
       goto 10941                                                        
-11031 if(kri .ne. 10)goto 11041                                         
+11041 if(kri .ne. 10)goto 11051                                         
       call andarm10(n,y,z,w,dst,sw)                                     
       goto 10941                                                        
-11041 if(kri .ne. 11)goto 11051                                         
+11051 if(kri .ne. 11)goto 11061                                         
       call andarm11(dst,sw)                                             
       goto 10941                                                        
-11051 if(kri .ne. 12)goto 11061                                         
+11061 if(kri .ne. 12)goto 11071                                         
       call andarm12(n,y,z,w,dst,sw)                                     
       goto 10941                                                        
-11061 if(kri .ne. 13)goto 11071                                         
+11071 if(kri .ne. 13)goto 11081                                         
       call andarm12(n,y,z,w,dst,sw)                                     
       goto 10941                                                        
-11071 if(kri .ne. 14)goto 11081                                         
+11081 if(kri .ne. 14)goto 11091                                         
       call andarm14(n,y,z,w,dst,sw)                                     
-      goto 11091                                                        
-11081 continue                                                          
-      call andarm15(n,y,y2,z,w,dst,sw)                                  
+      goto 11101                                                        
 11091 continue                                                          
+      call andarm15(n,y,y2,z,w,dst,sw)                                  
+11101 continue                                                          
 10941 continue                                                          
       return                                                            
       end                                                               
@@ -581,10 +585,10 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       implicit double precision(a-h,o-z)                                
 !DEC$ ATTRIBUTES DLLEXPORT :: set_kri                                   
       save kri                                                          
-      if(jrg .ne. 1)goto 11111                                          
+      if(jrg .ne. 1)goto 11121                                          
       kri=irg                                                           
       return                                                            
-11111 continue                                                          
+11121 continue                                                          
       irg=kri                                                           
       return                                                            
       end                                                               
@@ -600,32 +604,32 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       double precision y(n),z(n),w(n)                                   
       integer my(n),mz(n)                                               
       call set_qqtrm(itrm,2)                                            
-      if(n .ge. nmin)goto 11131                                         
+      if(n .ge. nmin)goto 11141                                         
       dst=0.0                                                           
       sw=sum(w)                                                         
       return                                                            
-11131 continue                                                          
-      if(n .ge. 2*itrm)goto 11151                                       
+11141 continue                                                          
+      if(n .ge. 2*itrm)goto 11161                                       
       dst=0.0                                                           
       sw=dst                                                            
       return                                                            
-11151 continue                                                          
-      do 11161 i=1,n                                                    
-      my(i)=i                                                           
 11161 continue                                                          
+      do 11171 i=1,n                                                    
+      my(i)=i                                                           
+11171 continue                                                          
       continue                                                          
       call psort8(y,my,1,n)                                             
-      do 11171 i=1,n                                                    
+      do 11181 i=1,n                                                    
       mz(i)=i                                                           
-11171 continue                                                          
+11181 continue                                                          
       continue                                                          
       call psort8(z,mz,1,n)                                             
       dst=0.0                                                           
       sw1=dst                                                           
-      do 11181 i=itrm+1,n-itrm                                          
+      do 11191 i=itrm+1,n-itrm                                          
       sw1=sw1+w(my(i))                                                  
       dst=dst+w(my(i))*abs(y(my(i))-z(mz(i)))                           
-11181 continue                                                          
+11191 continue                                                          
       continue                                                          
       dst=dst/sw1                                                       
       sw=sum(w)                                                         
@@ -635,10 +639,10 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       implicit double precision(a-h,o-z)                                
 !DEC$ ATTRIBUTES DLLEXPORT :: set_qqtrm                                 
       save itrm                                                         
-      if(jrg .ne. 1)goto 11201                                          
+      if(jrg .ne. 1)goto 11211                                          
       itrm=irg                                                          
       return                                                            
-11201 continue                                                          
+11211 continue                                                          
       irg=itrm                                                          
       return                                                            
       end                                                               
@@ -647,43 +651,43 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       parameter(eps=1.0e-5,nmin=100)                                    
       double precision y(n),z(n),w(n),q(2*n),w2(2*n)                    
       integer m(2*n),iq(2*n)                                            
-      if(n .ge. nmin)goto 11221                                         
+      if(n .ge. nmin)goto 11231                                         
       dst=0.0                                                           
       sw=sum(w)                                                         
       return                                                            
-11221 continue                                                          
+11231 continue                                                          
       n2=2*n                                                            
-      do 11231 i=1,n                                                    
+      do 11241 i=1,n                                                    
       q(i)=y(i)                                                         
       iq(i)=0                                                           
       q(i+n)=z(i)                                                       
       iq(i+n)=1                                                         
       w2(i)=w(i)                                                        
       w2(i+n)=w(i)                                                      
-11231 continue                                                          
-      continue                                                          
-      do 11241 i=1,n2                                                   
-      m(i)=i                                                            
 11241 continue                                                          
+      continue                                                          
+      do 11251 i=1,n2                                                   
+      m(i)=i                                                            
+11251 continue                                                          
       continue                                                          
       call psort8(q,m,1,n2)                                             
       sw=0.0                                                            
       tw=sw                                                             
       dst=tw                                                            
       sw2=2.0*sum(w)                                                    
-      do 11251 i=1,n2                                                   
+      do 11261 i=1,n2                                                   
       k=m(i)                                                            
-      if(iq(k) .ne. 0)goto 11271                                        
+      if(iq(k) .ne. 0)goto 11281                                        
       sw=sw+w2(k)                                                       
-      goto 11281                                                        
-11271 continue                                                          
-      tw=tw+w2(k)                                                       
+      goto 11291                                                        
 11281 continue                                                          
+      tw=tw+w2(k)                                                       
+11291 continue                                                          
       continue                                                          
       pw=(sw+tw)*(sw2-sw-tw)                                            
       pw=max(eps,pw)                                                    
       dst=dst+abs(sw-tw)/sqrt(pw)                                       
-11251 continue                                                          
+11261 continue                                                          
       continue                                                          
       dst=dst/n                                                         
       return                                                            
@@ -699,11 +703,11 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       implicit double precision(a-h,o-z)                                
       parameter(nmin=20)                                                
       double precision y(n),z(n),w(n)                                   
-      if(n .ge. nmin)goto 11301                                         
+      if(n .ge. nmin)goto 11311                                         
       dst=0.0                                                           
       sw=sum(w)                                                         
       return                                                            
-11301 continue                                                          
+11311 continue                                                          
       sw=sum(w)                                                         
       dst=abs(dot_product(w,y)/sw-dot_product(w,z)/sw)                  
       return                                                            
@@ -712,32 +716,32 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       implicit double precision(a-h,o-z)                                
       parameter(fmin=20)                                                
       double precision y(n),z(n),w(n)                                   
-      if(n .ge. 2*int(fmin))goto 11321                                  
+      if(n .ge. 2*int(fmin))goto 11331                                  
       dst=0.0                                                           
       sw=sum(w)                                                         
       return                                                            
-11321 continue                                                          
+11331 continue                                                          
       dst1=0.0                                                          
       dst2=dst1                                                         
       sw1=dst2                                                          
       sw2=sw1                                                           
-      do 11331 i=1,n                                                    
-      if(z(i) .ge. 0.0)goto 11351                                       
+      do 11341 i=1,n                                                    
+      if(z(i) .ge. 0.0)goto 11361                                       
       sw1=sw1+w(i)                                                      
       dst1=dst1+w(i)*y(i)                                               
-      goto 11361                                                        
-11351 continue                                                          
+      goto 11371                                                        
+11361 continue                                                          
       sw2=sw2+w(i)                                                      
       dst2=dst2+w(i)*y(i)                                               
-11361 continue                                                          
+11371 continue                                                          
       continue                                                          
-11331 continue                                                          
+11341 continue                                                          
       continue                                                          
       sw=sum(w)                                                         
-      if((n*sw1/sw .ge. fmin) .and. (n*sw2/sw .ge. fmin))goto 11381     
+      if((n*sw1/sw .ge. fmin) .and. (n*sw2/sw .ge. fmin))goto 11391     
       dst=0.0                                                           
       return                                                            
-11381 continue                                                          
+11391 continue                                                          
       dst=abs(dst2/sw2-dst1/sw1)                                        
       return                                                            
       end                                                               
@@ -745,32 +749,32 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       implicit double precision(a-h,o-z)                                
       parameter(fmin=20,sml=-1.0e20)                                    
       double precision y(n),z(n),w(n)                                   
-      if(n .ge. 2*int(fmin))goto 11401                                  
+      if(n .ge. 2*int(fmin))goto 11411                                  
       dst=sml                                                           
       sw=sum(w)                                                         
       return                                                            
-11401 continue                                                          
+11411 continue                                                          
       dst1=0.0                                                          
       dst2=dst1                                                         
       sw1=dst2                                                          
       sw2=sw1                                                           
-      do 11411 i=1,n                                                    
-      if(z(i) .ge. 0.0)goto 11431                                       
+      do 11421 i=1,n                                                    
+      if(z(i) .ge. 0.0)goto 11441                                       
       sw1=sw1+w(i)                                                      
       dst1=dst1+w(i)*y(i)                                               
-      goto 11441                                                        
-11431 continue                                                          
+      goto 11451                                                        
+11441 continue                                                          
       sw2=sw2+w(i)                                                      
       dst2=dst2+w(i)*y(i)                                               
-11441 continue                                                          
+11451 continue                                                          
       continue                                                          
-11411 continue                                                          
+11421 continue                                                          
       continue                                                          
       sw=sum(w)                                                         
-      if((n*sw1/sw .ge. fmin) .and. (n*sw2/sw .ge. fmin))goto 11461     
+      if((n*sw1/sw .ge. fmin) .and. (n*sw2/sw .ge. fmin))goto 11471     
       dst=sml                                                           
       return                                                            
-11461 continue                                                          
+11471 continue                                                          
       dst=dst2/sw2-dst1/sw1                                             
       return                                                            
       end                                                               
@@ -778,11 +782,11 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       implicit double precision(a-h,o-z)                                
       parameter(nmin=20,sml=-1.0e20)                                    
       double precision y(n),z(n),w(n)                                   
-      if(n .ge. nmin)goto 11481                                         
+      if(n .ge. nmin)goto 11491                                         
       dst=sml                                                           
       sw=sum(w)                                                         
       return                                                            
-11481 continue                                                          
+11491 continue                                                          
       sw=sum(w)                                                         
       dst=dot_product(w,y)/sw-dot_product(w,z)/sw                       
       return                                                            
@@ -792,20 +796,20 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       parameter(maxclass2=10000,nmin=100,idum=2)                        
       double precision y(n),z(n),w(n),out(maxclass2),dum(2,2)           
       double precision, dimension (:,:), allocatable :: costs           
-      if(n .ge. nmin)goto 11501                                         
+      if(n .ge. nmin)goto 11511                                         
       dst=0.0                                                           
       sw=sum(w)                                                         
       return                                                            
-11501 continue                                                          
+11511 continue                                                          
       call classin(2,idum,dum,nclass,out)                               
       allocate(costs(1:nclass,1:nclass),stat=jerr);                     
       call reorg(2,nclass,out,costs)                                    
       dst=0.0                                                           
-      do 11511 i=1,n                                                    
+      do 11521 i=1,n                                                    
       ky=int(y(i)+0.1)                                                  
       kz=int(z(i)+0.1)                                                  
       dst=dst+w(i)*costs(ky,kz)                                         
-11511 continue                                                          
+11521 continue                                                          
       continue                                                          
       sw=sum(w)                                                         
       dst=dst/sw                                                        
@@ -816,16 +820,16 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       parameter(nmin=50)                                                
       double precision y(n),z(n),w(n)                                   
       data qntl /0.5/                                                   
-      if(n .ge. nmin)goto 11531                                         
+      if(n .ge. nmin)goto 11541                                         
       dst=0.0                                                           
       sw=sum(w)                                                         
       return                                                            
-11531 continue                                                          
+11541 continue                                                          
       sw=sum(w)                                                         
       up=0.0                                                            
-      do 11541 i=1,n                                                    
+      do 11551 i=1,n                                                    
       if(y(i).le.z(i)) up=up+w(i)                                       
-11541 continue                                                          
+11551 continue                                                          
       continue                                                          
       dst=abs(up/sw-qntl)                                               
       return                                                            
@@ -838,11 +842,11 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       implicit double precision(a-h,o-z)                                
       parameter(nit=100,xmiss=9.0e35,thr=1.0e-2,nmin=100)               
       double precision y(n),y2(n),z(n),w(n),yy(n,2)                     
-      if(n .ge. nmin)goto 11561                                         
+      if(n .ge. nmin)goto 11571                                         
       dst=0.0                                                           
       sw=sum(w)                                                         
       return                                                            
-11561 continue                                                          
+11571 continue                                                          
       yy(:,1)=y                                                         
       yy(:,2)=y2                                                        
       call cendst(n,yy,z,w,nit,thr,xmiss,dst,sw)                        
@@ -853,11 +857,11 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       implicit double precision(a-h,o-z)                                
       parameter(nit=100,xmiss=9.0e35,thr=1.0e-2,nmin=100)               
       double precision y(n),y2(n),z(n),w(n),yy(n,2)                     
-      if(n .ge. nmin)goto 11581                                         
+      if(n .ge. nmin)goto 11591                                         
       dst=0.0                                                           
       sw=sum(w)                                                         
       return                                                            
-11581 continue                                                          
+11591 continue                                                          
       yy(:,1)=y                                                         
       yy(:,2)=y2                                                        
       call cendst1(n,yy,z,w,nit,thr,xmiss,dst,sw)                       
@@ -870,42 +874,42 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       double precision y(n),z(n),w(n)                                   
       integer m(n)                                                      
       sw=sum(w)                                                         
-      if(n .ge. nmin)goto 11601                                         
+      if(n .ge. nmin)goto 11611                                         
       dst=0.0                                                           
       return                                                            
-11601 continue                                                          
+11611 continue                                                          
       sw1=0.0                                                           
       sw2=sw1                                                           
-      do 11611 i=1,n                                                    
+      do 11621 i=1,n                                                    
       m(i)=i                                                            
-      if(z(i) .ge. 0.0)goto 11631                                       
+      if(z(i) .ge. 0.0)goto 11641                                       
       sw1=sw1+w(i)                                                      
-      goto 11641                                                        
-11631 continue                                                          
-      sw2=sw2+w(i)                                                      
+      goto 11651                                                        
 11641 continue                                                          
+      sw2=sw2+w(i)                                                      
+11651 continue                                                          
       continue                                                          
-11611 continue                                                          
+11621 continue                                                          
       continue                                                          
       call psort8(y,m,1,n)                                              
       s1=0.0                                                            
       s2=s1                                                             
       s=s2                                                              
       dst=s                                                             
-      do 11651 i=1,n                                                    
+      do 11661 i=1,n                                                    
       k=m(i)                                                            
       s=s+w(k)                                                          
-      if(z(k) .ge. 0)goto 11671                                         
+      if(z(k) .ge. 0)goto 11681                                         
       s1=s1+w(k)/sw1                                                    
-      goto 11681                                                        
-11671 continue                                                          
-      s2=s2+w(k)/sw2                                                    
+      goto 11691                                                        
 11681 continue                                                          
+      s2=s2+w(k)/sw2                                                    
+11691 continue                                                          
       continue                                                          
       pw=s*(sw-s)                                                       
       pw=max(eps,pw)                                                    
       dst=dst+abs(s1-s2)/sqrt(pw)                                       
-11651 continue                                                          
+11661 continue                                                          
       continue                                                          
       return                                                            
       end                                                               
@@ -941,68 +945,68 @@ c So put label on a separate continue statement
       n2=2*n                                                            
       n3=3*n                                                            
       sw=sum(w)                                                         
-      do 11691 i=1,n                                                    
+      do 11701 i=1,n                                                    
       mz(i)=i                                                           
-11691 continue                                                          
+11701 continue                                                          
       continue                                                          
       call psort8(z,mz,1,n)                                             
       nq=int(0.25*n)                                                    
       teps=(z(mz(n-nq))-z(mz(nq)))*eps                                  
-      do 11701 i=1,n                                                    
-      if(y(i,2)-y(i,1).ge.teps)goto 11701                               
+      do 11711 i=1,n                                                    
+      if(y(i,2)-y(i,1).ge.teps)goto 11711                               
       y(i,1)=y(i,1)-teps                                                
       y(i,2)=y(i,2)+teps                                                
-11701 continue                                                          
-      continue                                                          
-      do 11711 i=1,n                                                    
-      b(i)=y(i,1)                                                       
-      b(i+n)=y(i,2)                                                     
 11711 continue                                                          
       continue                                                          
-      m=0                                                               
-      do 11721 i=1,n2                                                   
-      if(b(i).le.-xmiss)goto 11721                                      
-      if(b(i).ge.xmiss)goto 11721                                       
-      m=m+1                                                             
-      b(m)=b(i)                                                         
+      do 11721 i=1,n                                                    
+      b(i)=y(i,1)                                                       
+      b(i+n)=y(i,2)                                                     
 11721 continue                                                          
       continue                                                          
+      m=0                                                               
+      do 11731 i=1,n2                                                   
+      if(b(i).le.-xmiss)goto 11731                                      
+      if(b(i).ge.xmiss)goto 11731                                       
+      m=m+1                                                             
+      b(m)=b(i)                                                         
+11731 continue                                                          
+      continue                                                          
       call unique(m,b,nu)                                               
-      if(nu .le. nsamp)goto 11741                                       
+      if(nu .le. nsamp)goto 11751                                       
       call rget(r,nsamp)                                                
-      do 11751 i=1,nsamp                                                
+      do 11761 i=1,nsamp                                                
       r(i)=b(int(nu*r(i))+1)                                            
-11751 continue                                                          
+11761 continue                                                          
       continue                                                          
       nu=nsamp                                                          
       b(1:nu)=r(1:nu)                                                   
       call sort(b,nu)                                                   
-11741 continue                                                          
+11751 continue                                                          
       m=nu+1                                                            
       b(m)=xmiss                                                        
       call fintcdf1(n,y,m,b,w,nit,thr/m,cdf,jt,err)                     
       m=m-1                                                             
-      do 11761 i=1,m                                                    
+      do 11771 i=1,m                                                    
       q(i)=b(i)                                                         
       iq(i)=0                                                           
-11761 continue                                                          
-      continue                                                          
-      do 11771 i=1,n                                                    
-      mz(i)=i                                                           
 11771 continue                                                          
+      continue                                                          
+      do 11781 i=1,n                                                    
+      mz(i)=i                                                           
+11781 continue                                                          
       continue                                                          
       call psort8(z,mz,1,n)                                             
       mpn=m+n                                                           
       k=0                                                               
-      do 11781 i=m+1,mpn                                                
+      do 11791 i=m+1,mpn                                                
       k=k+1                                                             
       q(i)=z(mz(k))                                                     
       iq(i)=1                                                           
-11781 continue                                                          
-      continue                                                          
-      do 11791 i=1,mpn                                                  
-      mm(i)=i                                                           
 11791 continue                                                          
+      continue                                                          
+      do 11801 i=1,mpn                                                  
+      mm(i)=i                                                           
+11801 continue                                                          
       continue                                                          
       call psort8(q,mm,1,mpn)                                           
       ycdf=0.0                                                          
@@ -1011,9 +1015,9 @@ c So put label on a separate continue statement
       spw=dst                                                           
       ny=0                                                              
       nz=ny                                                             
-      do 11801 i=1,mpn                                                  
+      do 11811 i=1,mpn                                                  
       k=mm(i)                                                           
-      if(iq(k) .ne. 0)goto 11821                                        
+      if(iq(k) .ne. 0)goto 11831                                        
       ny=ny+1                                                           
       ycdf=cdf(ny)                                                      
       pw=float(i)*float(mpn-i)/float(mpn)**2                            
@@ -1021,13 +1025,13 @@ c So put label on a separate continue statement
       pw=1.0/sqrt(pw)                                                   
       spw=spw+pw                                                        
       dst=dst+pw*abs(ycdf-zcdf)                                         
-      goto 11831                                                        
-11821 continue                                                          
+      goto 11841                                                        
+11831 continue                                                          
       nz=nz+1                                                           
       zcdf=zcdf+w(nz)/sw                                                
-11831 continue                                                          
+11841 continue                                                          
       continue                                                          
-11801 continue                                                          
+11811 continue                                                          
       continue                                                          
       dst=dst/spw                                                       
       return                                                            
@@ -1047,52 +1051,52 @@ c So put label on a separate continue statement
       n1=0.0                                                            
       n2=n1                                                             
       sw = sw + 0                                                       
-      do 11841 i=1,n                                                    
-      if(y(i,1).le.-xmiss)goto 11841                                    
-      if(y(i,2).ge.xmiss)goto 11841                                     
-      if(y(i,2)-y(i,1).ge.teps)goto 11841                               
+      do 11851 i=1,n                                                    
+      if(y(i,1).le.-xmiss)goto 11851                                    
+      if(y(i,2).ge.xmiss)goto 11851                                     
+      if(y(i,2)-y(i,1).ge.teps)goto 11851                               
       y(i,1)=y(i,1)-teps                                                
       y(i,2)=y(i,2)+teps                                                
-11841 continue                                                          
+11851 continue                                                          
       continue                                                          
-      do 11851 i=1,n                                                    
-      if(z(i) .ge. 0.0)goto 11871                                       
+      do 11861 i=1,n                                                    
+      if(z(i) .ge. 0.0)goto 11881                                       
       n1=n1+1                                                           
       y1(n1,:)=y(i,:)                                                   
       w1(n1)=w(i)                                                       
-      goto 11881                                                        
-11871 continue                                                          
+      goto 11891                                                        
+11881 continue                                                          
       n2=n2+1                                                           
       y2(n2,:)=y(i,:)                                                   
       w2(n2)=w(i)                                                       
-11881 continue                                                          
-      continue                                                          
-11851 continue                                                          
-      continue                                                          
-      do 11891 i=1,n                                                    
-      b(i)=y(i,1)                                                       
-      b(i+n)=y(i,2)                                                     
 11891 continue                                                          
       continue                                                          
-      m=0                                                               
-      do 11901 i=1,n2                                                   
-      if(b(i).le.-xmiss)goto 11901                                      
-      if(b(i).ge.xmiss)goto 11901                                       
-      m=m+1                                                             
-      b(m)=b(i)                                                         
+11861 continue                                                          
+      continue                                                          
+      do 11901 i=1,n                                                    
+      b(i)=y(i,1)                                                       
+      b(i+n)=y(i,2)                                                     
 11901 continue                                                          
       continue                                                          
+      m=0                                                               
+      do 11911 i=1,n2                                                   
+      if(b(i).le.-xmiss)goto 11911                                      
+      if(b(i).ge.xmiss)goto 11911                                       
+      m=m+1                                                             
+      b(m)=b(i)                                                         
+11911 continue                                                          
+      continue                                                          
       call unique(m,b,nu)                                               
-      if(nu .le. nsamp)goto 11921                                       
+      if(nu .le. nsamp)goto 11931                                       
       call rget(r,nsamp)                                                
-      do 11931 i=1,nsamp                                                
+      do 11941 i=1,nsamp                                                
       r(i)=b(int(nu*r(i))+1)                                            
-11931 continue                                                          
+11941 continue                                                          
       continue                                                          
       nu=nsamp                                                          
       b(1:nu)=r(1:nu)                                                   
       call sort(b,nu)                                                   
-11921 continue                                                          
+11931 continue                                                          
       m=nu+1                                                            
       b(m)=xmiss                                                        
       call getcdf1(n1,y1,w1,nit,thr,xmiss,nsamp,m,b,cdf1,sw1)           
@@ -1120,9 +1124,9 @@ c So put label on a separate continue statement
       double precision cdf1(m),cdf2(m)                                  
       f12=sqrt(float(m))                                                
       dst=0.0                                                           
-      do 11941 i=1,m                                                    
+      do 11951 i=1,m                                                    
       dst=dst+abs(cdf1(i)-cdf2(i))/sqrt(float(i)*float(m-i+1))          
-11941 continue                                                          
+11951 continue                                                          
       continue                                                          
       dst=f12*dst/m                                                     
       return                                                            
@@ -1131,18 +1135,18 @@ c So put label on a separate continue statement
       implicit double precision(a-h,o-z)                                
       double precision y(n),yu(n)                                       
       integer m(n)                                                      
-      do 11951 i=1,n                                                    
+      do 11961 i=1,n                                                    
       m(i)=i                                                            
-11951 continue                                                          
+11961 continue                                                          
       continue                                                          
       call psort8(y,m,1,n)                                              
       nu=1                                                              
       yu(1)=y(m(1))                                                     
-      do 11961 i=2,n                                                    
-      if(y(m(i-1)).ge.y(m(i)))goto 11961                                
+      do 11971 i=2,n                                                    
+      if(y(m(i-1)).ge.y(m(i)))goto 11971                                
       nu=nu+1                                                           
       yu(nu)=y(m(i))                                                    
-11961 continue                                                          
+11971 continue                                                          
       continue                                                          
       y(1:nu)=yu(1:nu)                                                  
       return                                                            
@@ -1159,14 +1163,14 @@ c So put label on a separate continue statement
       w=w1/sum(w1)                                                      
       p=1.0/m                                                           
       nt=0                                                              
-      do 11971 i=1,n                                                    
-      do 11981 k=1,m                                                    
-      if(y(i,1).ge.b(k))goto 11981                                      
-      if(y(i,2).lt.b(k))goto 11981                                      
+      do 11981 i=1,n                                                    
+      do 11991 k=1,m                                                    
+      if(y(i,1).ge.b(k))goto 11991                                      
+      if(y(i,2).lt.b(k))goto 11991                                      
       nt=nt+1                                                           
-11981 continue                                                          
+11991 continue                                                          
       continue                                                          
-11971 continue                                                          
+11981 continue                                                          
       continue                                                          
       allocate(ic(1:(n+1)),stat=jerr)                                   
       if(jerr.ne.0) return                                              
@@ -1180,98 +1184,98 @@ c So put label on a separate continue statement
       if(jerr.ne.0) return                                              
       allocate(lc(1:nt),stat=jerr)                                      
       if(jerr.ne.0) return                                              
-      if(jerr .eq. 0)goto 12001                                         
+      if(jerr .eq. 0)goto 12011                                         
       err=8888.0                                                        
       return                                                            
-12001 continue                                                          
+12011 continue                                                          
       nt=0                                                              
       ic(1)=1                                                           
-      do 12011 i=1,n                                                    
-      do 12021 k=1,m                                                    
-      if(y(i,1).ge.b(k))goto 12021                                      
-      if(y(i,2).lt.b(k))goto 12021                                      
+      do 12021 i=1,n                                                    
+      do 12031 k=1,m                                                    
+      if(y(i,1).ge.b(k))goto 12031                                      
+      if(y(i,2).lt.b(k))goto 12031                                      
       nt=nt+1                                                           
       jc(nt)=k                                                          
-12021 continue                                                          
-      continue                                                          
-      ic(i+1)=nt+1                                                      
-12011 continue                                                          
-      continue                                                          
-      nt=0                                                              
-      do 12031 j=1,m                                                    
-      kc1(j)=nt+1                                                       
-      do 12041 i=1,n                                                    
-      if(y(i,1).ge.b(j))goto 12041                                      
-      if(y(i,2).lt.b(j))goto 12041                                      
-      nt=nt+1                                                           
-      lc(nt)=i                                                          
-12041 continue                                                          
-      continue                                                          
-      kc2(j)=nt                                                         
 12031 continue                                                          
       continue                                                          
-      if(ivrb .le. 0)goto 12061                                         
+      ic(i+1)=nt+1                                                      
+12021 continue                                                          
+      continue                                                          
+      nt=0                                                              
+      do 12041 j=1,m                                                    
+      kc1(j)=nt+1                                                       
+      do 12051 i=1,n                                                    
+      if(y(i,1).ge.b(j))goto 12051                                      
+      if(y(i,2).lt.b(j))goto 12051                                      
+      nt=nt+1                                                           
+      lc(nt)=i                                                          
+12051 continue                                                          
+      continue                                                          
+      kc2(j)=nt                                                         
+12041 continue                                                          
+      continue                                                          
+      if(ivrb .le. 0)goto 12071                                         
       call intpr('CDF iterations', -1, ijunk, 0)                        
-12061 continue                                                          
-      do 12071 it=1,nit                                                 
+12071 continue                                                          
+      do 12081 it=1,nit                                                 
       jt=it                                                             
       ps=p                                                              
-      do 12081 j=1,m                                                    
+      do 12091 j=1,m                                                    
       pij(:,j)=0.0                                                      
-      do 12091 ii=kc1(j),kc2(j)                                         
+      do 12101 ii=kc1(j),kc2(j)                                         
       i=lc(ii)                                                          
       s=sum(p(jc(ic(i):(ic(i+1)-1))))                                   
-      if(s .gt. 0.0)goto 12111                                          
+      if(s .gt. 0.0)goto 12121                                          
       err=-7777.0                                                       
       return                                                            
-12111 continue                                                          
+12121 continue                                                          
       pij(i,j)=w(i)*p(j)/s                                              
-12091 continue                                                          
+12101 continue                                                          
       continue                                                          
       p(j)=sum(pij(:,j))                                                
-12081 continue                                                          
+12091 continue                                                          
       continue                                                          
-      if(m .le. 100)goto 12131                                          
+      if(m .le. 100)goto 12141                                          
       smo(1)=(2.0*p(1)+p(2))/3.0                                        
       smo(m)=(2.0*p(m)+p(m-1))/3.0                                      
       smo(2)=0.25*(p(1)+2.0*p(2)+p(3))                                  
       smo(m-1)=0.25*(p(m)+2.0*p(m-1)+p(m-2))                            
-      do 12141 j=3,m-2                                                  
+      do 12151 j=3,m-2                                                  
       smo(j)=(p(j-2)+2.0*p(j-1)+3.0*p(j)+2.0*p(j+1)+p(j+2))/9.0         
-12141 continue                                                          
+12151 continue                                                          
       continue                                                          
       p=smo                                                             
-12131 continue                                                          
+12141 continue                                                          
       err=sum(abs(p-ps))/m                                              
-      if(kbad(err) .le. 0)goto 12161                                    
+      if(kbad(err) .le. 0)goto 12171                                    
       err=7777.0                                                        
       return                                                            
-12161 continue                                                          
-      if(err.lt.thr)goto 12072                                          
-      if(ivrb .le. 0)goto 12181                                         
+12171 continue                                                          
+      if(err.lt.thr)goto 12082                                          
+      if(ivrb .le. 0)goto 12191                                         
       call intpr('.', -1, ijunk, 0)                                     
-12181 continue                                                          
-12071 continue                                                          
-12072 continue                                                          
-      cdf(1)=p(1)                                                       
-      do 12191 j=2,m                                                    
-      cdf(j)=cdf(j-1)+p(j)                                              
 12191 continue                                                          
+12081 continue                                                          
+12082 continue                                                          
+      cdf(1)=p(1)                                                       
+      do 12201 j=2,m                                                    
+      cdf(j)=cdf(j-1)+p(j)                                              
+12201 continue                                                          
       continue                                                          
-      if(ivrb .le. 0)goto 12211                                         
+      if(ivrb .le. 0)goto 12221                                         
       djunk(1) = err                                                    
       call dblepr('Err = ', -1, djunk, 1)                               
-12211 continue                                                          
+12221 continue                                                          
       return                                                            
       end                                                               
       subroutine set_vrb(irg,jrg)                                       
       implicit double precision(a-h,o-z)                                
 !DEC$ ATTRIBUTES DLLEXPORT :: set_vrb                                   
       save ivrb                                                         
-      if(jrg .ne. 1)goto 12231                                          
+      if(jrg .ne. 1)goto 12241                                          
       ivrb=irg                                                          
       return                                                            
-12231 continue                                                          
+12241 continue                                                          
       irg=ivrb                                                          
       return                                                            
       end                                                               
@@ -1283,28 +1287,28 @@ c So put label on a separate continue statement
       j=0                                                               
       sw=0.0                                                            
       continue                                                          
-12241 continue                                                          
+12251 continue                                                          
       j=j+1                                                             
-      if(j.gt.m) go to 12250                                            
+      if(j.gt.m) go to 12260                                            
       continue                                                          
-12261 if(y(i).gt.x(j))goto 12262                                        
+12271 if(y(i).gt.x(j))goto 12272                                        
       sw=sw+w(i)                                                        
       i=i+1                                                             
-      if(i.gt.n)goto 12262                                              
-      goto 12261                                                        
-12262 continue                                                          
-      if(i .le. n)goto 12281                                            
-      do 12291 k=j,m                                                    
+      if(i.gt.n)goto 12272                                              
+      goto 12271                                                        
+12272 continue                                                          
+      if(i .le. n)goto 12291                                            
+      do 12301 k=j,m                                                    
       cdf(k)=sw                                                         
+12301 continue                                                          
+      continue                                                          
+      go to 12310                                                       
 12291 continue                                                          
-      continue                                                          
-      go to 12300                                                       
-12281 continue                                                          
       cdf(j)=sw                                                         
-      goto 12241                                                        
+      goto 12251                                                        
       continue                                                          
-12300 continue                                                          
-12250 continue                                                          
+12310 continue                                                          
+12260 continue                                                          
       cdf=cdf/sum(w)                                                    
       return                                                            
       end                                                               
@@ -1312,15 +1316,15 @@ c So put label on a separate continue statement
       implicit double precision(a-h,o-z)                                
       double precision x(n),z(n)                                        
       integer m(n)                                                      
-      do 12311 i=1,n                                                    
+      do 12321 i=1,n                                                    
       m(i)=i                                                            
-12311 continue                                                          
+12321 continue                                                          
       continue                                                          
       z=x                                                               
       call psort8(z,m,1,n)                                              
-      do 12321 i=1,n                                                    
+      do 12331 i=1,n                                                    
       x(i)=z(m(i))                                                      
-12321 continue                                                          
+12331 continue                                                          
       continue                                                          
       return                                                            
       end                                                               
@@ -1339,16 +1343,16 @@ c So put label on a separate continue statement
       nq=nclasssv*nclasssv                                              
       allocate(costs(1:nq),stat=jerr)                                   
       if(jerr.ne.0) return                                              
-      if(ient .ne. 1)goto 12341                                         
+      if(ient .ne. 1)goto 12351                                         
       nclass=nclasssv                                                   
       call reorg(1,nclass,costs,costssv)                                
       nout=1                                                            
       out=1.0                                                           
-      goto 12351                                                        
-12341 continue                                                          
+      goto 12361                                                        
+12351 continue                                                          
       nout=nclass                                                       
       call reorg(2,nclass,costs,out)                                    
-12351 continue                                                          
+12361 continue                                                          
       continue                                                          
       return                                                            
       end                                                               
@@ -1356,26 +1360,26 @@ c So put label on a separate continue statement
       implicit double precision(a-h,o-z)                                
       double precision a(n*n),b(n,n)                                    
       i=0                                                               
-      if(ient .ne. 2)goto 12371                                         
-      do 12381 k=1,n                                                    
-      do 12391 j=1,n                                                    
+      if(ient .ne. 2)goto 12381                                         
+      do 12391 k=1,n                                                    
+      do 12401 j=1,n                                                    
       i=i+1                                                             
       b(j,k)=a(i)                                                       
+12401 continue                                                          
+      continue                                                          
 12391 continue                                                          
       continue                                                          
+      goto 12411                                                        
 12381 continue                                                          
-      continue                                                          
-      goto 12401                                                        
-12371 continue                                                          
-      do 12411 k=1,n                                                    
-      do 12421 j=1,n                                                    
+      do 12421 k=1,n                                                    
+      do 12431 j=1,n                                                    
       i=i+1                                                             
       a(i)=b(j,k)                                                       
+12431 continue                                                          
+      continue                                                          
 12421 continue                                                          
       continue                                                          
 12411 continue                                                          
-      continue                                                          
-12401 continue                                                          
       continue                                                          
       return                                                            
       end                                                               
@@ -1387,11 +1391,11 @@ c So put label on a separate continue statement
       node=0                                                            
       k=itr(2,1)                                                        
       continue                                                          
-12431 continue                                                          
-      if(itr(4,k) .lt. 0)goto 12451                                     
+12441 continue                                                          
+      if(itr(4,k) .lt. 0)goto 12461                                     
       k=itr(2,k)                                                        
-      goto 12431                                                        
-12451 continue                                                          
+      goto 12441                                                        
+12461 continue                                                          
       i1=itr(5,k)                                                       
       i2=itr(6,k)                                                       
       node=node+1                                                       
@@ -1400,31 +1404,31 @@ c So put label on a separate continue statement
       cri(node)=rtr(3,k)                                                
       wt(node)=rtr(4,k)                                                 
       continue                                                          
-12461 if(k.eq.itr(2,iabs(itr(4,k))))goto 12462                          
+12471 if(k.eq.itr(2,iabs(itr(4,k))))goto 12472                          
       k=iabs(itr(4,k))                                                  
-      if(k.eq.1)goto 12462                                              
-      goto 12461                                                        
-12462 continue                                                          
-      if(k.eq.1)goto 12432                                              
+      if(k.eq.1)goto 12472                                              
+      goto 12471                                                        
+12472 continue                                                          
+      if(k.eq.1)goto 12442                                              
       k=itr(3,iabs(itr(4,k)))                                           
-      goto 12431                                                        
-12432 continue                                                          
-      do 12471 k=1,node                                                 
+      goto 12441                                                        
+12442 continue                                                          
+      do 12481 k=1,node                                                 
       m(k)=k                                                            
-12471 continue                                                          
+12481 continue                                                          
       continue                                                          
       call psort8(-cri,m,1,node)                                        
-      do 12481 i=1,node                                                 
+      do 12491 i=1,node                                                 
       ic(i)=nodes(m(i))                                                 
       sc(i,1)=cri(m(i))                                                 
       sc(i,2)=wt(m(i))                                                  
-12481 continue                                                          
+12491 continue                                                          
       continue                                                          
-      do 12491 i=1,node                                                 
+      do 12501 i=1,node                                                 
       nodes(i)=ic(i)                                                    
       cri(i)=sc(i,1)                                                    
       wt(i)=sc(i,2)                                                     
-12491 continue                                                          
+12501 continue                                                          
       continue                                                          
       return                                                            
       end                                                               
@@ -1445,22 +1449,22 @@ c So put label on a separate continue statement
       integer itr(6,nodes)                                              
       double precision rtr(4,nodes)                                     
       continue                                                          
-12501 continue                                                          
+12511 continue                                                          
       nch=0                                                             
-      do 12511 k=1,nodes                                                
-      if(itr(4,k).le.0)goto 12511                                       
+      do 12521 k=1,nodes                                                
+      if(itr(4,k).le.0)goto 12521                                       
       nl=itr(2,k)                                                       
       nr=itr(3,k)                                                       
-      if(itr(4,nl).ge.0)goto 12511                                      
-      if(itr(4,nr).ge.0)goto 12511                                      
-      if(max(rtr(3,nl),rtr(3,nr)).gt.rtr(3,k)+thr)goto 12511            
+      if(itr(4,nl).ge.0)goto 12521                                      
+      if(itr(4,nr).ge.0)goto 12521                                      
+      if(max(rtr(3,nl),rtr(3,nr)).gt.rtr(3,k)+thr)goto 12521            
       itr(4,k)=-itr(4,k)                                                
       nch=nch+1                                                         
-12511 continue                                                          
+12521 continue                                                          
       continue                                                          
-      if(nch.eq.0)goto 12502                                            
-      goto 12501                                                        
-12502 continue                                                          
+      if(nch.eq.0)goto 12512                                            
+      goto 12511                                                        
+12512 continue                                                          
       return                                                            
       end                                                               
       subroutine getnode (x,itre,rtre,cat,node)                         
@@ -1469,50 +1473,50 @@ c So put label on a separate continue statement
       double precision x(*),rtre(4,*),cat(*)                            
       k=1                                                               
       continue                                                          
-12521 if(itre(4,k).lt.0)goto 12522                                      
-      if(itre(1,k) .le. 0)goto 12541                                    
-      if(x(itre(1,k)) .ge. rtre(1,k))goto 12561                         
+12531 if(itre(4,k).lt.0)goto 12532                                      
+      if(itre(1,k) .le. 0)goto 12551                                    
+      if(x(itre(1,k)) .ge. rtre(1,k))goto 12571                         
       k=itre(2,k)                                                       
-      goto 12571                                                        
-12561 continue                                                          
-      k=itre(3,k)                                                       
-12571 continue                                                          
-      continue                                                          
       goto 12581                                                        
-12541 continue                                                          
+12571 continue                                                          
+      k=itre(3,k)                                                       
+12581 continue                                                          
+      continue                                                          
+      goto 12591                                                        
+12551 continue                                                          
       j=-itre(1,k)                                                      
       kp=int(rtre(1,k)+0.1)                                             
       in=0                                                              
       np=int(abs(cat(kp))+0.1)                                          
-      do 12591 i=1,np                                                   
-      if(x(j).ne.cat(kp+i))goto 12591                                   
+      do 12601 i=1,np                                                   
+      if(x(j).ne.cat(kp+i))goto 12601                                   
       in=1                                                              
-      goto 12592                                                        
-12591 continue                                                          
-12592 continue                                                          
-      if(cat(kp) .le. 0.0)goto 12611                                    
-      if(in .ne. 0)goto 12631                                           
+      goto 12602                                                        
+12601 continue                                                          
+12602 continue                                                          
+      if(cat(kp) .le. 0.0)goto 12621                                    
+      if(in .ne. 0)goto 12641                                           
       k=itre(2,k)                                                       
-      goto 12641                                                        
-12631 continue                                                          
-      k=itre(3,k)                                                       
-12641 continue                                                          
-      continue                                                          
       goto 12651                                                        
-12611 continue                                                          
-      if(in .eq. 0)goto 12671                                           
-      k=itre(2,k)                                                       
-      goto 12681                                                        
-12671 continue                                                          
+12641 continue                                                          
       k=itre(3,k)                                                       
-12681 continue                                                          
-      continue                                                          
 12651 continue                                                          
       continue                                                          
-12581 continue                                                          
+      goto 12661                                                        
+12621 continue                                                          
+      if(in .eq. 0)goto 12681                                           
+      k=itre(2,k)                                                       
+      goto 12691                                                        
+12681 continue                                                          
+      k=itre(3,k)                                                       
+12691 continue                                                          
       continue                                                          
-      goto 12521                                                        
-12522 continue                                                          
+12661 continue                                                          
+      continue                                                          
+12591 continue                                                          
+      continue                                                          
+      goto 12531                                                        
+12532 continue                                                          
       node=k                                                            
       return                                                            
       end                                                               
@@ -1521,10 +1525,10 @@ c So put label on a separate continue statement
 !DEC$ ATTRIBUTES DLLEXPORT :: getnodes1                                 
       integer itre(6,*),nodes(no)                                       
       double precision x(no,ni),rtre(4,*),cat(*)                        
-      do 12691 i=1,no                                                   
+      do 12701 i=1,no                                                   
       call getnode (x(i,:),itre,rtre,cat,node)                          
       nodes(i)=node                                                     
-12691 continue                                                          
+12701 continue                                                          
       continue                                                          
       return                                                            
       end                                                               
@@ -1535,45 +1539,45 @@ c So put label on a separate continue statement
       double precision rtr(4,*),cat(*),vlims(*)                         
       ni = ni + 0                                                       
       jerr=0                                                            
-      if(itr(4,node) .lt. 0)goto 12711                                  
+      if(itr(4,node) .lt. 0)goto 12721                                  
       jerr=1                                                            
       return                                                            
-12711 continue                                                          
+12721 continue                                                          
       nvar=0                                                            
       k=node                                                            
       continue                                                          
-12721 continue                                                          
+12731 continue                                                          
       nvar=nvar+1                                                       
       kpp=abs(itr(4,k))                                                 
-      if(itr(1,kpp) .le. 0)goto 12741                                   
+      if(itr(1,kpp) .le. 0)goto 12751                                   
       jvar(2,nvar)=0                                                    
-      if(itr(2,kpp) .ne. k)goto 12761                                   
+      if(itr(2,kpp) .ne. k)goto 12771                                   
       jvar(1,nvar)=-itr(1,kpp)                                          
-      goto 12771                                                        
-12761 continue                                                          
-      jvar(1,nvar)=itr(1,kpp)                                           
+      goto 12781                                                        
 12771 continue                                                          
+      jvar(1,nvar)=itr(1,kpp)                                           
+12781 continue                                                          
       continue                                                          
       vlims(nvar)=rtr(1,kpp)                                            
-      goto 12781                                                        
-12741 continue                                                          
-      if(k .ne. itr(2,kpp))goto 12801                                   
+      goto 12791                                                        
+12751 continue                                                          
+      if(k .ne. itr(2,kpp))goto 12811                                   
       sgn=-1.0                                                          
-      goto 12811                                                        
-12801 continue                                                          
-      sgn=1.0                                                           
+      goto 12821                                                        
 12811 continue                                                          
+      sgn=1.0                                                           
+12821 continue                                                          
       continue                                                          
       jvar(1,nvar)=-itr(1,kpp)                                          
       kp=int(rtr(1,kpp)+0.1)                                            
       jvar(2,nvar)=kp                                                   
       vlims(nvar)=sgn*abs(cat(kp))                                      
-12781 continue                                                          
+12791 continue                                                          
       continue                                                          
       k=kpp                                                             
-      if(kpp.eq.1)goto 12722                                            
-      goto 12721                                                        
-12722 continue                                                          
+      if(kpp.eq.1)goto 12732                                            
+      goto 12731                                                        
+12732 continue                                                          
       return                                                            
       end                                                               
       subroutine trans(ny,y,wy,nz,z,wz,nt,t)                            
@@ -1582,39 +1586,39 @@ c So put label on a separate continue statement
       double precision y(ny),wy(ny),z(nz),wz(nz),t(nt+2,2),u(max(ny,nz))
       double precision p(nt)                                            
       integer m(max(ny,nz))                                             
-      do 12821 i=1,ny                                                   
+      do 12831 i=1,ny                                                   
       m(i)=i                                                            
       u(i)=y(i)                                                         
-12821 continue                                                          
-      continue                                                          
-      call psort8(u,m,1,ny)                                             
-      do 12831 i=1,ny                                                   
-      y(i)=u(m(i))                                                      
 12831 continue                                                          
       continue                                                          
-      u=wy                                                              
+      call psort8(u,m,1,ny)                                             
       do 12841 i=1,ny                                                   
-      wy(i)=u(m(i))                                                     
+      y(i)=u(m(i))                                                      
 12841 continue                                                          
       continue                                                          
-      do 12851 i=1,nz                                                   
-      m(i)=i                                                            
-      u(i)=z(i)                                                         
+      u=wy                                                              
+      do 12851 i=1,ny                                                   
+      wy(i)=u(m(i))                                                     
 12851 continue                                                          
       continue                                                          
-      call psort8(u,m,1,nz)                                             
       do 12861 i=1,nz                                                   
-      z(i)=u(m(i))                                                      
+      m(i)=i                                                            
+      u(i)=z(i)                                                         
 12861 continue                                                          
       continue                                                          
-      u=wz                                                              
+      call psort8(u,m,1,nz)                                             
       do 12871 i=1,nz                                                   
-      wz(i)=u(m(i))                                                     
+      z(i)=u(m(i))                                                      
 12871 continue                                                          
       continue                                                          
-      do 12881 i=1,nt                                                   
-      p(i)=(i-0.5)/float(nt)                                            
+      u=wz                                                              
+      do 12881 i=1,nz                                                   
+      wz(i)=u(m(i))                                                     
 12881 continue                                                          
+      continue                                                          
+      do 12891 i=1,nt                                                   
+      p(i)=(i-0.5)/float(nt)                                            
+12891 continue                                                          
       continue                                                          
       call untie(ny,y,u)                                                
       call qntl(ny,u,wy,nt,p,t(:,1))                                    
@@ -1630,15 +1634,15 @@ c So put label on a separate continue statement
       ff=w(1)                                                           
       q(1)=y(1)                                                         
       q(nq+2)=y(n)                                                      
-      do 12891 i=2,n                                                    
+      do 12901 i=2,n                                                    
       ff=ff+w(i)                                                        
       pp=ff/sw                                                          
-      if(pp.lt.p(k))goto 12891                                          
+      if(pp.lt.p(k))goto 12901                                          
       k=k+1                                                             
       q(k)=0.5*(y(i)+y(i-1))                                            
-      if(k.ge.nq)goto 12892                                             
-12891 continue                                                          
-12892 continue                                                          
+      if(k.ge.nq)goto 12902                                             
+12901 continue                                                          
+12902 continue                                                          
       q(nq+1)=0.5*(q(nq+2)+q(nq))                                       
       return                                                            
       end                                                               
@@ -1649,59 +1653,59 @@ c So put label on a separate continue statement
       i=1                                                               
       k=0                                                               
       continue                                                          
-12901 if(i.ge.n)goto 12902                                              
-      if(y(i+1) .le. y(i))goto 12921                                    
+12911 if(i.ge.n)goto 12912                                              
+      if(y(i+1) .le. y(i))goto 12931                                    
       k=k+1                                                             
       u(k)=y(i)                                                         
       i=i+1                                                             
-      goto 12901                                                        
-12921 continue                                                          
+      goto 12911                                                        
+12931 continue                                                          
       i1=i                                                              
       continue                                                          
-12931 if(y(i+1).gt.y(i))goto 12932                                      
+12941 if(y(i+1).gt.y(i))goto 12942                                      
       i=i+1                                                             
-      if(i.ge.n)goto 12932                                              
-      goto 12931                                                        
-12932 continue                                                          
+      if(i.ge.n)goto 12942                                              
+      goto 12941                                                        
+12942 continue                                                          
       i2=i                                                              
-      if(i1 .gt. 1)goto 12951                                           
+      if(i1 .gt. 1)goto 12961                                           
       a=y(i1+1)                                                         
       b=y(i2+1)                                                         
       u(1)=y(1)                                                         
       k=1                                                               
-      do 12961 j=i1+1,i2                                                
+      do 12971 j=i1+1,i2                                                
       k=k+1                                                             
       u(k)=a+(b-a)*(j-i1)/(i2-i1+1)                                     
-12961 continue                                                          
+12971 continue                                                          
       continue                                                          
       i=i2+1                                                            
-      goto 12941                                                        
-12951 if(i2 .lt. n)goto 12971                                           
+      goto 12951                                                        
+12961 if(i2 .lt. n)goto 12981                                           
       a=y(i1-1)                                                         
       b=(y(i2)-a)/(i2-i1+1)                                             
-      do 12981 j=i1,i2                                                  
+      do 12991 j=i1,i2                                                  
       k=k+1                                                             
       u(k)=a+b*(j-i1+1)                                                 
-12981 continue                                                          
+12991 continue                                                          
       continue                                                          
-      goto 12991                                                        
-12971 continue                                                          
+      goto 13001                                                        
+12981 continue                                                          
       a=y(i1-1)                                                         
       b=y(i2)                                                           
-      do 13001 j=i1,i2                                                  
+      do 13011 j=i1,i2                                                  
       k=k+1                                                             
       u(k)=a+(b-a)*(j-i1+1)/(i2-i1+1)                                   
-13001 continue                                                          
+13011 continue                                                          
       continue                                                          
       i=i+1                                                             
-12991 continue                                                          
-12941 continue                                                          
-      goto 12901                                                        
-12902 continue                                                          
-      if(k .ge. n)goto 13021                                            
+13001 continue                                                          
+12951 continue                                                          
+      goto 12911                                                        
+12912 continue                                                          
+      if(k .ge. n)goto 13031                                            
       k=k+1                                                             
       u(k)=y(n)                                                         
-13021 continue                                                          
+13031 continue                                                          
       return                                                            
       end                                                               
       subroutine psort8 (v,a,ii,jj)                                     
