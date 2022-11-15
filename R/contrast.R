@@ -585,17 +585,20 @@ treesum=function(tree,nodes=NULL){
    q=tree$tree; v=crinode(tree);
    if(is.null(nodes)) { nodes=v$nodes}
    for (k in 1:length(nodes)) {
-      cat(paste('node',format(nodes[k],digits=0)))
+     ##cat(paste('node',format(nodes[k],digits=0)))
+     cat(sprintf('node %d',nodes[k]))
       u=getlims(tree, nodes[k])
       cat(paste('  var     dir    split'),'\n')
       for (j in 1:u$nvar) {
          if (u$jvar[2,j] == 0) {
             if(sign(u$jvar[1,j])<0) {
-               cat(paste('         ',format(abs(u$jvar[1,j]),digits=0),
+              ## cat(paste('         ',format(abs(u$jvar[1,j]),digits=0),
+              cat(paste(sprintf('          %d', abs(u$jvar[1,j])),
                '     -     ',format(u$vlims[j],digits=2)),'\n')
             }
             else {
-              cat(paste('         ',format(abs(u$jvar[1,j]),digits=0),
+              ## cat(paste('         ',format(abs(u$jvar[1,j]),digits=0),
+              cat(paste(sprintf('          %d', abs(u$jvar[1,j])),              
                '     +     ',format(u$vlims[j],digits=2)),'\n')
             }
          }
@@ -603,11 +606,13 @@ treesum=function(tree,nodes=NULL){
             kp=u$jvar[2,j]; kc=abs(q$cat[kp])
             z=sort(q$cat[(kp+1):(kp+kc)])
             if(u$vlims[j]>0) {
-               cat(paste('      cat',format(u$jvar[1,j],digits=0),
-                  '     -     ')); cat(z,'\n')
+              ##cat(paste('      cat',format(u$jvar[1,j],digits=0),
+              cat(paste(sprintf('      cat %d', u$jvar[1,j]),
+                        '     -     ')); cat(z,'\n')
             }
             else {
-               cat(paste('      cat',format(u$jvar[1,j],digits=0),
+              ## cat(paste('      cat',format(u$jvar[1,j],digits=0),
+              cat(paste(sprintf('      cat %d', u$jvar[1,j]),              
                   '     +     ')); cat(z,'\n')
             }
          }
