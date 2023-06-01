@@ -36,7 +36,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       itre(4,3)=itre(4,2)                                               
       rtre(4,2)=w1                                                      
       rtre(4,3)=w2                                                      
-      rtre(2,1)=sign(max(0.0,rtre(3,1)-rtre(2,1)),rtre(3,1))            
+      rtre(2,1)=sign(max(0d0,rtre(3,1)-rtre(2,1)),rtre(3,1))            
       if(lstor.ne.0) return                                             
       nodes=3                                                           
       ntrm=0                                                            
@@ -49,6 +49,10 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       st=rtre(1,ktrg)                                                   
       k5=itre(5,ktrg)                                                   
       k6=itre(6,ktrg)                                                   
+      ju=0                                                              
+      kp=0                                                              
+      kl=0                                                              
+      kr=0                                                              
       if(jt .ge. 0)goto 10071                                           
       ju=-jt                                                            
       kp=int(st+0.1)                                                    
@@ -121,6 +125,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       itre(5,itre(3,ktrg))=kr                                           
       itre(6,itre(3,ktrg))=k6                                           
       nde=itre(2,ktrg)                                                  
+      cri=0d0                                                           
       call split7(no,ni,x,y,y2,z,w,lx,ms,itre(5,nde),itre(6,nde),itre(1,
      *nde),  rtre(1,nde),cri1,cri2,w1,w2,cri,kct,cat(nct))
       if(itre(1,nde) .ge. 0)goto 10291                                  
@@ -143,7 +148,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       rtre(4,l+1)=w2                                                    
       itre(4,l)=-nde                                                    
       itre(4,l+1)=itre(4,l)                                             
-      rtre(2,nde)=sign(max(0.0,cri-rtre(3,nde)),cri)                    
+      rtre(2,nde)=sign(max(0d0,cri-rtre(3,nde)),cri)                    
 10321 continue                                                          
       continue                                                          
       nde=itre(3,ktrg)                                                  
@@ -169,7 +174,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       rtre(4,l+1)=w2                                                    
       itre(4,l)=-nde                                                    
       itre(4,l+1)=itre(4,l)                                             
-      rtre(2,nde)=sign(max(0.0,cri-rtre(3,nde)),cri)                    
+      rtre(2,nde)=sign(max(0d0,cri-rtre(3,nde)),cri)                    
       itre(4,ktrg)=-itre(4,ktrg)                                        
       rsv=rtre(2,ktrg)                                                  
       crix=0.0                                                          
@@ -310,6 +315,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       double precision x(no,ni),y(no),y2(no),z(no),w(no),cat(*),tcat(max
      *cat)
       data xmiss,ntn,pwr /9.0e35,500,2/                                 
+      crx=0.0                                                           
       crm=0.0                                                           
       jt=0                                                              
       if(m2-m1+1.lt.2*ntn) return                                       
@@ -531,7 +537,7 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       call set_kri(kri,2)                                               
       if(kri .ne. 1000)goto 10951                                       
       call rfcall(n, y, z, w, dst)                                      
-      sw=sum(w)                                                        
+      sw=sum(w)                                                         
       goto 10941                                                        
 10951 if(kri .ne. 1)goto 10961                                          
       call andarm1(n,y,z,w,dst,sw)                                      
@@ -1173,17 +1179,16 @@ c So put label on a separate continue statement
 11981 continue                                                          
       continue                                                          
       allocate(ic(1:(n+1)),stat=jerr)                                   
-      if(jerr.ne.0) return                                              
-      allocate(jc(1:nt),stat=jerr)                                      
-      if(jerr.ne.0) return                                              
-      allocate(kc1(1:m),stat=jerr)                                      
-      if(jerr.ne.0) return                                              
-      allocate(kc2(1:m),stat=jerr)                                      
-      if(jerr.ne.0) return                                              
-      allocate(smo(1:m),stat=jerr)                                      
-      if(jerr.ne.0) return                                              
-      allocate(lc(1:nt),stat=jerr)                                      
-      if(jerr.ne.0) return                                              
+      allocate(jc(1:nt),stat=ierr)                                      
+      jerr=jerr+ierr                                                    
+      allocate(kc1(1:m),stat=ierr)                                      
+      jerr=jerr+ierr                                                    
+      allocate(kc2(1:m),stat=ierr)                                      
+      jerr=jerr+ierr                                                    
+      allocate(smo(1:m),stat=ierr)                                      
+      jerr=jerr+ierr                                                    
+      allocate(lc(1:nt),stat=ierr)                                      
+      jerr=jerr+ierr                                                    
       if(jerr .eq. 0)goto 12011                                         
       err=8888.0                                                        
       return                                                            
@@ -1342,7 +1347,6 @@ c So put label on a separate continue statement
       save costs,nclass                                                 
       nq=nclasssv*nclasssv                                              
       allocate(costs(1:nq),stat=jerr)                                   
-      if(jerr.ne.0) return                                              
       if(ient .ne. 1)goto 12351                                         
       nclass=nclasssv                                                   
       call reorg(1,nclass,costs,costssv)                                

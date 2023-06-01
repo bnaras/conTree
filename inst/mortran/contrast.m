@@ -188,11 +188,13 @@ if itre(1,1).eq.0 < itre(4,1)=-9999; return;>
 if itre(1,1).lt.0 < rtre(1,1)=nct; nct=nct+kct; if(nct.gt.mxc) lstor=1;>
 /rtre(2,2),rtre(2,3)/=0.0; rtre(3,2)=cri1; rtre(3,3)=cri2;
 /itre(4,2),itre(4,3)/=-1; rtre(4,2)=w1; rtre(4,3)=w2;
-rtre(2,1)=sign(max(0.0,rtre(3,1)-rtre(2,1)),rtre(3,1));
+rtre(2,1)=sign(max(0d0,rtre(3,1)-rtre(2,1)),rtre(3,1));
 if(lstor.ne.0) return;
 nodes=3; ntrm=0; if(rtre(2,1).gt.0.0) ntrm=1; ktrg=1; kstor=0;
 until ntrm.ge.mxtrm < jt=itre(1,ktrg); st=rtre(1,ktrg);
    k5=itre(5,ktrg); k6=itre(6,ktrg);
+"Naras fix: ju,kp,kl,kr may be uninitialized!, so setting it to zero"
+ju=0; kp=0;kl=0;kr=0;
 "Naras fix: explicit conversion to integer"
 "   if jt.lt.0 < ju=-jt; kp=st+0.1; np=abs(cat(kp))+0.1;>"
 if jt.lt.0 < ju=-jt; kp=int(st+0.1); np=int(abs(cat(kp))+0.1);>
@@ -219,6 +221,8 @@ if jt.lt.0 < ju=-jt; kp=int(st+0.1); np=int(abs(cat(kp))+0.1);>
    itre(5,itre(2,ktrg))=k5; itre(6,itre(2,ktrg))=kl;
    itre(5,itre(3,ktrg))=kr; itre(6,itre(3,ktrg))=k6;
    nde=itre(2,ktrg);
+"Naras fix: cri is never set anywhere!! so setting to zero"
+cri=0d0;
    call split7(no,ni,x,y,y2,z,w,lx,ms,itre(5,nde),itre(6,nde),itre(1,nde),
       rtre(1,nde),cri1,cri2,w1,w2,cri,kct,cat(nct));
    if itre(1,nde).lt.0 < rtre(1,nde)=nct; nct=nct+kct; if(nct.gt.mxc) lstor=1;>
@@ -226,7 +230,7 @@ if jt.lt.0 < ju=-jt; kp=int(st+0.1); np=int(abs(cat(kp))+0.1);>
    else < itre(2,nde)=nodes+1; itre(3,nde)=nodes+2;
       l=nodes+1; /rtre(2,l),rtre(2,l+1)/=0.0; rtre(3,l)=cri1; rtre(3,l+1)=cri2;
       rtre(4,l)=w1; rtre(4,l+1)=w2; /itre(4,l),itre(4,l+1)/=-nde;
-      rtre(2,nde)=sign(max(0.0,cri-rtre(3,nde)),cri);
+      rtre(2,nde)=sign(max(0d0,cri-rtre(3,nde)),cri);
    >
    nde=itre(3,ktrg);
    call split7(no,ni,x,y,y2,z,w,lx,ms,itre(5,nde),itre(6,nde),itre(1,nde),
@@ -236,7 +240,7 @@ if jt.lt.0 < ju=-jt; kp=int(st+0.1); np=int(abs(cat(kp))+0.1);>
    else < itre(2,nde)=nodes+3; itre(3,nde)=nodes+4;
       l=nodes+3; /rtre(2,l),rtre(2,l+1)/=0.0; rtre(3,l)=cri1; rtre(3,l+1)=cri2;
       rtre(4,l)=w1; rtre(4,l+1)=w2; /itre(4,l),itre(4,l+1)/=-nde;
-      rtre(2,nde)=sign(max(0.0,cri-rtre(3,nde)),cri);
+      rtre(2,nde)=sign(max(0d0,cri-rtre(3,nde)),cri);
       itre(4,ktrg)=-itre(4,ktrg); rsv=rtre(2,ktrg); crix=0.0;     
       <k=1,nodes; if(itre(4,k).ge.0) next; if(abs(rtre(2,k)).le.crix) next;
          if(itre(1,k).eq.0) next; crix=abs(rtre(2,k)); ktrg=k;
@@ -300,6 +304,8 @@ parameter(maxcat=1000, big=9.9e35);
 integer lx(ni),m(no,ni);
 real x(no,ni),y(no),y2(no),z(no),w(no),cat(*),tcat(maxcat);
 data xmiss,ntn,pwr /9.0e35,500,2/;
+"Naras fix: crx may be used uninitialized, so set it"
+crx=0.0;
 crm=0.0; jt=0; if(m2-m1+1.lt.2*ntn) return;
 <j=1,ni; if(x(m(m1,j),j).ge.x(m(m2,j),j).or.lx(j).eq.0) next;
    if lx(j).eq.1 <
