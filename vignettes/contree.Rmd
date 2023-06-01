@@ -22,6 +22,11 @@ knitr::opts_chunk$set(
     tidy = FALSE,
     cache = FALSE
     )
+```
+
+```{r setup, echo = FALSE}
+library(randomForest)
+library(conTree)
 
 ## data generation
 lgen <- function(n, f, s, dist) {
@@ -74,17 +79,15 @@ lmpred <- function(x, lmm) {
   lmm$coefficients[1] + x %*% lmm$coefficients[2:length(lmm$coefficients)]
 }
 
-library("randomForest")
-
 ```
 
-## Contrast demo
+## Contrast Demo
 
+This is a bare-bones demo of the package. A more elaborate tutorial
+may be found [here](https://jhfhub.github.io/conTree_tutorial/).
 
 ```{r}
-library(conTree)
-
-## generate training and test data sets
+## Generate training and test data sets
 ## n=25000, p=10, heteroskedastic logistic error
 set.seed(12345)
 d <- datgen(n = 5000)
@@ -192,7 +195,7 @@ nodeplots(tree, e$x, e$y, z)
 #
 ```
 
-## Now things work, if I use your fortran flags
+## Contrast and Distribution Boosting Models
 
 ```{r}
 
@@ -233,9 +236,4 @@ for (k in kk:(kk + 8)) {
 }
 ```
 
-## Session Info
 
-
-```{r}
-sessionInfo()
-```

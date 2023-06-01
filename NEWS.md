@@ -1,3 +1,7 @@
+# conTree 0.3
+
+- First public release
+
 # conTree 0.2.8
 
 - Modified `getcri` to become aware of argument `dfun` for

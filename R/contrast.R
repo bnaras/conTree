@@ -647,7 +647,7 @@ getcri <- function(tree, y, z, w = rep(1, n), cdfsamp = 500) {
   if (kri == 4L) {
     if (is.null(v$nclass)) v$nclass <- 2
     if (is.null(v$costs)) {
-        costs <- matrix(1, nrow = nclass, ncol = nclass)
+        costs <- matrix(1, nrow = v$nclass, ncol = v$nclass)
         diag(costs) <- 0
     }
     call <- .Fortran("classin",

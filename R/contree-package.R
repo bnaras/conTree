@@ -18,3 +18,4 @@
 #' @references Jerome Friedman (2019). _Contrast Trees and
 #'     Distribution Boosting_ \url{https://arxiv.org/abs/1912.03785}
 NULL
+

@@ -5,3 +5,4 @@
 ^inst/v01/*
 ^inst/check/*
 ^inst/update/*
+^\.github$
