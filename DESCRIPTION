@@ -23,6 +23,6 @@ BugReports: https://github.com/bnaras/conTree/issues
 Roxygen: list(markdown = TRUE)
 Imports: stats, graphics
 RoxygenNote: 7.2.3
-Suggests: randomForest, knitr
+Suggests: randomForest, knitr, rmarkdown
 LazyData: true
 Depends: R (>= 3.5)
