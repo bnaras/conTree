@@ -17,3 +17,6 @@ vector of tree terminal node identifiers (numbers) corresponding to each observa
 \description{
 Get terminal node observation assignments
 }
+\seealso{
+\code{\link[=contrast]{contrast()}}
+}

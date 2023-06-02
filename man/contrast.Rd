@@ -254,8 +254,42 @@ When \code{type} is a function, it must be a function of three arguments
 vector, not necessarily normalized. The function should return a
 double vector of length 1 as the result. See example below.
 }
+\examples{
+data(census, package = "conTree")
+dx <- 1:10000; dxt <- 10001:16281;
+# Build contrast tree
+tree <- contrast(census$xt[dx,], census$yt[dx], census$gblt[dx], type = 'prob')
+# Summarize tree
+treesum(tree)
+# Get terminal node identifiers for regions containing observations 1 through 10
+getnodes(tree, x = census$xt[1:10, ])
+# Plot nodes
+nodeplots(tree, x = census$xt[dx, ], y = census$yt[dx], z = census$gblt[dx], nodes = NULL, pts = FALSE)
+# Summarize contrast tree against (precomputed) gradient boosting
+# on logistic scale using maximum likelihood (GBL)
+nodesum(tree, census$xt[dxt,], census$yt[dxt], census$gblt[dxt])
+# Use a custom R discrepancy function to build a contrast tree
+dfun <- function(y, z, w) {
+   w  <- w / sum(w)
+   abs(sum(w * (y - z)))
+}
+tree2 <- contrast(xt[dx,], yt[dx], gblt[dx], type = dfun)
+nodesum(tree2, census$xt[dxt,], census$yt[dxt], census$gblt[dxt])
+nodeplots(tree2, x = census$xt[dx, ], y = census$yt[dx], z = census$gblt[dx], nodes = NULL, pts = FALSE)
+# Generate lack of fit curve
+lofcurve(tree, xt[dx,], yt[dx], gblt[dx])
+# Build contrast tree boosting models
+# Use small # of iterations for illustration (typically >= 200)
+modgbl = modtrast(census$x, census$y, gbl, type = 'prob', niter = 10)
+# Plot model accuracy as a function of iteration number
+xval(modgbl, x, y, gbl, col = 'red')
+# Produce predictions from modtrast() for new data.
+ypred <- predtrast(modgbl, census$xt, census$gblt, num = modgbl$niter)
+# Produce distribution boosting estimates
+yhat <- predtrast(modgbl, census$xt, census$gblt, num = modgbl$niter)
+}
 \references{
-Jerome H. Friedman (2019). \emph{Contrast Trees and Distribution Boosting}, \url{https://arxiv.org/abs/1912.03785}
+Jerome H. Friedman (2020). \url{doi:10.1073/pnas.1921562117}
 }
 \author{
 Jerome H. Friedman

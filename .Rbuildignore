@@ -4,5 +4,6 @@
 ^src/*.so$
 ^inst/v01/*
 ^inst/check/*
+^inst/mortran/*
 ^inst/update/*
 ^\.github$

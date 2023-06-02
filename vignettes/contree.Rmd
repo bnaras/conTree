@@ -83,8 +83,8 @@ lmpred <- function(x, lmm) {
 
 ## Contrast Demo
 
-This is a bare-bones demo of the package. A more elaborate tutorial
-may be found [here](https://jhfhub.github.io/conTree_tutorial/).
+This is a bare-bones demo of the package. A full tutorial may be found
+[here](https://jhfhub.github.io/conTree_tutorial/).
 
 ```{r}
 ## Generate training and test data sets

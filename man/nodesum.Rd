@@ -69,3 +69,6 @@ graphical representations of terminal node contrasts depending on tree type
 \item \code{type = 'diffmean'} or \code{type = 'maxmean'} implies upper barplot contrasting y-mean (blue) and z-mean (red) in each terminal node. Lower barplot showing total weight in each terminal node.
 }
 }
+\seealso{
+\code{\link[=contrast]{contrast()}}
+}

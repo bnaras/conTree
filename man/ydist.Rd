@@ -21,3 +21,6 @@ vector of \code{length(z)} containing transformed values t(z) approximating \eqn
 \description{
 Transform z-values t(z) such that the distribution of \eqn{p(t(z) | x)} approximates \eqn{p(t(y | x)} for type = 'dist' only
 }
+\seealso{
+\code{\link[=contrast]{contrast()}}
+}

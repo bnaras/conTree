@@ -109,7 +109,40 @@
 #' double vector of length 1 as the result. See example below.
 #'
 #' @author Jerome H. Friedman
-#' @references Jerome H. Friedman (2019). _Contrast Trees and Distribution Boosting_, \url{https://arxiv.org/abs/1912.03785}
+#' @references Jerome H. Friedman (2020). <doi:10.1073/pnas.1921562117>
+#' @examples
+#' data(census, package = "conTree")
+#' dx <- 1:10000; dxt <- 10001:16281;
+#' # Build contrast tree
+#' tree <- contrast(census$xt[dx,], census$yt[dx], census$gblt[dx], type = 'prob')
+#' # Summarize tree
+#' treesum(tree)
+#' # Get terminal node identifiers for regions containing observations 1 through 10
+#' getnodes(tree, x = census$xt[1:10, ])
+#' # Plot nodes
+#' nodeplots(tree, x = census$xt[dx, ], y = census$yt[dx], z = census$gblt[dx], nodes = NULL, pts = FALSE)
+#' # Summarize contrast tree against (precomputed) gradient boosting
+#' # on logistic scale using maximum likelihood (GBL)
+#' nodesum(tree, census$xt[dxt,], census$yt[dxt], census$gblt[dxt])
+#' # Use a custom R discrepancy function to build a contrast tree
+#' dfun <- function(y, z, w) {
+#'    w  <- w / sum(w)
+#'    abs(sum(w * (y - z)))
+#' }
+#' tree2 <- contrast(xt[dx,], yt[dx], gblt[dx], type = dfun)
+#' nodesum(tree2, census$xt[dxt,], census$yt[dxt], census$gblt[dxt])
+#' nodeplots(tree2, x = census$xt[dx, ], y = census$yt[dx], z = census$gblt[dx], nodes = NULL, pts = FALSE)
+#' # Generate lack of fit curve
+#' lofcurve(tree, xt[dx,], yt[dx], gblt[dx])
+#' # Build contrast tree boosting models
+#' # Use small # of iterations for illustration (typically >= 200)
+#' modgbl = modtrast(census$x, census$y, gbl, type = 'prob', niter = 10)
+#' # Plot model accuracy as a function of iteration number
+#' xval(modgbl, x, y, gbl, col = 'red')
+#' # Produce predictions from modtrast() for new data.
+#' ypred <- predtrast(modgbl, census$xt, census$gblt, num = modgbl$niter)
+#' # Produce distribution boosting estimates
+#' yhat <- predtrast(modgbl, census$xt, census$gblt, num = modgbl$niter)
 #' @export
 contrast <- function(x, y, z, w = rep(1, nrow(x)), cat.vars = NULL, not.used = NULL, qint = 10,
                      xmiss = 9.0e35, tree.size = 10, min.node = 500, mode = c("onesamp", "twosamp"),
@@ -489,6 +522,7 @@ crinode <- function(tree) {
 #' - `wt` sum of weights in each terminal node
 #' - `avecri` weighted criterion average over all terminal nodes
 #' @importFrom graphics par barplot
+#' @seealso [contrast()]
 #' @export
 nodesum <- function(tree, x, y, z, w = rep(1, nrow(x)), doplot = FALSE) {
   u <- crinode(tree)
@@ -524,6 +558,7 @@ nodesum <- function(tree, x, y, z, w = rep(1, nrow(x)), doplot = FALSE) {
 #' @param tree model object output from contrast() or prune()
 #' @param x training input predictor data matrix or data frame in same format as in contrast()
 #' @return vector of tree terminal node identifiers (numbers) corresponding to each observation (row of x)
+#' @seealso [contrast()]
 #' @export
 getnodes <- function(tree, x) {
   ## if (!is.loaded("getnodes1")) {
@@ -580,6 +615,7 @@ getlims <- function(tree, node) {
 #' For categorical variables:  cat variable | sign | set of values
 #' - sign + => values in node
 #' - sign - => values not in node (compliment values in node) graphical representations of terminal node contrasts depend on the tree type
+#' @seealso [contrast()]
 #' @export
 treesum=function(tree,nodes=NULL){
    q=tree$tree; v=crinode(tree);
@@ -1210,6 +1246,7 @@ modtrast <- function(x,y,z,w=rep(1,nrow(x)),cat.vars=NULL,not.used=NULL,qint=10,
 #' @param z z-values for new data
 #' @param num number of trees used to compute model values
 #' @return predicted y-values for new data from model
+#' @seealso [contrast()]
 #' @export
 predtrast <- function(model, x, z, num = model$niter) {
   if (model$trees[[1]]$parms$type == "dist") {
@@ -1436,6 +1473,7 @@ predtrast1 <- function(model, x, z, num = model$niter) {
 #' @param col color of plotted curve
 #' @return a named list of two items: `ntree` the iteration numbers, and `error` the corresponding discrepancy values
 #' @importFrom graphics points
+#' @seealso [contrast()]
 #' @export
 xval=function(mdl, x, y, z, num = length(mdl$tree), del = 10, span = 0.15,
               ylab = 'Average  Discrepancy', doplot = 'first', doprint = TRUE, col = 'red') {
@@ -1580,6 +1618,7 @@ predmod <- function(model, x, z, num = model$niter) {
 #' @param z  sample of z-values drawn from \eqn{p(z | x)}
 #' @param num number of trees used to compute model values
 #' @return vector of `length(z)` containing transformed values t(z) approximating \eqn{p(y | x)}
+#' @seealso [contrast()]
 #' @export
 ydist <- function(model, x, z, num = model$niter) {
   x=xcheck(x)

@@ -47,3 +47,6 @@ a named list of two items: \code{ntree} the iteration numbers, and \code{error} 
 \description{
 Cross-validate boosted contrast tree boosted with (new) data
 }
+\seealso{
+\code{\link[=contrast]{contrast()}}
+}

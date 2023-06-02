@@ -16,7 +16,7 @@ a named list for each of the types.
 \description{
 These functions are mostly useful when one wants to
 test one's own discrepancy function in R \code{f(y, z, w)} to
-determine if the results are correct. So a natural experiment
+determine if the results are correct. So a natural test
 is to experiment by programming one of the already implemented
 discrepancy functions in R. However, the Fortran
 implementations of such discrepancy measures use some

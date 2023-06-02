@@ -21,3 +21,6 @@ predicted y-values for new data from model
 \description{
 Predict y-values from boosted contrast model
 }
+\seealso{
+\code{\link[=contrast]{contrast()}}
+}

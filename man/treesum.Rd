@@ -29,3 +29,6 @@ For categorical variables:  cat variable | sign | set of values
 \item sign - => values not in node (compliment values in node) graphical representations of terminal node contrasts depend on the tree type
 }
 }
+\seealso{
+\code{\link[=contrast]{contrast()}}
+}
