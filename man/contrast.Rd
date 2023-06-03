@@ -273,16 +273,15 @@ dfun <- function(y, z, w) {
    w  <- w / sum(w)
    abs(sum(w * (y - z)))
 }
-tree2 <- contrast(xt[dx,], yt[dx], gblt[dx], type = dfun)
+tree2 <- contrast(census$xt[dx,], census$yt[dx], census$gblt[dx], type = dfun)
 nodesum(tree2, census$xt[dxt,], census$yt[dxt], census$gblt[dxt])
-nodeplots(tree2, x = census$xt[dx, ], y = census$yt[dx], z = census$gblt[dx], nodes = NULL, pts = FALSE)
 # Generate lack of fit curve
-lofcurve(tree, xt[dx,], yt[dx], gblt[dx])
+lofcurve(tree, census$xt[dx,], census$yt[dx], census$gblt[dx])
 # Build contrast tree boosting models
 # Use small # of iterations for illustration (typically >= 200)
-modgbl = modtrast(census$x, census$y, gbl, type = 'prob', niter = 10)
+modgbl = modtrast(census$x, census$y, census$gbl, type = 'prob', niter = 10)
 # Plot model accuracy as a function of iteration number
-xval(modgbl, x, y, gbl, col = 'red')
+xval(modgbl, census$x, census$y, census$gbl, col = 'red')
 # Produce predictions from modtrast() for new data.
 ypred <- predtrast(modgbl, census$xt, census$gblt, num = modgbl$niter)
 # Produce distribution boosting estimates
