@@ -120,7 +120,7 @@
 #' # Get terminal node identifiers for regions containing observations 1 through 10
 #' getnodes(tree, x = census$xt[1:10, ])
 #' # Plot nodes
-#' nodeplots(tree, x = census$xt[dx, ], y = census$yt[dx], z = census$gblt[dx], nodes = NULL, pts = FALSE)
+#' nodeplots(tree, x = census$xt[dx, ], y = census$yt[dx], z = census$gblt[dx])
 #' # Summarize contrast tree against (precomputed) gradient boosting
 #' # on logistic scale using maximum likelihood (GBL)
 #' nodesum(tree, census$xt[dxt,], census$yt[dxt], census$gblt[dxt])
