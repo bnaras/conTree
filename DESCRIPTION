@@ -3,7 +3,8 @@ Type: Package
 Title: Contrast Trees and Boosting
 Description: Contrast trees represent a new approach for assessing the
     accuracy of many types of machine learning estimates that are not
-    amenable to standard (cross) validation methods
+    amenable to standard (cross) validation methods; see "Contrast
+    trees and distribution boosting", Jerome H. Friedman (2020)
     <doi:10.1073/pnas.1921562117>. In situations where inaccuracies
     are detected, boosted contrast trees can often improve
     performance. Functions are provided to to build such trees in
@@ -17,7 +18,7 @@ Authors@R: c(person("Jerome", "Friedman", role=c("aut", "cph"),
 	   	   email = "jhf@stat.stanford.edu"),
 	     person("Balasubramanian", "Narasimhan", role=c("aut", "cre"),
 	           email = "naras@stat.stanford.edu"))
-License: Apache License 2.0 | file LICENSE
+License: Apache License 2.0
 Encoding: UTF-8
 URL: https://jhfhub.github.io/conTree_tutorial/
 BugReports: https://github.com/bnaras/conTree/issues

@@ -14,7 +14,7 @@ xval(
   span = 0.15,
   ylab = "Average  Discrepancy",
   doplot = "first",
-  doprint = TRUE,
+  doprint = FALSE,
   col = "red"
 )
 }
@@ -37,7 +37,7 @@ xval(
 
 \item{doplot}{logical flag. doplot="first" implies start new display. doplot="next" implies super impose plot on existing display. doplot="none" implies no plot displayed.}
 
-\item{doprint}{logical flag \code{TRUE/FALSE} implies do/don't print progress while executing}
+\item{doprint}{logical flag \code{TRUE/FALSE} implies do/don't print progress while executing, default \code{FALSE}}
 
 \item{col}{color of plotted curve}
 }

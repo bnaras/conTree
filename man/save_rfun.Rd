@@ -9,6 +9,9 @@ save_rfun(f)
 \arguments{
 \item{f}{the R function to be called using \code{.Fortran}}
 }
+\value{
+TRUE, invisibly.
+}
 \description{
 Save the function f for calling from fortran
 }

@@ -11,6 +11,9 @@ treesum(tree, nodes = NULL)
 
 \item{nodes}{vector of terminal node identifiers for the tree specifying the desired regions. The default is all terminal nodes.}
 }
+\value{
+No return value (invisble \code{NULL})
+}
 \description{
 Print terminal node x-region boundaries
 }

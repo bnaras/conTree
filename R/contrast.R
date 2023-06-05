@@ -614,6 +614,7 @@ getlims <- function(tree, node) {
 #' For categorical variables:  cat variable | sign | set of values
 #' - sign + => values in node
 #' - sign - => values not in node (compliment values in node) graphical representations of terminal node contrasts depend on the tree type
+#' @return No return value (invisble `NULL`)
 #' @seealso [contrast()]
 #' @export
 treesum=function(tree,nodes=NULL){
@@ -1222,7 +1223,9 @@ modtrast <- function(x,y,z,w=rep(1,nrow(x)),cat.vars=NULL,not.used=NULL,qint=10,
       acri[k]=nodesum(trees[[k]],x,y,r,w)$avecri
       u=adjnodes(x,y,r,trees[[k]],w,learn.rate)
       r=u$az; dels[[k]]=u$del; nodes[[k]]=u$nodes
-      if(k<=10 | k%%print.itr==0) cat('.')
+      if (verbose) {
+        if(k<=10 | k%%print.itr==0) cat('.')
+      }
    }
    cat('\n')
    if(doplot) {
@@ -1468,14 +1471,14 @@ predtrast1 <- function(model, x, z, num = model$niter) {
 #' @param span running median smoother span (`doplot=TRUE`, only)
 #' @param ylab graphical parameter (`doplot="first", only)
 #' @param doplot logical flag. doplot="first" implies start new display. doplot="next" implies super impose plot on existing display. doplot="none" implies no plot displayed.
-#' @param doprint logical flag `TRUE/FALSE` implies do/don't print progress while executing
+#' @param doprint logical flag `TRUE/FALSE` implies do/don't print progress while executing, default `FALSE`
 #' @param col color of plotted curve
 #' @return a named list of two items: `ntree` the iteration numbers, and `error` the corresponding discrepancy values
 #' @importFrom graphics points
 #' @seealso [contrast()]
 #' @export
 xval=function(mdl, x, y, z, num = length(mdl$tree), del = 10, span = 0.15,
-              ylab = 'Average  Discrepancy', doplot = 'first', doprint = TRUE, col = 'red') {
+              ylab = 'Average  Discrepancy', doplot = 'first', doprint = FALSE, col = 'red') {
    parms=mdl$tree[[1]]$parms;
    error=rep(0,num); ntree=rep(0,num); k=0
    for(j in 1:num) {
@@ -1569,7 +1572,9 @@ modtrans <-
         trans[[l]] <- cbind(u$x, u$y)
         r[h] <- xfm(r[h], u$x, u$y)
       }
-      if(k<10 | k%%print.itr==0) cat('.')
+      if (verbose) {
+        if(k<10 | k%%print.itr==0) cat('.')
+      }
     }
     cat('\n')
     if (doplot) {
