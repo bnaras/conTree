@@ -43,5 +43,4 @@ vignettes/*.pdf
 .Renviron
 
 # Stuff in inst
-inst/check
 inst/update
