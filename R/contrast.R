@@ -1031,9 +1031,9 @@ diffcdf <- function(x1, cdf1, x2, cdf2, pts = "FALSE", xlab = "y", ylab = "CDF (
 }
 
 cencdf <- function(yin, win = rep(1, n), nsamp = 2000, nit = 100, thr = 1.0e-2, vrb = 0,
-                   xmiss = 9.0e35) {
+                   xmiss = 9.0e35, seed = 111) {
   oldseed <- .Random.seed
-  set.seed(111)
+  set.seed(seed)
   n <- nrow(yin)
   r <- sample.int(n, min(n, nsamp))
   y <- yin[r, ]

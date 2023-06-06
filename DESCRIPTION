@@ -15,9 +15,9 @@ Description: Contrast trees represent a new approach for assessing the
 Version: 0.3
 VignetteBuilder: knitr
 Authors@R: c(person("Jerome", "Friedman", role=c("aut", "cph"),
-	   	   email = "jhf@stat.stanford.edu"),
+	   	   email = "jhf@stanford.edu"),
 	     person("Balasubramanian", "Narasimhan", role=c("aut", "cre"),
-	           email = "naras@stat.stanford.edu"))
+	           email = "naras@stanford.edu"))
 License: Apache License 2.0
 Encoding: UTF-8
 URL: https://jhfhub.github.io/conTree_tutorial/
