@@ -2,7 +2,6 @@ c     mortran 2.0     (version of 7/04/75 mod 7/4/87 (ajc))
       subroutine fcontrast (no,ni,x,y,y2,z,w,lx,mxt,itre,rtre,mxc,cat,ms
      *,isc)
       implicit double precision(a-h,o-z)                                
-!DEC$ ATTRIBUTES DLLEXPORT :: fcontrast                                 
       integer lx(ni),ms(no,ni,2),itre(6,mxt),isc(no)                    
       double precision x(no,ni),y(no),y2(no),z(no),w(no),rtre(4,mxt),cat
      *(mxc)
